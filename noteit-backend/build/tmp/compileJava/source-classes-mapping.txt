@@ -1,0 +1,2 @@
+com/noteit/noteit/NoteitApplication.java
+ com.noteit.noteit.NoteitApplication
