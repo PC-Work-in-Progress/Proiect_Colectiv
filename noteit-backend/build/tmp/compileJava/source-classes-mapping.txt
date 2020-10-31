@@ -1,2 +1,4 @@
+com/noteit/noteit/controller/TestController.java
+ com.noteit.noteit.controller.TestController
 com/noteit/noteit/NoteitApplication.java
  com.noteit.noteit.NoteitApplication
