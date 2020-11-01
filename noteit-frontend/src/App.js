@@ -11,7 +11,6 @@ function App() {
             <Router>
                 <>
                     <Header/>
-                    <hr/>
                     <Switch>
                         <Route exact path="/login">
                             <Login/>
