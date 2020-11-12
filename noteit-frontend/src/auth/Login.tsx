@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {getMessage} from "./authApi";
-import InputLabel from "@material-ui/core/InputLabel";
+import {
+    IonLabel
+} from '@ionic/react';
 
-function Login() {
+export const Login: React.FC = () => {
     let [text, setText] = useState('');
     useEffect(() => {
         const fetchMessage = async () => {
@@ -12,12 +14,7 @@ function Login() {
         fetchMessage();
     }, []);
     return (
-        <div>
-            <header>
-                <InputLabel>Message: {text}</InputLabel>
-            </header>
-        </div>
+        <IonLabel>Message: {text}</IonLabel>
     );
 }
 
-export default Login;
