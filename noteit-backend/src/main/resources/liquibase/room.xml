@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="11112020-create_room" author="cris">
+        <createTable tableName="Room">
+            <column name="Id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="Name" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UserId" type="integer">
+                <constraints foreignKeyName="Id" references="User(Id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
