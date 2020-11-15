@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="15112020-create_file" author="cris">
+        <createTable tableName="File">
+            <column name="Id" type="varchar(250)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="Name" type="varchar(250)">
+                <constraints unique="true"/>
+            </column>
+            <column name="Type" type="varchar(250)">
+                <constraints unique="false"/>
+            </column>
+            <column name="UploadedFile" type="blob">
+                <constraints unique="false"/>
+            </column>
+            <column name="Approved" type="integer">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="Date" type="date">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="UserId" type="integer">
+                <constraints foreignKeyName="Id" references="User(Id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
