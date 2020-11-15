@@ -4,12 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="11112020-create_file_room" author="cris">
+    <changeSet id="15112020-create_file_room" author="cris">
         <createTable tableName="FileRoom">
-            <column name="FileId" type="integer">
+            <column name="FileId" type="varchar(250)">
                 <constraints foreignKeyName="Id" references="File(Id)"/>
             </column>
-            <column name="RoomId" type="integer">
+            <column name="RoomId" type="varchar(250)">
                 <constraints foreignKeyName="Id" references="Room(Id)"/>
             </column>
         </createTable>

@@ -4,9 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="11112020-create_user" author="cris">
+    <changeSet id="15112020-create_user" author="cris">
         <createTable tableName="User">
-            <column name="Id" type="integer" autoIncrement="true">
+            <column name="Id" type="varchar(250)">
                 <constraints primaryKey="true"/>
             </column>
             <column name="Email" type="varchar(64)">
