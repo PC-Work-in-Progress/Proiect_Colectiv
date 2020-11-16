@@ -5,12 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="15112020-create_file_tag" author="cris">
-        <createTable tableName="FileTag">
-            <column name="FileId" type="varchar(250)">
-                <constraints foreignKeyName="Id" references="File(Id)"/>
+        <createTable tableName="file_tags">
+            <column name="file_id" type="varchar(250)">
+                <constraints foreignKeyName="id" references="files(id)"/>
             </column>
-            <column name="TagId" type="varchar(250)">
-                <constraints foreignKeyName="Id" references="Tag(Id)"/>
+            <column name="tag_id" type="varchar(250)">
+                <constraints foreignKeyName="id" references="tags(id)"/>
             </column>
         </createTable>
     </changeSet>

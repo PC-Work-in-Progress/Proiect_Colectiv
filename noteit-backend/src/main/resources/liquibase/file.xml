@@ -5,27 +5,30 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="15112020-create_file" author="cris">
-        <createTable tableName="File">
-            <column name="Id" type="varchar(250)">
+        <createTable tableName="files">
+            <column name="id" type="varchar(250)">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="Name" type="varchar(250)">
+            <column name="name" type="varchar(250)">
                 <constraints unique="true"/>
             </column>
-            <column name="Type" type="varchar(250)">
+            <column name="type" type="varchar(250)">
                 <constraints unique="false"/>
             </column>
-            <column name="UploadedFile" type="blob">
+            <column name="uploaded_file" type="blob">
                 <constraints unique="false"/>
             </column>
-            <column name="Approved" type="integer">
+            <column name="approved" type="integer">
                 <constraints unique="false" nullable="false"/>
             </column>
-            <column name="Date" type="varchar(100)">
+            <column name="date" type="varchar(100)">
                 <constraints unique="false" nullable="false"/>
             </column>
-            <column name="UserId" type="integer">
-                <constraints foreignKeyName="Id" references="User(Id)"/>
+            <column name="user_id" type="integer">
+                <constraints foreignKeyName="id" references="users(id)"/>
+            </column>
+            <column name="size" type="integer">
+                <constraints unique="false"/>
             </column>
         </createTable>
     </changeSet>
