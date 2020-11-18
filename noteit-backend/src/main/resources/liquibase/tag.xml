@@ -5,11 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="15112020-create_tag" author="cris">
-        <createTable tableName="Tag">
-            <column name="Id" type="varchar(250)">
+        <createTable tableName="tag">
+            <column name="id" type="varchar(250)">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="Name" type="varchar(128)">
+            <column name="name" type="varchar(128)">
                 <constraints unique="true"/>
             </column>
         </createTable>

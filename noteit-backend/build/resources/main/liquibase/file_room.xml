@@ -5,12 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="15112020-create_file_room" author="cris">
-        <createTable tableName="FileRoom">
-            <column name="FileId" type="varchar(250)">
-                <constraints foreignKeyName="Id" references="File(Id)"/>
+        <createTable tableName="file_room">
+            <column name="file_id" type="varchar(250)">
+                <constraints foreignKeyName="file_id_fk" references="file(id)"/>
             </column>
-            <column name="RoomId" type="varchar(250)">
-                <constraints foreignKeyName="Id" references="Room(Id)"/>
+            <column name="room_id" type="varchar(250)">
+                <constraints foreignKeyName="room_id_fk" references="room(id)"/>
             </column>
         </createTable>
     </changeSet>
