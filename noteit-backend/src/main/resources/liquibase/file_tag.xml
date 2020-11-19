@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="15112020-create_file_tag" author="cris">
+    <changeSet id="19112020-create_file_tag" author="cris">
         <createTable tableName="file_tag">
             <column name="file_id" type="varchar(250)">
                 <constraints foreignKeyName="file_id_fk" references="file(id)"/>
