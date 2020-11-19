@@ -1,4 +1,12 @@
 com/noteit/noteit/NoteitApplication.java
  com.noteit.noteit.NoteitApplication
+com/noteit/noteit/repositories/TestRepository.java
+ com.noteit.noteit.repositories.TestRepository
+com/noteit/noteit/services/TestServiceInterface.java
+ com.noteit.noteit.services.TestServiceInterface
 com/noteit/noteit/controller/TestController.java
  com.noteit.noteit.controller.TestController
+com/noteit/noteit/entities/TestEntity.java
+ com.noteit.noteit.entities.TestEntity
+com/noteit/noteit/services/TestServiceImplementation.java
+ com.noteit.noteit.services.TestServiceImplementation

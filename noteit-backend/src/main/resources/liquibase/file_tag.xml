@@ -4,13 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="15112020-create_file_tag" author="cris">
-        <createTable tableName="file_tags">
+    <changeSet id="19112020-create_file_tag" author="cris">
+        <createTable tableName="file_tag">
             <column name="file_id" type="varchar(250)">
-                <constraints foreignKeyName="id" references="files(id)"/>
+                <constraints foreignKeyName="file_id_fk" references="file(id)"/>
             </column>
             <column name="tag_id" type="varchar(250)">
-                <constraints foreignKeyName="id" references="tags(id)"/>
+                <constraints foreignKeyName="tag_id_fk" references="tag(id)"/>
             </column>
         </createTable>
     </changeSet>

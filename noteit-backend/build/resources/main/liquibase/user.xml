@@ -4,21 +4,21 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="15112020-create_user" author="cris">
-        <createTable tableName="User">
-            <column name="Id" type="varchar(250)">
+    <changeSet id="19112020-create_user" author="cris">
+        <createTable tableName="user">
+            <column name="id" type="varchar(250)">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="Email" type="varchar(64)">
+            <column name="email" type="varchar(64)">
                 <constraints unique="true"/>
             </column>
-            <column name="Token" type="varchar(64)">
+            <column name="token" type="varchar(64)">
                 <constraints unique="true"/>
             </column>
-            <column name="FullName" type="varchar(128)">
+            <column name="full_name" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="Username" type="varchar(128)">
+            <column name="username" type="varchar(128)">
                 <constraints unique="true"/>
             </column>
         </createTable>

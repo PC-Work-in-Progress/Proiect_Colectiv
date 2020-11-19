@@ -4,8 +4,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet id="15112020-create_file" author="cris">
-        <createTable tableName="files">
+    <changeSet id="19112020-create_file" author="cris">
+        <createTable tableName="file">
             <column name="id" type="varchar(250)">
                 <constraints primaryKey="true"/>
             </column>
@@ -24,8 +24,8 @@
             <column name="date" type="varchar(100)">
                 <constraints unique="false" nullable="false"/>
             </column>
-            <column name="user_id" type="integer">
-                <constraints foreignKeyName="id" references="users(id)"/>
+            <column name="user_id" type="varchar(250)">
+                <constraints foreignKeyName="id" references="user(id)"/>
             </column>
             <column name="size" type="integer">
                 <constraints unique="false"/>
