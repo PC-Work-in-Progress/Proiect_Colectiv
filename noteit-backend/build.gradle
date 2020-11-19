@@ -1,8 +1,19 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'org.liquibase:liquibase-gradle-plugin:1.1.1'
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.3.1.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
 }
+
+apply plugin: 'org.liquibase.gradle'
 
 group = 'com.noteit'
 version = '0.0.1-SNAPSHOT'
@@ -13,11 +24,29 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compile group: 'org.liquibase', name: 'liquibase-core', version: '4.1.1'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.1.RELEASE'
+
+
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	compile 'org.springframework.boot:spring-boot-starter-web'
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '2.3.5.RELEASE'
+
+	implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 }
 
 
