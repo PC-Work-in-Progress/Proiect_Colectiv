@@ -53,7 +53,7 @@ public class FileStorageService implements FileStorageServiceInterface {
     public FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Integer size = file.getBytes().length;
-        var a1 =file.getContentType();
+        var a1 = file.getContentType();
 
         FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
 
@@ -90,7 +90,7 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public Stream<FileDB> getFilesForRoom(String roomId) {
         List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(roomId);
-        List<FileDB> rez = fileRoomDBList.stream().map(x->fileDBRepository.findById(x.getId().getFileId()).get()).collect(Collectors.toList());
+        List<FileDB> rez = fileRoomDBList.stream().map(x -> fileDBRepository.findById(x.getId().getFileId()).get()).collect(Collectors.toList());
         return rez.stream();
     }
 }

@@ -28,29 +28,27 @@ public class FileController {
     private FileStorageService service;
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file")MultipartFile file, @RequestHeader Map<String, String> headers){
-                String message = "";
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
+        String message = "";
         System.out.println("a intrat");
         System.out.println(file.getOriginalFilename());
         System.out.println(file.getContentType());
         headers.forEach((key, value) -> {
-                System.out.println((String.format("Header '%s' = %s", key, value)));
-            });
-            String userId = headers.get("authorization");
-            String roomId = headers.get("roomid");
+            System.out.println((String.format("Header '%s' = %s", key, value)));
+        });
+        String userId = headers.get("authorization");
+        String roomId = headers.get("roomid");
         // TO DO: valideaza token
         FileDB f = null;
         try {
-            service.store(file,userId, roomId);
+            service.store(file, userId, roomId);
             //f = new FileDB("dsadsah", file.getContentType(), file.getBytes(), 0, "data", "fdsa", file.getBytes().length);
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
-          return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-        }
-        catch (FileException e){
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        } catch (FileException e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             //e.printStackTrace();
             System.out.println("eroare");
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
@@ -59,7 +57,7 @@ public class FileController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<List<ResponseFile>> getFilesForRoom( @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<List<ResponseFile>> getFilesForRoom(@RequestHeader Map<String, String> headers) {
         // TO DO: valideaza token
         String roomId = headers.get("roomid");
 //        if (roomId == null){
@@ -82,6 +80,7 @@ public class FileController {
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
+
     @GetMapping("/files/{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable String id) {
 
