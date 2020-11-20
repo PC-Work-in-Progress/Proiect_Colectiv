@@ -932,11 +932,13 @@ false Zulu
     </table>
     <table id="30" parent="14" name="file">
       <ObjectId>24713</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>706</StateNumber>
     </table>
     <table id="31" parent="14" name="file_room">
       <ObjectId>24761</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>714</StateNumber>
     </table>
@@ -947,6 +949,7 @@ false Zulu
     </table>
     <table id="33" parent="14" name="room">
       <ObjectId>24700</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>704</StateNumber>
     </table>
@@ -957,6 +960,7 @@ false Zulu
     </table>
     <table id="35" parent="14" name="user">
       <ObjectId>24686</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>704</StateNumber>
     </table>
