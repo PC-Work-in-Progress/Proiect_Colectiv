@@ -1,10 +1,18 @@
-import React, {useEffect, useState} from "react";
-import {getMessage} from "./authApi";
-import {
-    IonLabel
-} from '@ionic/react';
+import React, {useContext, useState} from "react";
+import {IonLoading, IonButton, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput} from '@ionic/react';
+import { AuthContext } from "./AuthProvider";
+import { Redirect, Link, RouteComponentProps } from "react-router-dom";
 
-export const Login: React.FC = () => {
+interface LoginState {
+    username?: string;
+    password?: string;
+  }
+
+export const Login: React.FC<RouteComponentProps> = ({ history }) =>{
+    const [state, setState] = useState<LoginState>({});
+    const { username, password } = state;
+    const { isAuthenticated, isAuthenticating, login, authenticationError } = useContext(AuthContext);
+    {/*
     let [text, setText] = useState('');
     useEffect(() => {
         const fetchMessage = async () => {
@@ -13,8 +21,35 @@ export const Login: React.FC = () => {
         };
         fetchMessage();
     }, []);
+    */}
+    const handleLogin = () => {
+        login?.(username, password);
+      };
+    if (isAuthenticated) {
+        return <Redirect to={{ pathname: '/' }} />
+    }
     return (
-        <IonLabel>Message: {text}</IonLabel>
+        <IonPage>
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle>Welcome to NoteIT - LogIn</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent>
+                {/*<IonLabel>Message: {text}</IonLabel>*/}
+                <IonInput placeholder="Username" value={username}
+                onIonChange={e => setState({...state,username: e.detail.value || ''})}/>
+                <IonInput type="password" placeholder="Password" value={password}
+                onIonChange={e => setState({...state,password: e.detail.value || ''})}/>
+                <IonLoading isOpen={isAuthenticating}/> 
+                    {authenticationError && (
+                        <div>{authenticationError.message || 'Failed to authenticate'}</div>
+                     )}
+                <IonButton onClick={handleLogin}>Login</IonButton>
+                <div><br></br> </div>
+                <div><Link to="/signup">Don't have an account.Click here to sign up! :)</Link></div>
+            </IonContent>
+        </IonPage>
     );
 }
 

@@ -1,12 +1,48 @@
-com/noteit/noteit/NoteitApplication.java
- com.noteit.noteit.NoteitApplication
-com/noteit/noteit/repositories/TestRepository.java
- com.noteit.noteit.repositories.TestRepository
 com/noteit/noteit/services/TestServiceInterface.java
  com.noteit.noteit.services.TestServiceInterface
+com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$1
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$2
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$3
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$4
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$SQLiteUniqueDelegate
+com/noteit/noteit/repositories/TestRepository.java
+ com.noteit.noteit.repositories.TestRepository
 com/noteit/noteit/controller/TestController.java
  com.noteit.noteit.controller.TestController
+com/noteit/noteit/dtos/UserDto.java
+ com.noteit.noteit.dtos.UserDto
+com/noteit/noteit/sqlite/dialect/identity/SQLiteDialectIdentityColumnSupport.java
+ com.noteit.noteit.sqlite.dialect.identity.SQLiteDialectIdentityColumnSupport
+com/noteit/noteit/helper/mapper/UserMapper.java
+ com.noteit.noteit.helper.mapper.UserMapper
+com/noteit/noteit/controller/UserController.java
+ com.noteit.noteit.controller.UserController
+com/noteit/noteit/services/TestServiceInterface.java
+ com.noteit.noteit.services.TestServiceInterface
+com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$1
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$2
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$3
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$4
+ com.noteit.noteit.sqlite.dialect.SQLiteDialect$SQLiteUniqueDelegate
+com/noteit/noteit/repositories/UserRepository.java
+ com.noteit.noteit.repositories.UserRepository
+com/noteit/noteit/services/UserServiceInterface.java
+ com.noteit.noteit.services.UserServiceInterface
+com/noteit/noteit/services/UserServiceImplementation.java
+ com.noteit.noteit.services.UserServiceImplementation
+=======
+com/noteit/noteit/sqlite/dialect/identity/SQLiteDialectIdentityColumnSupport.java
+ com.noteit.noteit.sqlite.dialect.identity.SQLiteDialectIdentityColumnSupport
+>>>>>>> main
 com/noteit/noteit/entities/TestEntity.java
  com.noteit.noteit.entities.TestEntity
+com/noteit/noteit/entities/UserEntity.java
+ com.noteit.noteit.entities.UserEntity
 com/noteit/noteit/services/TestServiceImplementation.java
  com.noteit.noteit.services.TestServiceImplementation
+com/noteit/noteit/NoteitApplication.java
+ com.noteit.noteit.NoteitApplication
