@@ -784,13 +784,13 @@ false YEKT
 false Z
 false Zulu
 </TimeZones>
-      <StartupTime>1605814540</StartupTime>
+      <StartupTime>1605859054</StartupTime>
     </root>
     <database id="2" parent="1" name="postgres">
       <ObjectId>13442</ObjectId>
       <Comment>default administrative connection database</Comment>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>765</IntrospectionStateNumber>
+      <IntrospectionStateNumber>774</IntrospectionStateNumber>
       <Current>1</Current>
     </database>
     <role id="3" parent="1" name="pg_execute_server_program">
@@ -842,7 +842,7 @@ false Zulu
       <Comment>standard public schema</Comment>
       <StateNumber>287</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>766</IntrospectionStateNumber>
+      <IntrospectionStateNumber>775</IntrospectionStateNumber>
       <Current>1</Current>
     </schema>
     <access-method id="15" parent="2" name="heap">
@@ -958,7 +958,7 @@ false Zulu
     <table id="35" parent="14" name="user">
       <ObjectId>24786</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>748</StateNumber>
+      <StateNumber>771</StateNumber>
     </table>
     <table id="36" parent="14" name="user_room">
       <ObjectId>24835</ObjectId>
@@ -1349,69 +1349,76 @@ false Zulu
       <StateNumber>746</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <index id="93" parent="35" name="user_pkey">
+    <column id="93" parent="35" name="password">
+      <Position>6</Position>
+      <DataType>varchar(250)|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>771</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="94" parent="35" name="user_pkey">
       <ObjectId>24792</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <index id="94" parent="35" name="user_email_key">
+    <index id="95" parent="35" name="user_email_key">
       <ObjectId>24794</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>email</ColNames>
       <Unique>1</Unique>
     </index>
-    <index id="95" parent="35" name="user_token_key">
+    <index id="96" parent="35" name="user_token_key">
       <ObjectId>24796</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>token</ColNames>
       <Unique>1</Unique>
     </index>
-    <index id="96" parent="35" name="user_username_key">
+    <index id="97" parent="35" name="user_username_key">
       <ObjectId>24798</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>username</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="97" parent="35" name="user_pkey">
+    <key id="98" parent="35" name="user_pkey">
       <ObjectId>24793</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>user_pkey</UnderlyingIndexName>
     </key>
-    <key id="98" parent="35" name="user_email_key">
+    <key id="99" parent="35" name="user_email_key">
       <ObjectId>24795</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>email</ColNames>
       <UnderlyingIndexName>user_email_key</UnderlyingIndexName>
     </key>
-    <key id="99" parent="35" name="user_token_key">
+    <key id="100" parent="35" name="user_token_key">
       <ObjectId>24797</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>token</ColNames>
       <UnderlyingIndexName>user_token_key</UnderlyingIndexName>
     </key>
-    <key id="100" parent="35" name="user_username_key">
+    <key id="101" parent="35" name="user_username_key">
       <ObjectId>24799</ObjectId>
       <StateNumber>746</StateNumber>
       <ColNames>username</ColNames>
       <UnderlyingIndexName>user_username_key</UnderlyingIndexName>
     </key>
-    <column id="101" parent="36" name="user_id">
+    <column id="102" parent="36" name="user_id">
       <Position>1</Position>
       <DataType>varchar(250)|0s</DataType>
       <StateNumber>756</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="102" parent="36" name="room_id">
+    <column id="103" parent="36" name="room_id">
       <Position>2</Position>
       <DataType>varchar(250)|0s</DataType>
       <StateNumber>756</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <foreign-key id="103" parent="36" name="user_fk">
+    <foreign-key id="104" parent="36" name="user_fk">
       <ObjectId>24843</ObjectId>
       <StateNumber>756</StateNumber>
       <ColNames>user_id</ColNames>
@@ -1421,7 +1428,7 @@ false Zulu
       <RefKeyName>user_pkey</RefKeyName>
       <RefColNames>id</RefColNames>
     </foreign-key>
-    <foreign-key id="104" parent="36" name="room_fk">
+    <foreign-key id="105" parent="36" name="room_fk">
       <ObjectId>24838</ObjectId>
       <StateNumber>756</StateNumber>
       <ColNames>room_id</ColNames>
