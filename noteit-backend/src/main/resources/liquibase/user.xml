@@ -23,4 +23,12 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="20112020-add_password_column" author="cris">
+        <addColumn tableName="user" schemaName="public">
+            <column name="password" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

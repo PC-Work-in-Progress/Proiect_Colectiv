@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-
 public class FileStorageService implements FileStorageServiceInterface {
     @Autowired
     private FileDBRepository fileDBRepository;
@@ -111,6 +110,7 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public Stream<FileDB> getFilesForRoom(String roomId) {
         List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(roomId);
+        var a = fileRoomDBList;
         List<FileDB> rez = fileRoomDBList.stream().map(x -> fileDBRepository.findById(x.getId().getFileId()).get()).collect(Collectors.toList());
         return rez.stream();
     }

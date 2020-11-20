@@ -1,0 +1,16 @@
+.bold {
+    font-weight: 500;
+}
+
+.title {
+    font-size: large;
+}
+
+.userName {
+    font-size: smaller;
+    color: #92949c;
+}
+
+.room {
+    font-weight: 500;
+}

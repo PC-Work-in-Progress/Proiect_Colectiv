@@ -1,0 +1,24 @@
+.header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.header-name-button {
+    --background-hover: none !important;
+    --ripple-color: transparent !important;
+}
+
+.header-button {
+    --color-hover: #BFC0C0 !important;
+    --background-hover: none !important;
+    --ripple-color: transparent !important;
+}
+
+.header-title {
+    text-transform: none;
+}
+
+.background {
+    background-color: #E9ECEF;
+}
