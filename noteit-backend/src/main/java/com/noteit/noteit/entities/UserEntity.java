@@ -1,6 +1,7 @@
 package com.noteit.noteit.entities;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +10,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="user", schema = "public")
-@Data
+//@Data
+@Getter
 public class UserEntity {
     @Id
     @Column(name="id")
@@ -22,4 +24,8 @@ public class UserEntity {
     private String full_name;
     @Column(name="username")
     private String username;
+
+    public String getUsername() {
+        return username;
+    }
 }
