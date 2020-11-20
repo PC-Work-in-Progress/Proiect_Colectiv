@@ -1,2 +1,0 @@
-com/noteit/noteit/NoteitApplicationTests.java
- com.noteit.noteit.NoteitApplicationTests
