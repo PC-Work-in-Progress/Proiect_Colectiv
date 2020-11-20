@@ -1,0 +1,27 @@
+.user-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-icon {
+    font-size: 144px;
+    color: #BFC0C0;
+}
+
+.user-info {
+    text-align: center;
+}
+
+.user-email {
+    color: #2a2a2a;
+    margin-top: 10px;
+}
+
+.user-name {
+    margin-bottom: 3px;
+    font-size: 25px;
+}
+
+.user-full-name {
+    font-size: 16px;
+}
