@@ -51,6 +51,16 @@ public class FileDB implements Serializable {
         this.size = size;
     }
 
+    public FileDB(String name, String type, byte[] uploadedFile, String date, String userId) {
+        this.name = name;
+        this.type = type;
+        this.uploaded_file = uploadedFile;
+        this.date = date;
+        this.approved = 0;
+        this.user_id = userId;
+        this.size = uploadedFile.length;
+    }
+
     public String getId() {
         return id;
     }

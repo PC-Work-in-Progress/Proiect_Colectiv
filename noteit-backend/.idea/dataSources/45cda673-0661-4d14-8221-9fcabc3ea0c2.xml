@@ -944,6 +944,7 @@ false Zulu
     </table>
     <table id="32" parent="14" name="file_tag">
       <ObjectId>24748</ObjectId>
+      <Outdated>1</Outdated>
       <Owner>postgres</Owner>
       <StateNumber>712</StateNumber>
     </table>

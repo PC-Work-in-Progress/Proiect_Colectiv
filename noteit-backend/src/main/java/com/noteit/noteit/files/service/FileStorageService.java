@@ -1,17 +1,27 @@
 package com.noteit.noteit.files.service;
 
+import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.model.FileDB;
+import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 
-public class FileStorageService implements FileStorageServiceInterface{
+public class FileStorageService implements FileStorageServiceInterface {
     @Autowired
     private FileDBRepository fileDBRepository;
 
@@ -36,5 +46,51 @@ public class FileStorageService implements FileStorageServiceInterface{
     @Override
     public List<FileRoomDB> findByRoomId(String roomId) {
         return fileRoomDBRepository.findById_RoomId(roomId);
+    }
+
+    @Override
+    @Transactional
+    public FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Integer size = file.getBytes().length;
+        var a1 =file.getContentType();
+
+        FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
+
+        if (cautat != null) {
+            //fisierul ce se vrea a fi adaugat exista deja
+
+            //verificam daca se gaseste in room ul in care vrem sa adauugam
+            List<FileRoomDB> cautat2 = fileRoomDBRepository.findById_FileIdAndId_RoomId(cautat.getId(), roomId);
+            int nrAparitii = cautat2.size();
+            if (nrAparitii != 0) {
+                System.out.println("se adauga in acelasi room");
+                //exista deja fisierul in room ul in care vrea sa se adauge
+                throw new FileException("File already in this room");
+
+            } else {
+                System.out.println("se adauga in alt room");
+                //exista fisierul in alt room
+                fileRoomDBRepository.save(new FileRoomDB(new FileRoomCompositePK(roomId, cautat.getId())));
+                return cautat;
+            }
+        } else {
+            //nu exista fisierul in BD
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            Date date = new Date(System.currentTimeMillis());
+            String data = formatter.format(date);
+            FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes(), data, userId);
+            FileDB saved = fileDBRepository.save(fileDB);
+            FileRoomDB f = new FileRoomDB(new FileRoomCompositePK(roomId, saved.getId()));
+            fileRoomDBRepository.save(f);
+            return saved;
+        }
+    }
+
+    @Override
+    public Stream<FileDB> getFilesForRoom(String roomId) {
+        List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(roomId);
+        List<FileDB> rez = fileRoomDBList.stream().map(x->fileDBRepository.findById(x.getId().getFileId()).get()).collect(Collectors.toList());
+        return rez.stream();
     }
 }
