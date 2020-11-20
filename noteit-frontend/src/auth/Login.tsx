@@ -1,7 +1,8 @@
 import React, {useContext, useState} from "react";
-import {IonLoading, IonButton, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput} from '@ionic/react';
-import { AuthContext } from "./AuthProvider";
-import { Redirect, Link, RouteComponentProps } from "react-router-dom";
+import {IonButton, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {AuthContext} from "./AuthProvider";
+import {Link, Redirect, RouteComponentProps} from "react-router-dom";
+
 
 interface LoginState {
     username?: string;
