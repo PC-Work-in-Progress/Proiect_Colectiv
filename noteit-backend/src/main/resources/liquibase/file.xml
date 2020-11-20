@@ -32,4 +32,13 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="name_constraint" author="cris">
+        <dropColumn schemaName="public"
+                              tableName="file"
+                              columnName="name"/>
+        <addColumn tableName="file" schemaName="public">
+            <column name="name" type="varchar(250)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
