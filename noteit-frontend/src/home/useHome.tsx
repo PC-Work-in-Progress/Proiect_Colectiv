@@ -4,6 +4,7 @@ import {RoomProps} from "./room";
 import {UserProps} from "./user";
 import {NotificationProps} from "./recentfiles";
 import {AuthContext} from "../auth/AuthProvider";
+import {addRoom, getRooms, getUser} from "./homeApi";
 
 const log = getLogger("useHome");
 
@@ -152,8 +153,8 @@ export const useHome = () => {
                 dispatch({type: CREATE_ROOM_FAILED, payload: {error: {message: "Room name must be entered"}}});
                 return;
             }
-            // server save
-            const createdRoom = {id: Date.now(), name: name};
+            const createdRoom = await addRoom(token, {name});
+            // const createdRoom = {id: Date.now(), name: name};
             log('createRoom succeeded');
 
             dispatch({type: CREATE_ROOM_SUCCEEDED, payload: {room: createdRoom}});
@@ -178,8 +179,8 @@ export const useHome = () => {
                 log(`fetchRooms started`);
                 dispatch({type: FETCH_ROOMS_STARTED});
                 // server get rooms
-                // let result = await getRooms(token);
-                let result: RoomProps[] = [];
+                let result = await getRooms(token);
+                // let result: RoomProps[] = [];
                 log('fetchRooms succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_ROOMS_SUCCEEDED, payload: {rooms: result}});
@@ -227,15 +228,15 @@ export const useHome = () => {
         }
 
         async function fetchUser() {
-            // if (!token?.trim()) {
-            //     return;
-            // }
+            if (!token?.trim()) {
+                return;
+            }
             try {
                 log(`fetchUser started`);
                 dispatch({type: FETCH_USER_STARTED});
                 // server get user data
-                // let result = await getUser();
-                let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
+                let result = await getUser(token);
+                // let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
                 log('fetchUser succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_USER_SUCCEEDED, payload: {user: result}});
