@@ -1,7 +1,7 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
+import {Redirect, Route} from 'react-router-dom';
+import {IonApp, IonRouterOutlet} from '@ionic/react';
+import {IonReactRouter} from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -22,21 +22,25 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import {Login} from "./auth";
-import { SignUp } from './auth/SignUp';
-import { AuthProvider } from './auth/AuthProvider';
+import {Home} from "./home";
+import {SignUp} from './auth/SignUp';
+import {AuthProvider} from './auth/AuthProvider';
+import { RoomPage } from './roomPage/Room';
 
 const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <AuthProvider>
-            <Route path="/login" component={Login} exact={true}/>
-            <Route path="/signup" component={SignUp} exact={true} />
-            <Route exact path="/" render={() => <Redirect to="/login" />} />
-        </AuthProvider>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+    <IonApp>
+        <IonReactRouter>
+            <IonRouterOutlet>
+                <AuthProvider>
+                    <Route path="/login" component={Login} exact={true}/>
+                    <Route path="/signup" component={SignUp} exact={true}/>
+                    <Route path="/home" component={Home} exact={true}/>
+                    <Route path='/room/:id' component={RoomPage} exact={true}/>
+                    <Route exact path="/" render={() => <Redirect to="/login"/>}/>
+                </AuthProvider>
+            </IonRouterOutlet>
+        </IonReactRouter>
+    </IonApp>
 );
 
 export default App;
