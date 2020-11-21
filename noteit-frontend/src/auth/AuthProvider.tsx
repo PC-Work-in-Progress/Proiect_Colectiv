@@ -6,7 +6,7 @@ import { login as loginApi, signup as signupApi } from './authApi';
 const log = getLogger('AuthProvider');
 
 type LoginFn = (username?: string, password?: string) => void;
-type SignUpFN = (username?: string, password?: string, fullName?: string, email?: string) => void;
+type SignUpFn = (username?: string, password?: string, full_name?: string, email?: string) => void;
 
 export interface AuthState {
   authenticationError: Error | null;
@@ -23,11 +23,11 @@ export interface SignUpState {
   signupError: Error | null;
   isSigned: boolean;
   isSigning: boolean;
-  signup?: SignUpFN;
+  signup?: SignUpFn;
   pendingSigning: boolean;
   username?: string;
   password?: string;
-  fullName?: string;
+  full_name?: string;
   email?: string;
 }
 
@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [signUpState, setStateSignUp] = useState<SignUpState>(signUpInitialState);
   const { isSigned, isSigning, signupError, pendingSigning } = signUpState;
-  const signup = useCallback<SignUpFN>(signupCallback, [])
+  const signup = useCallback<SignUpFn>(signupCallback, [])
   useEffect(signupEffect, [pendingSigning]);
   const valueS = {isSigned, signup, isSigning, signupError}
 
@@ -74,14 +74,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 
-  function signupCallback(username?: string, password?: string, fullName?: string, email?: string): void {
+  function signupCallback(username?: string, password?: string, full_name?: string, email?: string): void {
     log('sign up');
+    console.log("SUNT APELAT");
     setStateSignUp({
       ...signUpState,
       pendingSigning: true,
       username,
       password,
-      fullName,
+      full_name,
       email
     });
   }
@@ -114,8 +115,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           ...signUpState,
           isSigning: true,
         });
-        const { username, password, fullName, email } = signUpState;
-        await signupApi(username, password, fullName, email);
+        const { username, password, full_name, email } = signUpState;
+        await signupApi(username, password, full_name, email);
         if (canceled) {
           return;
         }

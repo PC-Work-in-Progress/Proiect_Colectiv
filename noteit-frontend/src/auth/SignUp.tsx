@@ -5,16 +5,16 @@ import { Redirect, RouteComponentProps } from "react-router-dom";
 import { SignUpContext } from "./AuthProvider";
 interface SignUpState {
     email?: string;
-    fullName?: string;
+    full_name?: string;
     username?: string;
     password?: string;
 }
 export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
     const {isSigned, isSigning, signup, signupError } = useContext(SignUpContext);
     const [state, setState] = useState<SignUpState>({});
-    const {email, fullName, username, password} = state;
+    const {email, full_name, username, password} = state;
     const handleSignUp = () => {
-        signup?.(username,password,fullName,email);
+        signup?.(username,password,full_name,email);
     };
     if(isSigned) {
         return <Redirect to={{ pathname: '/login'}} />
@@ -31,14 +31,14 @@ export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
                     onIonChange={e => setState({...state, username: e.detail.value || ''})}/>
                 <IonInput placeholder="Email" value={email} 
                     onIonChange={e => setState({...state, email: e.detail.value || ''})}/>
-                <IonInput placeholder="Full Name" value={fullName} 
-                    onIonChange={e => setState({...state, fullName: e.detail.value || ''})}/>
+                <IonInput placeholder="Full Name" value={full_name} 
+                    onIonChange={e => setState({...state, full_name: e.detail.value || ''})}/>
                 <IonInput type="password" placeholder="Password" value={password}
                     onIonChange={e => setState({...state, password: e.detail.value || ''})}/>
                 <IonLoading isOpen={isSigning}/>
                     {signupError && (
                         <div>{signupError.message || 'Failed to sign up'}</div>)}
-        <IonButton onClick={handleSignUp}>Sign Up</IonButton>
+                <IonButton onClick={handleSignUp}>Sign Up</IonButton>
       </IonContent>
     </IonPage>
     )     

@@ -3,8 +3,8 @@ import {config, withLogs} from "../shared";
 
 export const baseUrl = 'localhost:8080';
 
-const authUrl = `http://${baseUrl}/api/auth/login`;
-const singupUrl = `http://${baseUrl}/api/auth/signup`
+const authUrl = `http://${baseUrl}/api/auth/signin`;
+const singupUrl = `http://${baseUrl}/api/auth/signup`;
 
 export interface AuthProps {
     token: string;
@@ -18,6 +18,6 @@ export const login: (username?: string, password?: string) => Promise<AuthProps>
     return withLogs(axios.post(authUrl, {username, password}, config), 'login');
 }
 
-export const signup: (username?: string, password?: string, fullName?: string, email?: string) => Promise<AuthProps> = (username, password, fullName, email) => {
-    return withLogs(axios.post(singupUrl, {username, password, fullName, email}, config), 'sign up');
+export const signup: (username?: string, password?: string, full_name?: string, email?: string) => {} = (username, password, full_name, email) => {
+    return withLogs(axios.post(singupUrl, {username, password, full_name, email}, config), 'sign up');
 }
