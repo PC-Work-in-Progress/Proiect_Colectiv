@@ -31,4 +31,11 @@
             </column>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="21112020-change_token_length" author="cris">
+        <modifyDataType tableName="user"
+                        columnName="token"
+                        newDataType="varchar(250)"
+                        schemaName="public"/>
+    </changeSet>
 </databaseChangeLog>
