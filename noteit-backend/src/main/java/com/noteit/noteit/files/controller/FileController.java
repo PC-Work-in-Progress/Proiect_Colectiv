@@ -39,7 +39,7 @@ public class FileController {
         String message = "";
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -47,7 +47,7 @@ public class FileController {
 
 
         if (roomId == null) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Room Id not specified!"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
         String userId = null;
@@ -57,7 +57,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
         try {
@@ -73,7 +73,8 @@ public class FileController {
                     f.getType(),
                     f.getSize(),
                     f.getDate(),
-                    userService.getUsernameById(userId)));
+                    userService.getUsernameById(userId),
+                    f.getId()));
         } catch (FileException e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
@@ -89,13 +90,13 @@ public class FileController {
         String roomId = headers.get("roomid");
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
 
         if (roomId == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Room Id not specified!"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
         String userId = null;
@@ -105,9 +106,8 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
-        final String username = userService.getUsernameById(userId);
 
         List<ResponseFile> files = fileService.getFilesForRoom(roomId).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
@@ -122,7 +122,8 @@ public class FileController {
                     dbFile.getType(),
                     dbFile.getSize(),
                     dbFile.getDate(),
-                    username);
+                    userService.getUsernameById(dbFile.getUser_id()),
+                    dbFile.getId());
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
@@ -132,7 +133,7 @@ public class FileController {
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -144,7 +145,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
         FileDB fileDB = fileService.getById(id);

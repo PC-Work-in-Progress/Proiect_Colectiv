@@ -8,14 +8,24 @@ public class ResponseFile {
     private long size;
     private String data;
     private String username;
+    private String fileId;
 
-    public ResponseFile(String name, String url, String type, long size, String data, String username) {
+    public ResponseFile(String name, String url, String type, long size, String data, String username, String id) {
         this.name = name;
         this.url = url;
         this.type = type;
         this.size = size;
         this.data = data;
         this.username = username;
+        this.fileId = id;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public String getUsername() {
