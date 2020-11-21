@@ -8,11 +8,16 @@ import org.springframework.stereotype.Component;
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
 <<<<<<< HEAD
+    date = "2020-11-21T18:51:50+0200",
+    comments = "version: 1.4.1.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-6.6.1.jar, environment: Java 11.0.1 (Oracle Corporation)"
+=======
+<<<<<<< HEAD
     date = "2020-11-20T23:55:38+0200",
     comments = "version: 1.4.1.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-6.6.1.jar, environment: Java 11.0.9.1 (Amazon.com Inc.)"
 =======
     date = "2020-11-21T17:12:13+0200",
     comments = "version: 1.4.1.Final, compiler: IncrementalProcessingEnvironment from gradle-language-java-6.6.1.jar, environment: Java 11.0.9 (Amazon.com Inc.)"
+>>>>>>> main
 >>>>>>> main
 )
 @Component
