@@ -1,5 +1,6 @@
 package com.noteit.noteit.files.service;
 
+import com.noteit.noteit.files.dtos.FileDbDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomDB;
@@ -16,4 +17,6 @@ public interface FileStorageServiceInterface {
     List<FileRoomDB> findByRoomId(String roomId);
     FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
+
+    FileDbDto getDetails(String id);
 }
