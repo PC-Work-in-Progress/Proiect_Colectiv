@@ -93,7 +93,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                           Upload
                                         </IonButton>
                                 </div>
-                                <IonCard class="file">
+                                <IonCard>
                                   <MyFile fileId = {file.fileId} name={file.name} type={file.type} date={file.date} username={file.username} tags={file.tags}></MyFile>
                                   <IonCardContent>
                                         <IonLoading isOpen={fetchingFile} message="Fetching file"/>
