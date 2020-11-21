@@ -11,6 +11,6 @@ public interface RoomServiceInterface {
 
     List<RoomDto> getRooms();
 
-    void createRoom(String name, String token);
+    RoomDto createRoom(String name, String token);
 
 }
