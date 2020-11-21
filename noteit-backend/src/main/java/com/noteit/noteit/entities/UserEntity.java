@@ -15,12 +15,13 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String id, String email, String token, String full_name, String username) {
+    public UserEntity(String id, String email, String token, String full_name, String username, String password) {
         this.id = id;
         this.email = email;
         this.token = token;
         this.full_name = full_name;
         this.username = username;
+        this.password = password;
     }
 
     public String getId() {
@@ -63,6 +64,14 @@ public class UserEntity {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Id
     @Column(name="id")
     private String id;
@@ -74,5 +83,7 @@ public class UserEntity {
     private String full_name;
     @Column(name="username")
     private String username;
+    @Column(name="password")
+    private String password;
 
 }

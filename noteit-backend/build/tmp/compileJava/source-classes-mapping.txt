@@ -55,32 +55,32 @@ com/noteit/noteit/payload/JwtAuthenticationResponse.java
  com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/security/JwtAuthenticationFilter.java
  com.noteit.noteit.security.JwtAuthenticationFilter
-com/noteit/noteit/security/JwtTokenProvider.java
- com.noteit.noteit.security.JwtTokenProvider
-com/noteit/noteit/files/message/ResponseMessage.java
- com.noteit.noteit.files.message.ResponseMessage
-com/noteit/noteit/security/UserPrincipal.java
- com.noteit.noteit.security.UserPrincipal
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
-com/noteit/noteit/repositories/UserRepository.java
- com.noteit.noteit.repositories.UserRepository
-com/noteit/noteit/security/CustomUserDetailsService.java
- com.noteit.noteit.security.CustomUserDetailsService
-com/noteit/noteit/services/UserServiceInterface.java
- com.noteit.noteit.services.UserServiceInterface
-com/noteit/noteit/services/UserServiceImplementation.java
- com.noteit.noteit.services.UserServiceImplementation
 com/noteit/noteit/helper/mapper/UserMapper.java
  com.noteit.noteit.helper.mapper.UserMapper
-com/noteit/noteit/entities/UserEntity.java
- com.noteit.noteit.entities.UserEntity
+com/noteit/noteit/files/message/ResponseMessage.java
+ com.noteit.noteit.files.message.ResponseMessage
+com/noteit/noteit/files/controller/FileController.java
+ com.noteit.noteit.files.controller.FileController
+com/noteit/noteit/controller/UserController.java
+ com.noteit.noteit.controller.UserController
 com/noteit/noteit/files/service/FileStorageService.java
  com.noteit.noteit.files.service.FileStorageService
 com/noteit/noteit/files/message/ResponseFile.java
  com.noteit.noteit.files.message.ResponseFile
+com/noteit/noteit/services/UserServiceInterface.java
+ com.noteit.noteit.services.UserServiceInterface
+com/noteit/noteit/security/JwtTokenProvider.java
+ com.noteit.noteit.security.JwtTokenProvider
+com/noteit/noteit/repositories/UserRepository.java
+ com.noteit.noteit.repositories.UserRepository
+com/noteit/noteit/entities/UserEntity.java
+ com.noteit.noteit.entities.UserEntity
+com/noteit/noteit/services/UserServiceImplementation.java
+ com.noteit.noteit.services.UserServiceImplementation
+com/noteit/noteit/security/UserPrincipal.java
+ com.noteit.noteit.security.UserPrincipal
+com/noteit/noteit/security/CustomUserDetailsService.java
+ com.noteit.noteit.security.CustomUserDetailsService
 com/noteit/noteit/controller/AuthController.java
  com.noteit.noteit.controller.AuthController
  com.noteit.noteit.controller.AuthController$1
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController

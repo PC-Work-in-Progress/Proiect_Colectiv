@@ -32,7 +32,7 @@ public class UserPrincipal implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getToken()
+                user.getPassword()
         );
     }
 

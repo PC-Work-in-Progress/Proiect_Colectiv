@@ -90,10 +90,14 @@ public class AuthController {
             // SUCCESS
             default:
                 // Creating user's account
-                UserEntity user = new UserEntity(String.valueOf(userRepository.getMaxId() + 1), signUpRequest.getEmail(), signUpRequest.getPassword(),
-                        signUpRequest.getFull_name(), signUpRequest.getUsername());
+                Long userId = Long.valueOf(1);
+                if (userRepository.getMaxId() != null) {
+                    userId = userRepository.getMaxId() + 1;
+                }
+                UserEntity user = new UserEntity(String.valueOf(userId), signUpRequest.getEmail(), "token" + userId,
+                        signUpRequest.getFull_name(), signUpRequest.getUsername(), signUpRequest.getPassword());
 
-                user.setToken(passwordEncoder.encode(user.getToken()));
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
 
                 UserEntity result = userRepository.save(user);
 
@@ -105,6 +109,7 @@ public class AuthController {
         }
     }
 
+    // Some validation, needs improvement
     public AuthError validateInputs(SignUpRequest signUpRequest) {
         if(signUpRequest.getFull_name().length() < 2)
             return AuthError.INVALID_NAME;
@@ -115,7 +120,7 @@ public class AuthController {
         if(signUpRequest.getPassword().length() < 2)
             return AuthError.INVALID_PASSWORD;
 
-        if(!signUpRequest.getEmail().contains("@") && signUpRequest.getPassword().length() < 4)
+        if(!signUpRequest.getEmail().contains("@") || signUpRequest.getPassword().length() < 4)
             return AuthError.INVALID_EMAIL;
 
         return AuthError.OK;
