@@ -134,6 +134,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     log('uploadFile started');
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
+                    console.log(file);
                     const response = await uploadFileApi(token, file,routeId);
                     dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: file}})
                 }

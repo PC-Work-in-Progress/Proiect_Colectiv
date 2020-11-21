@@ -35,7 +35,7 @@ public class FileController {
     private UserServiceImplementation userService;
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String message = "";
 
         String token = headers.get("authorization");
@@ -58,9 +58,18 @@ public class FileController {
         }
 
         try {
-            fileService.store(file, userId, roomId);
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            FileDB f = fileService.store(file, userId, roomId);
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(f.getId())
+                    .toUriString();
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseFile(
+                    f.getName(),
+                    fileDownloadUri,
+                    f.getType(),
+                    f.getSize(),
+                    f.getDate()));
         } catch (FileException e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));

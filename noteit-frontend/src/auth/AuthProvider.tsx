@@ -165,7 +165,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           isAuthenticating: true,
         });
         const { username, password } = state;
-        const { token } = await loginApi(username, password);
+        const { accessToken, tokenType } = await loginApi(username, password);
+        const token = accessToken;
         console.log("Token= ",token)
         if (canceled) {
           return;
