@@ -153,7 +153,7 @@ export const useHome = () => {
                 dispatch({type: CREATE_ROOM_FAILED, payload: {error: {message: "Room name must be entered"}}});
                 return;
             }
-            const createdRoom = await addRoom(token, {name});
+            const createdRoom = await addRoom(token, {id:"", name});
             // const createdRoom = {id: Date.now(), name: name};
             log('createRoom succeeded');
 
@@ -236,10 +236,11 @@ export const useHome = () => {
                 dispatch({type: FETCH_USER_STARTED});
                 // server get user data
                 let result = await getUser(token);
+                let result2 = {userName: result.username, email: result.email, fullName: result.full_name}
                 // let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
                 log('fetchUser succeeded');
                 if (!canceled) {
-                    dispatch({type: FETCH_USER_SUCCEEDED, payload: {user: result}});
+                    dispatch({type: FETCH_USER_SUCCEEDED, payload: {user: result2}});
                 }
             } catch (error) {
                 log('fetchUser failed');
