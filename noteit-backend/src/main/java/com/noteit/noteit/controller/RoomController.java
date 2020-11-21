@@ -2,6 +2,8 @@ package com.noteit.noteit.controller;
 
 import com.noteit.noteit.services.RoomServiceInterface;
 import lombok.AllArgsConstructor;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +16,37 @@ public class RoomController {
 
     @GetMapping("/")
     public ResponseEntity<?> getRooms(){
-        return ResponseEntity.ok().body(roomService.getRooms());
+        try
+        {
+            return ResponseEntity.ok().body(roomService.getRooms());
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @GetMapping("/{ownerId}")
-    public ResponseEntity<?> getRoomByOwnerId(@PathVariable String ownerId){
-        return ResponseEntity.ok().body(roomService.getRoomsByOwnerId(ownerId));
+    @GetMapping("/{token}")
+    public ResponseEntity<?> getRoomByToken(@PathVariable String token){
+        try{
+            return ResponseEntity.ok().body(roomService.getRoomsByToken(token));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PostMapping("/{name}/{ownerId}")
-    public void createRoom(@PathVariable String name, @PathVariable String ownerId)
+    @PostMapping("/{name}/{token}")
+    public ResponseEntity<?> createRoom(@PathVariable String name, @PathVariable String token)
     {
-        roomService.createRoom(name, ownerId);
+        try{
+            roomService.createRoom(name, token);
+            return ResponseEntity.ok().body(HttpStatus.OK);
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

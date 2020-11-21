@@ -1,15 +1,16 @@
 package com.noteit.noteit.services;
 
+import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.entities.RoomEntity;
 
 import java.util.List;
 
 public interface RoomServiceInterface {
 
-    List<RoomEntity> getRoomsByOwnerId(String ownerId);
+    List<RoomDto> getRoomsByToken(String token);
 
-    List<RoomEntity> getRooms();
+    List<RoomDto> getRooms();
 
-    void createRoom(String name, String ownerId);
+    void createRoom(String name, String token);
 
 }

@@ -22,4 +22,8 @@ public class UserEntity {
     private String full_name;
     @Column(name="username")
     private String username;
+
+    public String getId() {
+        return id;
+    }
 }

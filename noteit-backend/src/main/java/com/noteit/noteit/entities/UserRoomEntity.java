@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class UserRoomEntity implements Serializable {
     @EmbeddedId
-    private UserRoomIdEntity<String, String> userRoomId;
+    private com.noteit.noteit.entities.UserRoomIdEntity<String, String> userRoomId;
 
     public UserRoomEntity()
     {
@@ -19,6 +19,6 @@ public class UserRoomEntity implements Serializable {
 
     public UserRoomEntity(String userId, String roomId)
     {
-        this.userRoomId = new UserRoomIdEntity<>(userId, roomId);
+        this.userRoomId = new com.noteit.noteit.entities.UserRoomIdEntity<>(userId, roomId);
     }
 }

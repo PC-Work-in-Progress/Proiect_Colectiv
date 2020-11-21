@@ -33,6 +33,22 @@ public class RoomEntity implements Serializable {
         this.ownerId = ownerId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public String getId() {
         return id;
     }
