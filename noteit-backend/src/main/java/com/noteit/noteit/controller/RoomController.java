@@ -1,5 +1,6 @@
 package com.noteit.noteit.controller;
 
+import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.services.RoomServiceInterface;
 import lombok.AllArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -29,10 +31,16 @@ public class RoomController {
     }
 
     @GetMapping("/roomsUser")
-    public ResponseEntity<?> getRoomByToken(@RequestHeader Map<String, String> headers){
-        String token = headers.get("token");
-        try{
-            return ResponseEntity.ok().body(roomService.getRoomsByToken(token));
+    public ResponseEntity<?> getRoomByToken(HttpServletRequest request){
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            return ResponseEntity.ok().body(roomService.getRoomsByToken(authToken));
         }
         catch (ServiceException e)
         {
@@ -40,12 +48,20 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/createRoom/{name}")
-    public ResponseEntity<?> createRoom(@PathVariable String name, @RequestHeader Map<String, String> headers)
+    @PostMapping("/createRoom")
+    public ResponseEntity<?> createRoom(HttpServletRequest request, @RequestBody RoomDto roomDto)
     {
-        String token = headers.get("token");
-        try{
-            roomService.createRoom(name, token);
+        String name = roomDto.getName();
+
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            roomService.createRoom(name, authToken);
             return ResponseEntity.ok().body(HttpStatus.OK);
         }
         catch (ServiceException e)
