@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/rooms")
 @CrossOrigin
@@ -26,8 +28,9 @@ public class RoomController {
         }
     }
 
-    @GetMapping("/{token}")
-    public ResponseEntity<?> getRoomByToken(@PathVariable String token){
+    @GetMapping("/roomsUser")
+    public ResponseEntity<?> getRoomByToken(@RequestHeader Map<String, String> headers){
+        String token = headers.get("token");
         try{
             return ResponseEntity.ok().body(roomService.getRoomsByToken(token));
         }
@@ -37,9 +40,11 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/{name}/{token}")
-    public ResponseEntity<?> createRoom(@PathVariable String name, @PathVariable String token)
+    @PostMapping("/createRoom")
+    public ResponseEntity<?> createRoom(@RequestHeader Map<String, String> headers)
     {
+        String name = headers.get("name");
+        String token = headers.get("token");
         try{
             roomService.createRoom(name, token);
             return ResponseEntity.ok().body(HttpStatus.OK);
