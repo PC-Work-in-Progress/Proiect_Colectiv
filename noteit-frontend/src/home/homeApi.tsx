@@ -11,7 +11,8 @@ interface Room {
 }
 
 export const getUser: (token: string) => Promise<UserProps> = (token) => {
-    return withLogs(axios.get(homeUrl, authConfig(token)), 'getUser');
+    const url = homeUrl + "/user/details";
+    return withLogs(axios.get(url, authConfig(token)), 'getUser');
 }
 
 export const getRooms: (token: string) => Promise<RoomProps[]> = (token) => {

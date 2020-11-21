@@ -28,6 +28,6 @@ export const config = {
 export const authConfig = (token?: string) => ({
     headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
     }
 });

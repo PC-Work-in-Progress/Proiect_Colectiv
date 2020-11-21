@@ -4,7 +4,7 @@ import {RoomProps} from "./room";
 import {UserProps} from "./user";
 import {NotificationProps} from "./recentfiles";
 import {AuthContext} from "../auth/AuthProvider";
-import {addRoom, getRooms} from "./homeApi";
+import {addRoom, getRooms, getUser} from "./homeApi";
 
 const log = getLogger("useHome");
 
@@ -228,15 +228,15 @@ export const useHome = () => {
         }
 
         async function fetchUser() {
-            // if (!token?.trim()) {
-            //     return;
-            // }
+            if (!token?.trim()) {
+                return;
+            }
             try {
                 log(`fetchUser started`);
                 dispatch({type: FETCH_USER_STARTED});
                 // server get user data
-                // let result = await getUser();
-                let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
+                let result = await getUser(token);
+                // let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
                 log('fetchUser succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_USER_SUCCEEDED, payload: {user: result}});
