@@ -40,10 +40,9 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/createRoom")
-    public ResponseEntity<?> createRoom(@RequestHeader Map<String, String> headers)
+    @PostMapping("/createRoom/{name}")
+    public ResponseEntity<?> createRoom(@PathVariable String name, @RequestHeader Map<String, String> headers)
     {
-        String name = headers.get("name");
         String token = headers.get("token");
         try{
             roomService.createRoom(name, token);
