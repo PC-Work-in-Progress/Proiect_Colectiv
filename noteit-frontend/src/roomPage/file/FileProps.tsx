@@ -1,8 +1,8 @@
 export interface FileProps {
-    fileId: string;
+    fileId?: string;
     name: string;
     type: string;
-    userName: string;
-    date: Date;
+    username: string;
+    date: string;
     tags: string[];
 }

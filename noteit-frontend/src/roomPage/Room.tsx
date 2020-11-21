@@ -37,7 +37,7 @@ export const RoomPage: React.FC<RouteComponentProps> = ({history}) => {
                                   </IonCardHeader>
                                   <IonCardContent>
                                     {files && (<IonList>
-                                        {files.map(({fileId, name, userName, type, date, tags}) => <MyFile fileId = {fileId} name= {name} type={type} date={date} userName={userName} tags={tags}></MyFile>
+                                        {files.map(({fileId, name, username, type, date, tags}) => <MyFile fileId = {fileId} name= {name} type={type} date={date} username={username} tags={tags}></MyFile>
                                         )}
                                     </IonList>)}
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
@@ -53,7 +53,7 @@ export const RoomPage: React.FC<RouteComponentProps> = ({history}) => {
                                         UploadFile</IonButton>
                                 </div>
                                 <IonCard class="file">
-                                  <MyFile fileId = {file.fileId} name={file.name} type={file.type} date={file.date} userName={file.userName} tags={file.tags}></MyFile>
+                                  <MyFile fileId = {file.fileId} name={file.name} type={file.type} date={file.date} username={file.username} tags={file.tags}></MyFile>
                                   <IonCardContent>
                                         <IonLoading isOpen={fetchingFile} message="Fetching file"/>
                                         {fetchingFileError &&

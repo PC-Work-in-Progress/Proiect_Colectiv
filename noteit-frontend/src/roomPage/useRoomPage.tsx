@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useReducer } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
+import { getFile } from "./roomApi";
 
 const log = getLogger("useRoomPage");
 
@@ -11,6 +12,7 @@ export type HideUploadFileFn = () => void;
 interface RoomState {
     files: FileProps[];
     file: FileProps;
+    fileId: string;
     showAddFile: boolean;
     uploading: boolean;
     uploadError?: Error | null;
@@ -22,13 +24,14 @@ interface RoomState {
 
 const initialState: RoomState = {
     files: [],
+    fileId: "file1",
     file: {
         fileId: "",
         name: "",
-        userName: "",
+        username: "",
         type: "",
         tags: [],
-        date: new Date()
+        date: "",
     },
     showAddFile: false,
     uploading: false,
@@ -110,7 +113,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
             useEffect(fetchFilesEffect, [token]);
-            useEffect(fetchFileEffect, []);
+            useEffect(fetchFileEffect, [state.fileId]);
             return {state, uploadFile, hideUploadFile, showUploadFile}
 
             async function hideUploadFileCallback() {
@@ -180,7 +183,8 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         log('fetchFile started');
                         dispatch({type: FETCH_FILE_STARTED});
                         //get file fileID ADD TO STARE
-                        let result: FileProps = {fileId: "id", name:"SUBIECTE 2021", type:"pdf",userName:"Mano", tags:["tag"], date: new Date()};
+                        let result = await getFile(token, state.fileId)
+                        //let result: FileProps = {fileId: "id", name:"SUBIECTE 2021", type:"pdf",userName:"Mano", tags:["tag"], date: new Date()};
                         log('fetchFile succeeded')
                         if(!canceled) {
                             dispatch({type: FETCH_FILE_SUCCEEDED, payload: {file: result}})
