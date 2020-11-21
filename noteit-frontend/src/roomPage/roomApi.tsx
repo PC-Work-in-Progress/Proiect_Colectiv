@@ -24,8 +24,8 @@ export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> =
 
 export const uploadConfig = (token?: string, file?: FormData, roomId?: string) => ({
     headers: {
-        'Content-Type': 'application/json',
-        'RoomId' : `${roomId}`,
+        'Content-Type': 'multipart/form-data',
+        RoomId : "1",
         Authorization: `Bearer ${token}`,
     },
     body: {
@@ -34,5 +34,6 @@ export const uploadConfig = (token?: string, file?: FormData, roomId?: string) =
 });
 
 export const uploadFile: (token: string, file: FormData, roomId: string) => {} = (token, file, roomId) => {
+    console.log(file);
     return withLogs(axios.post(`http://${baseUrl}/upload`, uploadConfig(token, file, roomId)), 'uploadFile');
 }   

@@ -31,17 +31,21 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
 
   const onFileChange = (fileChangeEvent: any) => {
     values.current.file = fileChangeEvent.target.files[0];
+    
   };
 
   const submitForm = async () => {
     if (!values.current.file) {
       return false;
     }
+    console.log(values.current.file)
     let formData = new FormData();
-    formData.append("file", values.current.file);
-
+    formData.append("file", values.current.file, values.current.file.name);
+    console.log(formData);
     try {
+      console.log("test1");
      uploadFile(formData, routeId)
+     console.log("test2");
     } catch (err) {
       console.log(err);
     }
