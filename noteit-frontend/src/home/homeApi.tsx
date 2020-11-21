@@ -23,6 +23,7 @@ export const getRecentFiles: (token: string) => Promise<NotificationProps[]> = (
     return withLogs(axios.get(homeUrl, authConfig(token)), 'getRecentFiles');
 }
 
-// export const addRoom: (token: string, room: Room) => Promise<> = (token) => {
-//     return withLogs(axios.get(homeUrl, authConfig(token)), 'getRecentFiles');
-// }
+export const addRoom: (token: string, room: Room) => Promise<RoomProps[]> = (token, room) => {
+    const url = homeUrl + `/rooms/createRoom/${room.name}`;
+    return withLogs(axios.post(url, authConfig(token)), 'postRoom');
+}
