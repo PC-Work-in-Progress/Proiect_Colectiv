@@ -22,18 +22,20 @@ export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> =
     return withLogs(axios.get(`http://${baseUrl}/files`, getFilesConfig(token, roomId)), 'getFiles');
 }
 
-export const uploadConfig = (token?: string, file?: FormData, roomId?: string) => ({
+export const uploadConfig = (token?: string, roomId?: string) => ({
     headers: {
         'Content-Type': 'multipart/form-data',
         RoomId : "1",
         Authorization: `Bearer ${token}`,
     },
-    body: {
-        file,
-    }
 });
 
-export const uploadFile: (token: string, file: FormData, roomId: string) => {} = (token, file, roomId) => {
-    console.log(file);
-    return withLogs(axios.post(`http://${baseUrl}/upload`, uploadConfig(token, file, roomId)), 'uploadFile');
+export interface UploadResponse {
+    message: string;
+} 
+
+export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<UploadResponse> = (token, file, roomId) => {
+    console.log(file.get("file"));
+    console.log(token);
+    return withLogs(axios.post(`http://${baseUrl}/upload`,file, uploadConfig(token, roomId)), 'uploadFile');
 }   
