@@ -60,23 +60,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { isSigned, isSigning, signupError, pendingSigning } = signUpState;
   const signup = useCallback<SignUpFn>(signupCallback, [])
   useEffect(signupEffect, [pendingSigning]);
-  const valueS = {isSigned, signup, isSigning, signupError}
+  const valueS = {isSigned, signup, isSigning, signupError, pendingSigning}
 
   const [state, setState] = useState<AuthState>(initialState);
   const { isAuthenticated, isAuthenticating, authenticationError, pendingAuthentication, token } = state;
   const login = useCallback<LoginFn>(loginCallback, []);
   useEffect(authenticationEffect, [pendingAuthentication]);
-  const value = { isAuthenticated, login, isAuthenticating, authenticationError, token };
+  
+  const value = { isAuthenticated, login, isAuthenticating, authenticationError, token};
   log('render');
   return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    <SignUpContext.Provider value = {valueS}>
+      <AuthContext.Provider value={value}>
+        {children}
+      </AuthContext.Provider>
+    </SignUpContext.Provider>
   );
 
   function signupCallback(username?: string, password?: string, full_name?: string, email?: string): void {
     log('sign up');
-    console.log("SUNT APELAT");
     setStateSignUp({
       ...signUpState,
       pendingSigning: true,
@@ -116,17 +118,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           isSigning: true,
         });
         const { username, password, full_name, email } = signUpState;
-        await signupApi(username, password, full_name, email);
+        const {message, success} = await signupApi(username, password, full_name, email);
         if (canceled) {
           return;
         }
         log('Sign Up succeeded');
-        setStateSignUp({
-          ...signUpState,
-          pendingSigning: false,
-          isSigned: true,
-          isSigning: false,
-        });
+        if(success === true) {
+          setStateSignUp({
+            ...signUpState,
+            pendingSigning: false,
+            isSigned: true,
+            isSigning: false,
+          });
+        }
       } catch (error) {
         if (canceled) {
           return;

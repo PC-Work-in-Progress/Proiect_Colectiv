@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useContext } from "react"
 import { Redirect, RouteComponentProps } from "react-router-dom";
 import { SignUpContext } from "./AuthProvider";
+
 interface SignUpState {
     email?: string;
     full_name?: string;
