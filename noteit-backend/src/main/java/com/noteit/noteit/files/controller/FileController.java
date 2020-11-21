@@ -9,6 +9,7 @@ import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.files.service.FileStorageServiceInterface;
+import org.hibernate.service.spi.ServiceException;
 import com.noteit.noteit.helper.mapper.UserMapper;
 import com.noteit.noteit.services.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,4 +144,13 @@ public class FileController {
                 .body(fileDB.getUploaded_file());
     }
 
+
+    @GetMapping("/files/details/{id}")
+    public ResponseEntity<?> getDetailsFile(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok().body(fileService.getDetails(id));
+        } catch (ServiceException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

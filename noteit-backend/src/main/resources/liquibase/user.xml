@@ -23,4 +23,19 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="20112020-add_password_column" author="cris">
+        <addColumn tableName="user" schemaName="public">
+            <column name="password" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="21112020-change_token_length" author="cris">
+        <modifyDataType tableName="user"
+                        columnName="token"
+                        newDataType="varchar(250)"
+                        schemaName="public"/>
+    </changeSet>
 </databaseChangeLog>
