@@ -38,13 +38,14 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
+        if (fullToken == null){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
+        }
         var elems =fullToken.split(" ");
         String token = elems[1];
         String roomId = headers.get("roomid");
 
-        if (token == null){
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
-        }
+
         if (roomId == null) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Room Id not specified!"));
         }
