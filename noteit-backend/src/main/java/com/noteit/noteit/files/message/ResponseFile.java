@@ -7,13 +7,23 @@ public class ResponseFile {
     private String type;
     private long size;
     private String data;
+    private String username;
 
-    public ResponseFile(String name, String url, String type, long size, String data) {
+    public ResponseFile(String name, String url, String type, long size, String data, String username) {
         this.name = name;
         this.url = url;
         this.type = type;
         this.size = size;
         this.data = data;
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

@@ -72,7 +72,8 @@ public class FileController {
                     fileDownloadUri,
                     f.getType(),
                     f.getSize(),
-                    f.getDate()));
+                    f.getDate(),
+                    userService.getUsernameById(userId)));
         } catch (FileException e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
@@ -86,11 +87,13 @@ public class FileController {
     public ResponseEntity<?> getFilesForRoom(@RequestHeader Map<String, String> headers) {
 
         String roomId = headers.get("roomid");
-        String token = headers.get("authorization");
-
-        if (token == null){
+        String fullToken = headers.get("authorization");
+        if (fullToken == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
         }
+        var elems =fullToken.split(" ");
+        String token = elems[1];
+
         if (roomId == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Room Id not specified!"));
         }
@@ -104,6 +107,7 @@ public class FileController {
         if (userId == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
+        final String username = userService.getUsernameById(userId);
 
         List<ResponseFile> files = fileService.getFilesForRoom(roomId).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
@@ -117,7 +121,8 @@ public class FileController {
                     fileDownloadUri,
                     dbFile.getType(),
                     dbFile.getSize(),
-                    dbFile.getDate());
+                    dbFile.getDate(),
+                    username);
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
@@ -125,10 +130,12 @@ public class FileController {
 
     @GetMapping("/files/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
-        String token = headers.get("authorization");
-        if (token == null){
+        String fullToken = headers.get("authorization");
+        if (fullToken == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
         }
+        var elems =fullToken.split(" ");
+        String token = elems[1];
 
         String userId = null;
         try {

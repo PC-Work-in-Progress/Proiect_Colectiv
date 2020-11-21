@@ -5,4 +5,5 @@ import com.noteit.noteit.dtos.UserDto;
 public interface UserServiceInterface {
     UserDto getUserByToken(String token);
     String getUserIdByToken(String token);
+    String getUsernameById(String id);
 }

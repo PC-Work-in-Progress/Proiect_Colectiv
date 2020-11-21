@@ -4,13 +4,19 @@ import axios from "axios";
 import {RoomProps} from "./room";
 import {NotificationProps} from "./recentfiles";
 
-const homeUrl = "localhost:8080"
+const homeUrl = "http://localhost:8080"
 
 interface Room {
+    id: string;
     name: string;
 }
+interface UserProps2 {
+    full_name: string;
+    email: string;
+    username: string;
+}
 
-export const getUser: (token: string) => Promise<UserProps> = (token) => {
+export const getUser: (token: string) => Promise<UserProps2> = (token) => {
     const url = homeUrl + "/user/details";
     return withLogs(axios.get(url, authConfig(token)), 'getUser');
 }
@@ -25,6 +31,6 @@ export const getRecentFiles: (token: string) => Promise<NotificationProps[]> = (
 }
 
 export const addRoom: (token: string, room: Room) => Promise<RoomProps[]> = (token, room) => {
-    const url = homeUrl + `/rooms/createRoom/${room.name}`;
-    return withLogs(axios.post(url, authConfig(token)), 'postRoom');
+    const url = homeUrl + `/rooms/createRoom`;
+    return withLogs(axios.post(url, room, authConfig(token)), 'postRoom');
 }

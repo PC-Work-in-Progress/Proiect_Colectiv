@@ -48,11 +48,12 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     }
 
     @Override
-    public void createRoom(String name, String token) {
+    public RoomDto createRoom(String name, String token) {
         String ownerId = userRepository.findByToken(token).getId();
         RoomEntity roomEntity = new RoomEntity(name, ownerId);
         roomRepository.save(roomEntity);
         UserRoomEntity userRoom = new UserRoomEntity(ownerId, roomEntity.getId());
         userRoomRepository.save(userRoom);
+        return new RoomDto(roomEntity.getId(), name);
     }
 }

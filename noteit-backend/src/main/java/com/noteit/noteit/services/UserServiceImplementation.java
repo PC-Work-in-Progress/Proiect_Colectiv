@@ -29,4 +29,9 @@ public class UserServiceImplementation implements UserServiceInterface {
     public String getUserIdByToken(String token) {
         return userRepository.findByToken(token).getId();
     }
+
+    @Override
+    public String getUsernameById(String id) {
+        return userRepository.findById(id).get().getUsername();
+    }
 }
