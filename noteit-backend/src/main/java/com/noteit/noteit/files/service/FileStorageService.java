@@ -46,7 +46,6 @@ public class FileStorageService implements FileStorageServiceInterface {
     private FileTagRepository fileTagRepository;
 
     private FileDbMapper fileDbMapper = new FileDbMapper();
-//    private FileDbMapper fileDbMapper = Mappers.getMapper(FileDbMapper.class);
 
     @Override
     public FileDB getById(String id) {
@@ -73,8 +72,6 @@ public class FileStorageService implements FileStorageServiceInterface {
     public FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Integer size = file.getBytes().length;
-        var a1 = file.getContentType();
-
         FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
 
         if (cautat != null) {
