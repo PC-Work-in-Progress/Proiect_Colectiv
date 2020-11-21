@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -57,6 +58,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
+        userRepository.updateToken(loginRequest.getUsername(), jwt);
         System.out.println("***************Generated TOKEN:" + jwt);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
