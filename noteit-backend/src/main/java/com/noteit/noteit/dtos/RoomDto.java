@@ -5,13 +5,23 @@ import lombok.Data;
 @Data
 public class RoomDto {
     private String name;
+    private String id;
 
     public RoomDto()
     {
 
     }
 
-    public RoomDto(String name) {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public RoomDto(String id, String name) {
+        this.id = id;
         this.name = name;
     }
 
