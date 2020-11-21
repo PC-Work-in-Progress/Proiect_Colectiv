@@ -31,8 +31,9 @@ const initialState: RoomState = {
         name: "",
         username: "",
         type: "",
-        tags: [],
         date: "",
+        size: "",
+        URL: ""
     },
     showAddFile: false,
     uploading: false,
@@ -70,8 +71,8 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 return {...state, uploading: false, uploadError:  payload.error};
             case UPLOAD_FILE_SUCCEEDED:
                 let files = state.files;
-                const file = payload.file;
-                const index = files.findIndex(f => f.fileId == file.fileId);
+                const file = payload.file
+                const index = files.findIndex(f => f.fileId === file.fileId);
                 if (index === -1) {
                     files.push(file);
                 } else {
@@ -135,7 +136,8 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
                     const response = await uploadFileApi(token, file,routeId);
-                    dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: file}})
+                    console.log(response)
+                    dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: response}})
                 }
                 catch(error) {
                     dispatch({type: UPLOAD_FILE_FAILED, payload: {error}})
@@ -166,7 +168,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     }
                     catch (error) {
                         log('fetchFiles failed')
-                        dispatch({type: FETCH_FILE_SUCCEEDED, payload: {error}})
+                        dispatch({type: FETCH_FILES_SUCCEEDED, payload: {error}})
                     }
                 }
             }

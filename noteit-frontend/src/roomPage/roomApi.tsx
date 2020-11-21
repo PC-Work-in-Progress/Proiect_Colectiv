@@ -34,7 +34,7 @@ export interface UploadResponse {
     message: string;
 } 
 
-export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<UploadResponse> = (token, file, roomId) => {
+export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<FileProps> = (token, file, roomId) => {
     console.log(file.get("file"));
     console.log(token);
     return withLogs(axios.post(`http://${baseUrl}/upload`,file, uploadConfig(token, roomId)), 'uploadFile');
