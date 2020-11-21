@@ -61,8 +61,7 @@ public class RoomController {
             }
 
             String authToken = header.split(" ")[1];
-            roomService.createRoom(name, authToken);
-            return ResponseEntity.ok().body(HttpStatus.OK);
+            return ResponseEntity.ok().body(roomService.createRoom(name, authToken));
         }
         catch (ServiceException e)
         {

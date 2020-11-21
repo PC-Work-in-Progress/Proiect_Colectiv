@@ -41,11 +41,9 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     console.log(values.current.file)
     let formData = new FormData();
     formData.append("file", values.current.file, values.current.file.name);
-    console.log(formData);
+    console.log(formData.get("file"));
     try {
-      console.log("test1");
      uploadFile(formData, routeId)
-     console.log("test2");
     } catch (err) {
       console.log(err);
     }
