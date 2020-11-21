@@ -38,7 +38,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
       return false;
     }
     let formData = new FormData();
-    formData.append("photo", values.current.file, values.current.file.name);
+    formData.append("file", values.current.file);
 
     try {
      uploadFile(formData, routeId)

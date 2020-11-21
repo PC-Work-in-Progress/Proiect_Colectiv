@@ -19,7 +19,7 @@ export const getFilesConfig = (token?: string, roomId?: string) => ({
 })
 
 export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
-    return withLogs(axios.get(homeUrl, getFilesConfig(token, roomId)), 'getFiles');
+    return withLogs(axios.get(`http://${baseUrl}/files`, getFilesConfig(token, roomId)), 'getFiles');
 }
 
 export const uploadConfig = (token?: string, file?: FormData, roomId?: string) => ({
