@@ -72,7 +72,8 @@ public class FileController {
                     fileDownloadUri,
                     f.getType(),
                     f.getSize(),
-                    f.getDate()));
+                    f.getDate(),
+                    userService.getUsernameById(userId)));
         } catch (FileException e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "! " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
@@ -86,11 +87,13 @@ public class FileController {
     public ResponseEntity<?> getFilesForRoom(@RequestHeader Map<String, String> headers) {
 
         String roomId = headers.get("roomid");
-        String token = headers.get("authorization");
-
-        if (token == null){
+        String fullToken = headers.get("authorization");
+        if (fullToken == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
         }
+        var elems =fullToken.split(" ");
+        String token = elems[1];
+
         if (roomId == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Room Id not specified!"));
         }
@@ -117,7 +120,8 @@ public class FileController {
                     fileDownloadUri,
                     dbFile.getType(),
                     dbFile.getSize(),
-                    dbFile.getDate());
+                    dbFile.getDate(),
+                    userService.getUsernameById(userId));
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
