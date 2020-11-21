@@ -3,10 +3,11 @@ import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
 import { getFile } from "./roomApi";
+import {uploadFile as uploadFileApi} from "./roomApi"
 
 const log = getLogger("useRoomPage");
 
-export type UploadFileFn = (file: File) => void;
+export type UploadFileFn = (file: FormData, routeId: string) => void;
 export type HideUploadFileFn = () => void;
 
 interface RoomState {
@@ -112,6 +113,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const uploadFile = useCallback<UploadFileFn>(uploadFileCallback, [token]);
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
+
             useEffect(fetchFilesEffect, [token]);
             useEffect(fetchFileEffect, [state.fileId]);
             return {state, uploadFile, hideUploadFile, showUploadFile}
@@ -127,11 +129,12 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 dispatch({type: SHOW_ADD_FILE})
             }
 
-            async function uploadFileCallback(file:File) {
+            async function uploadFileCallback(file: FormData, routeId: string) {
                 try {
                     log('uploadFile started');
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
+                    const response = await uploadFileApi(token, file,routeId);
                     dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: file}})
                 }
                 catch(error) {

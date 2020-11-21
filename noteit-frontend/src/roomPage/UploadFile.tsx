@@ -17,11 +17,20 @@ interface UploadFileProps {
     hide: HideRoomFn
 }
 
+
+
 export const UploadFile: React.FC<UploadFileProps> = ({uploadFile, uploadFileError, uploading, hide}) => {
+
+    
     const [file, setFile] = useState(null);
     const state = {
             selectedFile: null
     };
+
+
+    const handleUploadFile = () => {
+
+    }
 
     const fileInput = useRef(null);;
 
@@ -42,7 +51,8 @@ export const UploadFile: React.FC<UploadFileProps> = ({uploadFile, uploadFileErr
                     console.log("onChange");
                 }}
                 onClick={() => {
-                console.log('onClick');
+                    console.log('onClick');
+                    handleUploadFile();
                 }}
             />
             <IonButton
