@@ -1,6 +1,7 @@
 package com.noteit.noteit.entities;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +10,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="user", schema = "public")
-@Data
+//@Data
+@Getter
 public class UserEntity {
 
     public UserEntity() {
