@@ -37,9 +37,11 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String message = "";
-
-        String token = headers.get("authorization");
+        String fullToken = headers.get("authorization");
+        var elems =fullToken.split(" ");
+        String token = elems[1];
         String roomId = headers.get("roomid");
+
         if (token == null){
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("Anauthorized action!"));
         }
