@@ -7,7 +7,8 @@ const authUrl = `http://${baseUrl}/api/auth/signin`;
 const singupUrl = `http://${baseUrl}/api/auth/signup`;
 
 export interface AuthProps {
-    token: string;
+    accessToken: string;
+    tokenType: string;
 }
 
 export interface ResponseProps {
