@@ -152,7 +152,7 @@ export const useHome = () => {
                 dispatch({type: CREATE_ROOM_FAILED, payload: {error: {message: "Room name must be entered"}}});
                 return;
             }
-            // server save
+            // const createdRoom = await addRoom(token, {name});
             const createdRoom = {id: Date.now(), name: name};
             log('createRoom succeeded');
 
