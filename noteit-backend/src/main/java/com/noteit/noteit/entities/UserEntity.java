@@ -85,7 +85,7 @@ public class UserEntity {
     private String full_name;
     @Column(name="username")
     private String username;
+
     @Column(name="password")
     private String password;
-
 }
