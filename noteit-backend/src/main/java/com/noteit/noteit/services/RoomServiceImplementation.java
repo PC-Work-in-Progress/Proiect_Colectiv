@@ -25,7 +25,7 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     public List<RoomDto> getRooms() {
         List<RoomDto> roomDtos = new ArrayList<>();
         for (RoomEntity roomEntity : roomRepository.findAll()) {
-            RoomDto roomDto = new RoomDto(roomEntity.getName());
+            RoomDto roomDto = new RoomDto(roomEntity.getId(), roomEntity.getName());
             roomDtos.add(roomDto);
         }
 
@@ -40,7 +40,7 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         if (!roomEntities.isEmpty())
         {
             for (RoomEntity roomEntity : roomEntities.get()) {
-                RoomDto roomDto = new RoomDto(roomEntity.getName());
+                RoomDto roomDto = new RoomDto(roomEntity.getId(), roomEntity.getName());
                 roomDtos.add(roomDto);
             }
         }
