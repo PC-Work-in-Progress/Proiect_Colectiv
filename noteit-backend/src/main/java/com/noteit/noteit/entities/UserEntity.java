@@ -75,7 +75,4 @@ public class UserEntity {
     @Column(name="username")
     private String username;
 
-    public String getId() {
-        return id;
-    }
 }
