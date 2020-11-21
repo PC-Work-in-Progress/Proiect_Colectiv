@@ -24,4 +24,9 @@ public class UserServiceImplementation implements UserServiceInterface {
 
         return userMapper.toDto(userEntity);
     }
+
+    @Override
+    public String getUserIdByToken(String token) {
+        return userRepository.findByToken(token).getId();
+    }
 }
