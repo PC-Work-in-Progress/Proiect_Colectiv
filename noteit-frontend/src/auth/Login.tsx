@@ -44,7 +44,7 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) =>{
                 onIonChange={e => setState({...state,password: e.detail.value || ''})}/>
                 <IonLoading isOpen={isAuthenticating}/> 
                     {authenticationError && (
-                        <div>{authenticationError.message || 'Failed to authenticate'}</div>
+                        <div>{'Wrong username or password'}</div>
                      )}
                 <IonButton onClick={handleLogin}>Login</IonButton>
                 <div><br></br> </div>

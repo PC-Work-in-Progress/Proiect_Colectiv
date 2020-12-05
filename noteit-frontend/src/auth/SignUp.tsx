@@ -11,7 +11,7 @@ interface SignUpState {
     password?: string;
 }
 export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
-    const {isSigned, isSigning, signup, signupError } = useContext(SignUpContext);
+    const {isSigned, isSigning, signup, signupError, message1 } = useContext(SignUpContext);
     const [state, setState] = useState<SignUpState>({});
     const {email, full_name, username, password} = state;
     const handleSignUp = () => {
@@ -39,6 +39,9 @@ export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
                 <IonLoading isOpen={isSigning}/>
                     {signupError && (
                         <div>{signupError.message || 'Failed to sign up'}</div>)}
+                    {message1 && (
+                        <div> {message1} </div>
+                    )}
                 <IonButton onClick={handleSignUp}>Sign Up</IonButton>
       </IonContent>
     </IonPage>
