@@ -4,5 +4,6 @@ export interface FileProps {
     type: string;
     username: string;
     date: string;
-    tags: string[];
+    URL: string;
+    size: string;
 }

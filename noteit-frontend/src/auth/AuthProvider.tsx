@@ -170,6 +170,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     async function authenticate() {
 
       var token = await Storage.get({ key: 'token' });
+      console.log(token.value)
+      
       if(token.value){
         setState({
             ...state,
@@ -179,7 +181,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             isAuthenticating: false,
         });
       }
-
+      
       if (!pendingAuthentication) {
         log('authenticate, !pendingAuthentication, return');
         return;
