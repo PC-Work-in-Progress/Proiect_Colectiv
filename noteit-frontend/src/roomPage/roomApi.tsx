@@ -13,19 +13,20 @@ export const getFile: (token: string, idFile: string) => Promise<FileProps> = (t
 export const getFilesConfig = (token?: string, roomId?: string) => ({
     headers: {
         'Content-Type': 'application/json',
-        'RoomId' : `${roomId}`,
+        'RoomId' : '1', //{roomId}
         Authorization: `Bearer ${token}`,
     }
 })
 
 export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
+    console.log(roomId);
     return withLogs(axios.get(`http://${baseUrl}/files`, getFilesConfig(token, roomId)), 'getFiles');
 }
 
 export const uploadConfig = (token?: string, roomId?: string) => ({
     headers: {
         'Content-Type': 'multipart/form-data',
-        RoomId : "1",
+        RoomId : '1', //{roomId}
         Authorization: `Bearer ${token}`,
     },
 });
@@ -34,7 +35,7 @@ export interface UploadResponse {
     message: string;
 } 
 
-export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<UploadResponse> = (token, file, roomId) => {
+export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<FileProps> = (token, file, roomId) => {
     console.log(file.get("file"));
     console.log(token);
     return withLogs(axios.post(`http://${baseUrl}/upload`,file, uploadConfig(token, roomId)), 'uploadFile');

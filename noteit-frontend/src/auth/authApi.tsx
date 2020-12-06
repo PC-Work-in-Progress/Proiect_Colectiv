@@ -9,6 +9,7 @@ const singupUrl = `http://${baseUrl}/api/auth/signup`;
 export interface AuthProps {
     accessToken: string;
     tokenType: string;
+    message: string;
 }
 
 export interface ResponseProps {

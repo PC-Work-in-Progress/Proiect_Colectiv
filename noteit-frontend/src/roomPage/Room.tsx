@@ -13,13 +13,14 @@ interface RoomPageProps extends RouteComponentProps<{
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state, uploadFile, hideUploadFile, showUploadFile} = useRoom();
+  const {state, uploadFile, hideUploadFile, showUploadFile} = useRoom(match.params.roomId);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
     fetchingFile, fetchingFileError
   } = state
 
   const routeId = match.params.roomId
+  console.log(routeId)
 
   interface InternalValues {
     file: any;
@@ -52,7 +53,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
 
   return (
     <IonContent>
-         <div className="flex-page">
                 <Header/>
                 <IonPopover
                     isOpen={showAddFile}
@@ -62,17 +62,17 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                     <UploadFile uploading={uploading} uploadFile={uploadFile} uploadFileError={uploadError}
                                 hide={hideUploadFile}/>
                 </IonPopover>
-                <IonGrid class="grid-page ion-padding-bottom">
-                  <IonRow class="fullscreen">
-                            <IonCol class="fullscreen" size="8.5"></IonCol>
-                            <div className="first-col">
-                              <IonCard class="fullscreen">
+                <IonGrid>
+                  <IonRow >
+                            <IonCol size="8.5"></IonCol>
+                              <IonCard>
                                   <IonCardHeader>
                                       <IonCardTitle>Room files</IonCardTitle>
                                   </IonCardHeader>
                                   <IonCardContent>
+                                    {console.log(files)}
                                     {files && (<IonList>
-                                        {files.map(({fileId, name, username, type, date, tags}) => <MyFile fileId = {fileId} name= {name} type={type} date={date} username={username} tags={tags}></MyFile>
+                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size}></MyFile>
                                         )}
                                     </IonList>)}
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
@@ -80,10 +80,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                        <div className="create-room-error">{fetchingFilesError.message}</div>}
                                     </IonCardContent>
                               </IonCard>
-                              </div>
-                            <IonCol class="fullscreen" size="3.5">
-                              
-                              <div className="button-div">
+                            <IonCol size="3.5">
                                 
                                     {/*
                                     <IonButton color="secondary" onClick={() => showUploadFile()}>
@@ -94,19 +91,23 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                         <IonButton color="primary" expand="full" onClick={() => submitForm()}>
                                           Upload
                                         </IonButton>
-                                </div>
+                                        {/*
                                 <IonCard>
-                                  <MyFile fileId = {file.fileId} name={file.name} type={file.type} date={file.date} username={file.username} tags={file.tags}></MyFile>
+                                   
+                                    
+                                      
+                                  <MyFile fileId = {file.fileId} name= {file.name} type={file.type} date={file.date} username={file.username} URL={file.URL} size={file.size}></MyFile>
+                                  
                                   <IonCardContent>
                                         <IonLoading isOpen={fetchingFile} message="Fetching file"/>
                                         {fetchingFileError &&
                                         <div className="create-room-error">{fetchingFileError.message}</div>}
                                     </IonCardContent>
                                 </IonCard>
+                                */}
                             </IonCol>
                     </IonRow>
                 </IonGrid>
-         </div>
     </IonContent>
      )
 }

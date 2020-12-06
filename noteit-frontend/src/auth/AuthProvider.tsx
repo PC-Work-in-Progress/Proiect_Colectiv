@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { getLogger } from '../shared';
 import { login as loginApi, signup as signupApi } from './authApi';
+import { Storage } from "@capacitor/core";
 
 const log = getLogger('AuthProvider');
 
@@ -29,6 +30,7 @@ export interface SignUpState {
   password?: string;
   full_name?: string;
   email?: string;
+  message1: string | null;
 }
 
 const initialState: AuthState = {
@@ -44,6 +46,7 @@ const signUpInitialState: SignUpState = {
   isSigning: false,
   signupError: null,
   pendingSigning: false,
+  message1: null,
 }
 
 export const AuthContext = React.createContext<AuthState>(initialState);
@@ -57,10 +60,10 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [signUpState, setStateSignUp] = useState<SignUpState>(signUpInitialState);
-  const { isSigned, isSigning, signupError, pendingSigning } = signUpState;
+  const { isSigned, isSigning, signupError, pendingSigning, message1 } = signUpState;
   const signup = useCallback<SignUpFn>(signupCallback, [])
   useEffect(signupEffect, [pendingSigning]);
-  const valueS = {isSigned, signup, isSigning, signupError, pendingSigning}
+  const valueS = {isSigned, signup, isSigning, signupError, pendingSigning, message1}
 
   const [state, setState] = useState<AuthState>(initialState);
   const { isAuthenticated, isAuthenticating, authenticationError, pendingAuthentication, token } = state;
@@ -85,7 +88,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       username,
       password,
       full_name,
-      email
+      email,
+      message1
     });
   }
 
@@ -131,6 +135,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             isSigning: false,
           });
         }
+        else {
+          setStateSignUp({
+            ...signUpState,
+            pendingSigning: false,
+            isSigned: false,
+            isSigning: false,
+            message1: message,
+          });
+        }
       } catch (error) {
         if (canceled) {
           return;
@@ -141,6 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           signupError: error,
           pendingSigning: false,
           isSigning: false,
+          message1: null,
         });
       }
     }
@@ -154,6 +168,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     async function authenticate() {
+
+      var token = await Storage.get({ key: 'token' });
+      console.log(token.value)
+      
+      if(token.value){
+        setState({
+            ...state,
+            token: token.value,
+            pendingAuthentication: false,
+            isAuthenticated: true,
+            isAuthenticating: false,
+        });
+      }
+      
       if (!pendingAuthentication) {
         log('authenticate, !pendingAuthentication, return');
         return;
@@ -165,13 +193,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           isAuthenticating: true,
         });
         const { username, password } = state;
-        const { accessToken, tokenType } = await loginApi(username, password);
+        const { accessToken, tokenType, message } = await loginApi(username, password);
         const token = accessToken;
         console.log("Token= ",token)
         if (canceled) {
           return;
         }
         log('authenticate succeeded');
+        await Storage.set({
+          key: 'token',
+          value: token
+        });
         setState({
           ...state,
           token,

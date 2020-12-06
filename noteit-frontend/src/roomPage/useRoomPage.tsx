@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useReducer } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
-import { getFile } from "./roomApi";
+import { getFile, getFiles } from "./roomApi";
 import {uploadFile as uploadFileApi} from "./roomApi"
 
 const log = getLogger("useRoomPage");
@@ -31,8 +31,9 @@ const initialState: RoomState = {
         name: "",
         username: "",
         type: "",
-        tags: [],
         date: "",
+        size: "",
+        URL: ""
     },
     showAddFile: false,
     uploading: false,
@@ -71,10 +72,11 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             case UPLOAD_FILE_SUCCEEDED:
                 let files = state.files;
                 const file = payload.file;
-                const index = files.findIndex(f => f.fileId == file.fileId);
+                const index = files.findIndex(f => f.fileId === file.fileId);
                 if (index === -1) {
                     files.push(file);
                 } else {
+                    //files.push(file);
                     files[index] = file;
                 }
                 return {...state, uploading: false, files: files}
@@ -90,8 +92,9 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     files2.push(file);
                 } else {
                     files2[index] = file;
+                    //files2.push(file);
                 }
-
+                console.log(files2);
                 })
                 return {...state, fetchingFiles: false, files: files2}
 
@@ -107,14 +110,14 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
         }
     };
 
-        export const useRoom = () => {
+        export const useRoom = (roomId: string) => {
             const {token} = useContext(AuthContext);
             const [state, dispatch] = useReducer(reducer, initialState);
             const uploadFile = useCallback<UploadFileFn>(uploadFileCallback, [token]);
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
 
-            useEffect(fetchFilesEffect, [token]);
+            useEffect(fetchFilesEffect, []);
             useEffect(fetchFileEffect, [state.fileId]);
             return {state, uploadFile, hideUploadFile, showUploadFile}
 
@@ -134,8 +137,10 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     log('uploadFile started');
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
+                    console.log(routeId)
                     const response = await uploadFileApi(token, file,routeId);
-                    dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: file}})
+                    console.log(response)
+                    dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: response}})
                 }
                 catch(error) {
                     dispatch({type: UPLOAD_FILE_FAILED, payload: {error}})
@@ -157,8 +162,10 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     try {
                         log('fetchFiles started')
                         dispatch({type: FETCH_FILES_STARTED})
-                        // getFiles
-                        let result: FileProps[] = [];
+                        console.log(roomId)
+                        console.log("ROOM ID")
+                        let result = await getFiles(token, roomId)
+                        //let result: FileProps[] = [];
                         log('fetchFiles succeeded');
                         if(!canceled) {
                             dispatch({type: FETCH_FILES_SUCCEEDED, payload: {files: result}})
@@ -166,7 +173,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     }
                     catch (error) {
                         log('fetchFiles failed')
-                        dispatch({type: FETCH_FILE_SUCCEEDED, payload: {error}})
+                        dispatch({type: FETCH_FILES_SUCCEEDED, payload: {error}})
                     }
                 }
             }
