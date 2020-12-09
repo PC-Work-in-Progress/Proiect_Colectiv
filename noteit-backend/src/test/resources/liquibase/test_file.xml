@@ -23,7 +23,7 @@
                 <constraints unique="false" nullable="false"/>
             </column>
             <column name="user_id" type="varchar(250)">
-                <constraints foreignKeyName="id" references="user(id)"/>
+                <constraints foreignKeyName="id" references="test_user(id)"/>
             </column>
             <column name="size" type="integer">
                 <constraints unique="false"/>
