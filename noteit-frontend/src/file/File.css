@@ -10,51 +10,29 @@
     background-color: #E9ECEF;
 }
 
-.grid-page {
-    width: 100%;
-    flex: 1;
-    height: 100%;
-}
 
-.first-col {
-    height: 100%;
+.flex-column {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
 }
 
-.user {
-    flex: 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.rooms {
-    flex: 5;
-}
-
-.button-div {
-    text-align: center;
-}
-
-.create-room-popover .popover-content {
-    width: 400px;
-}
-
-.create-room-popover .popover-room-name {
-    margin-bottom: 10px;
-}
-
-.create-room-popover .create-room-error {
-    text-align: center;
-    color: red;
-}
-
-.list-size {
-    height: 42vh;
-    overflow-x: hidden;
+.file-content-container {
+    align-self: center;
+    width: 1300px;
+    height: 90%;
     overflow-y: scroll;
+    font-weight: normal;
+    padding-left: 40px;
+    padding-top: 40px;
 }
 
+.file-content {
+    white-space: pre-wrap;
+    color: #2a2a2a;
+}
+
+.pdf {
+    width: 100%;
+    height: 100%;
+}
 
