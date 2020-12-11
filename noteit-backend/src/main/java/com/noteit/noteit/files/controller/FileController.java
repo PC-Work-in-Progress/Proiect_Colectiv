@@ -2,6 +2,7 @@ package com.noteit.noteit.files.controller;
 
 import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.exception.FileException;
+import com.noteit.noteit.files.message.ResponseContentFile;
 import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.files.model.FileDB;
@@ -148,11 +149,18 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
-        FileDB fileDB = fileService.getById(id);
+        FileDB fileDB;
+        try {
+            fileDB = fileService.getById(id);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File not found"));
+
+        }
+
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-                .body(fileDB.getUploaded_file());
+                .body(new ResponseContentFile(fileDB.getUploaded_file() ,fileDB.getName()));
     }
 
 
