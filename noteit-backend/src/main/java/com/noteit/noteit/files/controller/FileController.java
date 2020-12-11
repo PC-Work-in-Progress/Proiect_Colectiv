@@ -139,6 +139,45 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
+    @GetMapping("/files/review")
+    public ResponseEntity<?> getInReviewFiles(@RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+        }
+        var elems =fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        }catch (Exception e) {
+
+        }
+        if (userId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+        }
+        var notAcceptedFiles = fileService.getNotAcceptedFiles();
+        List<ResponseFile> files = notAcceptedFiles.map(dbFile -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(dbFile.getId())
+                    .toUriString();
+
+            return new ResponseFile(
+                    dbFile.getName(),
+                    fileDownloadUri,
+                    dbFile.getType(),
+                    dbFile.getSize(),
+                    dbFile.getDate(),
+                    userService.getUsernameById(dbFile.getUser_id()),
+                    dbFile.getId());
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(files);
+    }
+
     @GetMapping("/files/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");

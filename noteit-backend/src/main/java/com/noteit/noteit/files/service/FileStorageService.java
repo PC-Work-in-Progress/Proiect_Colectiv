@@ -55,21 +55,6 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
-    public FileDB add(FileDB fileDB) {
-        return fileDBRepository.save(fileDB);
-    }
-
-    @Override
-    public FileRoomDB addFileRoom(FileRoomDB fileRoomDB) {
-        return fileRoomDBRepository.save(fileRoomDB);
-    }
-
-    @Override
-    public List<FileRoomDB> findByRoomId(String roomId) {
-        return fileRoomDBRepository.findById_RoomId(roomId);
-    }
-
-    @Override
     @Transactional
     public FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -151,4 +136,11 @@ public class FileStorageService implements FileStorageServiceInterface {
         }
         return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
     }
+
+    @Override
+    public Stream<FileDB> getNotAcceptedFiles() {
+        return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
+    }
+
+
 }
