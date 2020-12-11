@@ -13,7 +13,7 @@ export const getFile: (token: string, idFile: string) => Promise<FileProps> = (t
 export const getFilesConfig = (token?: string, roomId?: string) => ({
     headers: {
         'Content-Type': 'application/json',
-        'RoomId' : '1', //{roomId}
+        'RoomId' : {roomId}, //{roomId}
         Authorization: `Bearer ${token}`,
     }
 })
@@ -26,7 +26,7 @@ export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> =
 export const uploadConfig = (token?: string, roomId?: string) => ({
     headers: {
         'Content-Type': 'multipart/form-data',
-        RoomId : '1', //{roomId}
+        RoomId : {roomId}, //{roomId}
         Authorization: `Bearer ${token}`,
     },
 });
