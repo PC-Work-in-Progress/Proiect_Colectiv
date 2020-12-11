@@ -23,6 +23,7 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) =>{
         fetchMessage();
     }, []);
     */}
+    console.log("Render login");
     const handleLogin = () => {
         login?.(username, password);
       };

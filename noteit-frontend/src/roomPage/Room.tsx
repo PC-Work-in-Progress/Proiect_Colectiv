@@ -9,19 +9,17 @@ import { useRoom } from "./useRoomPage";
 
 
 interface RoomPageProps extends RouteComponentProps<{
-  roomId: string;
+  id: string;
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state, uploadFile, hideUploadFile, showUploadFile} = useRoom(match.params.roomId);
+  const {state, uploadFile, hideUploadFile, showUploadFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
     fetchingFile, fetchingFileError
   } = state
 
-  const routeId = match.params.roomId
-  console.log(routeId)
-
+  const routeId = match.params.id
   interface InternalValues {
     file: any;
   }
