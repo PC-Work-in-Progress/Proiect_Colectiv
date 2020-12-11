@@ -40,7 +40,7 @@ public class FileController {
     private RoomServiceImplementation roomService;
 
     @PostMapping("/upload/{roomId}")
-    public ResponseEntity<?> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -66,7 +66,7 @@ public class FileController {
         }
 
         try {
-            FileDB f = fileService.store(file, userId, roomId);
+            FileDB f = fileService.store(file, userId, roomId, tags);
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")
