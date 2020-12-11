@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface FileStorageServiceInterface {
@@ -19,4 +20,6 @@ public interface FileStorageServiceInterface {
     Stream<FileDB> getFilesForRoom(String roomId);
 
     FileDbDto getDetails(String id);
+
+    Optional<FileDB> getFile(String id);
 }

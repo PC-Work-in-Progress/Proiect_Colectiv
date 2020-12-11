@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-com/noteit/noteit/files/repository/FileDBRepository.java
- com.noteit.noteit.files.repository.FileDBRepository
-com/noteit/noteit/controller/TestController.java
- com.noteit.noteit.controller.TestController
-com/noteit/noteit/sqlite/dialect/identity/SQLiteDialectIdentityColumnSupport.java
- com.noteit.noteit.sqlite.dialect.identity.SQLiteDialectIdentityColumnSupport
-com/noteit/noteit/services/UserServiceImplementation.java
- com.noteit.noteit.services.UserServiceImplementation
-com/noteit/noteit/helper/mapper/UserMapper.java
- com.noteit.noteit.helper.mapper.UserMapper
-=======
 com/noteit/noteit/security/JwtAuthenticationEntryPoint.java
  com.noteit.noteit.security.JwtAuthenticationEntryPoint
 com/noteit/noteit/files/repository/FileDBRepository.java
@@ -30,48 +18,14 @@ com/noteit/noteit/services/RoomServiceInterface.java
  com.noteit.noteit.services.RoomServiceInterface
 com/noteit/noteit/files/message/ResponseFile.java
  com.noteit.noteit.files.message.ResponseFile
-com/noteit/noteit/security/JwtTokenProvider.java
- com.noteit.noteit.security.JwtTokenProvider
+com/noteit/noteit/controller/UserController.java
+ com.noteit.noteit.controller.UserController
 com/noteit/noteit/security/UserPrincipal.java
  com.noteit.noteit.security.UserPrincipal
-<<<<<<< HEAD
 com/noteit/noteit/security/CustomUserDetailsService.java
  com.noteit.noteit.security.CustomUserDetailsService
 com/noteit/noteit/services/UserServiceImplementation.java
  com.noteit.noteit.services.UserServiceImplementation
-=======
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
->>>>>>> main
-com/noteit/noteit/files/service/FileStorageServiceInterface.java
- com.noteit.noteit.files.service.FileStorageServiceInterface
-com/noteit/noteit/files/model/FileRoomDB.java
- com.noteit.noteit.files.model.FileRoomDB
-<<<<<<< HEAD
-com/noteit/noteit/entities/UserEntity.java
- com.noteit.noteit.entities.UserEntity
-com/noteit/noteit/files/service/FileStorageService.java
- com.noteit.noteit.files.service.FileStorageService
-com/noteit/noteit/services/TestServiceInterface.java
- com.noteit.noteit.services.TestServiceInterface
-com/noteit/noteit/services/TestServiceImplementation.java
- com.noteit.noteit.services.TestServiceImplementation
-com/noteit/noteit/entities/TestEntity.java
- com.noteit.noteit.entities.TestEntity
-com/noteit/noteit/files/exception/FileException.java
- com.noteit.noteit.files.exception.FileException
-com/noteit/noteit/NoteitApplication.java
- com.noteit.noteit.NoteitApplication
-com/noteit/noteit/repositories/TestRepository.java
- com.noteit.noteit.repositories.TestRepository
-=======
-com/noteit/noteit/entities/FileTagEntity.java
- com.noteit.noteit.entities.FileTagEntity
-com/noteit/noteit/services/UserServiceInterface.java
- com.noteit.noteit.services.UserServiceInterface
-com/noteit/noteit/entities/TestEntity.java
- com.noteit.noteit.entities.TestEntity
->>>>>>> main
 com/noteit/noteit/exception/ResourceNotFoundException.java
  com.noteit.noteit.exception.ResourceNotFoundException
 com/noteit/noteit/entities/UserEntity.java
@@ -80,32 +34,18 @@ com/noteit/noteit/repositories/TagRepository.java
  com.noteit.noteit.repositories.TagRepository
 com/noteit/noteit/services/TestServiceImplementation.java
  com.noteit.noteit.services.TestServiceImplementation
-com/noteit/noteit/files/service/FileStorageService.java
- com.noteit.noteit.files.service.FileStorageService
+com/noteit/noteit/entities/FileTagEntity.java
+ com.noteit.noteit.entities.FileTagEntity
 com/noteit/noteit/controller/UserRoomController.java
  com.noteit.noteit.controller.UserRoomController
 com/noteit/noteit/repositories/TestRepository.java
  com.noteit.noteit.repositories.TestRepository
 com/noteit/noteit/payload/LoginRequest.java
  com.noteit.noteit.payload.LoginRequest
-<<<<<<< HEAD
 com/noteit/noteit/controller/RoomController.java
  com.noteit.noteit.controller.RoomController
 com/noteit/noteit/files/model/FileDB.java
  com.noteit.noteit.files.model.FileDB
-=======
->>>>>>> main
-com/noteit/noteit/dtos/UserDto.java
- com.noteit.noteit.dtos.UserDto
-com/noteit/noteit/files/model/FileDB.java
- com.noteit.noteit.files.model.FileDB
-com/noteit/noteit/files/repository/FileRoomDBRepository.java
- com.noteit.noteit.files.repository.FileRoomDBRepository
-<<<<<<< HEAD
-=======
-com/noteit/noteit/helper/mapper/UserMapper.java
- com.noteit.noteit.helper.mapper.UserMapper
->>>>>>> main
 com/noteit/noteit/payload/SignUpRequest.java
  com.noteit.noteit.payload.SignUpRequest
 com/noteit/noteit/security/JwtAuthenticationFilter.java
@@ -114,14 +54,10 @@ com/noteit/noteit/files/message/ResponseMessage.java
  com.noteit.noteit.files.message.ResponseMessage
 com/noteit/noteit/files/model/FileRoomCompositePK.java
  com.noteit.noteit.files.model.FileRoomCompositePK
-<<<<<<< HEAD
 com/noteit/noteit/services/TestServiceInterface.java
  com.noteit.noteit.services.TestServiceInterface
 com/noteit/noteit/repositories/UserRoomRepository.java
  com.noteit.noteit.repositories.UserRoomRepository
-=======
->>>>>>> main
->>>>>>> main
 com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
  com.noteit.noteit.sqlite.dialect.SQLiteDialect
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$1
@@ -129,33 +65,6 @@ com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$3
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$4
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$SQLiteUniqueDelegate
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-com/noteit/noteit/files/model/FileRoomCompositePK.java
- com.noteit.noteit.files.model.FileRoomCompositePK
-com/noteit/noteit/files/message/ResponseMessage.java
- com.noteit.noteit.files.message.ResponseMessage
-com/noteit/noteit/repositories/UserRepository.java
- com.noteit.noteit.repositories.UserRepository
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
-com/noteit/noteit/services/UserServiceInterface.java
- com.noteit.noteit.services.UserServiceInterface
-com/noteit/noteit/files/message/ResponseFile.java
- com.noteit.noteit.files.message.ResponseFile
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController
-=======
-com/noteit/noteit/services/TestServiceInterface.java
- com.noteit.noteit.services.TestServiceInterface
-com/noteit/noteit/security/JwtTokenProvider.java
- com.noteit.noteit.security.JwtTokenProvider
-com/noteit/noteit/files/dtos/FileDbDto.java
- com.noteit.noteit.files.dtos.FileDbDto
-com/noteit/noteit/payload/ApiResponse.java
- com.noteit.noteit.payload.ApiResponse
->>>>>>> main
 com/noteit/noteit/repositories/UserRepository.java
  com.noteit.noteit.repositories.UserRepository
 com/noteit/noteit/files/dtos/FileDbDto.java
@@ -178,8 +87,8 @@ com/noteit/noteit/entities/UserRoomIdEntity.java
  com.noteit.noteit.entities.UserRoomIdEntity
 com/noteit/noteit/dtos/RoomDto.java
  com.noteit.noteit.dtos.RoomDto
-com/noteit/noteit/files/service/FileStorageServiceInterface.java
- com.noteit.noteit.files.service.FileStorageServiceInterface
+com/noteit/noteit/security/JwtTokenProvider.java
+ com.noteit.noteit.security.JwtTokenProvider
 com/noteit/noteit/files/model/FileRoomDB.java
  com.noteit.noteit.files.model.FileRoomDB
 com/noteit/noteit/services/UserServiceInterface.java
@@ -199,9 +108,8 @@ com/noteit/noteit/helper/mapper/UserMapper.java
 com/noteit/noteit/controller/AuthController.java
  com.noteit.noteit.controller.AuthController
  com.noteit.noteit.controller.AuthController$1
-<<<<<<< HEAD
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController
+com/noteit/noteit/entities/FileTagPK.java
+ com.noteit.noteit.entities.FileTagPK
 com/noteit/noteit/payload/JwtAuthenticationResponse.java
  com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/helper/mapper/RoomMapper.java
@@ -210,12 +118,9 @@ com/noteit/noteit/entities/TagEntity.java
  com.noteit.noteit.entities.TagEntity
 com/noteit/noteit/payload/ApiResponse.java
  com.noteit.noteit.payload.ApiResponse
-com/noteit/noteit/entities/FileTagPK.java
- com.noteit.noteit.entities.FileTagPK
-com/noteit/noteit/entities/FileTagEntity.java
- com.noteit.noteit.entities.FileTagEntity
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
-=======
->>>>>>> main
->>>>>>> main
+com/noteit/noteit/files/service/FileStorageServiceInterface.java
+ com.noteit.noteit.files.service.FileStorageServiceInterface
+com/noteit/noteit/files/service/FileStorageService.java
+ com.noteit.noteit.files.service.FileStorageService
+com/noteit/noteit/files/controller/FileController.java
+ com.noteit.noteit.files.controller.FileController

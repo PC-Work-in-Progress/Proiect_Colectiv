@@ -132,4 +132,14 @@ public class FileStorageService implements FileStorageServiceInterface {
         }
         return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
     }
+
+    /*
+        Get whole file with its content
+        params: id - String
+        return Optional<FileDB>
+     */
+    @Override
+    public Optional<FileDB> getFile(String id) {
+        return fileDBRepository.findById(id);
+    }
 }
