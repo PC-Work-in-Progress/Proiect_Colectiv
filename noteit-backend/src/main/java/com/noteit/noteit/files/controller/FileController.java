@@ -39,8 +39,8 @@ public class FileController {
     @Autowired
     private RoomServiceImplementation roomService;
 
-    @PostMapping("/upload/{roomId}")
-    public ResponseEntity<?> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadFile(@RequestParam  String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -90,9 +90,7 @@ public class FileController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<?> getFilesForRoom(@RequestHeader Map<String, String> headers) {
-
-        String roomId = headers.get("roomid");
+    public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
@@ -104,6 +102,13 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
+        try {
+            roomService.getById(roomId);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
+        }
+
+
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
@@ -114,7 +119,7 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
-        List<ResponseFile> files = fileService.getFilesForRoom(roomId).map(dbFile -> {
+        List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x->x.getApproved()==1).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")
