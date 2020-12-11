@@ -13,4 +13,6 @@ public interface RoomServiceInterface {
 
     RoomDto createRoom(String name, String token);
 
+    RoomEntity getById(String id);
+
 }

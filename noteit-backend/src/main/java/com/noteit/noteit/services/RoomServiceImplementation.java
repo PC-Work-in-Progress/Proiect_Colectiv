@@ -56,4 +56,9 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         userRoomRepository.save(userRoom);
         return new RoomDto(roomEntity.getId(), name);
     }
+
+    @Override
+    public RoomEntity getById(String id) {
+        return roomRepository.findById(id).get();
+    }
 }

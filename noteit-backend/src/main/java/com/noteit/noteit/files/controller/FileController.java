@@ -10,6 +10,7 @@ import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.files.service.FileStorageServiceInterface;
+import com.noteit.noteit.services.RoomServiceImplementation;
 import org.hibernate.service.spi.ServiceException;
 import com.noteit.noteit.helper.mapper.UserMapper;
 import com.noteit.noteit.services.UserServiceImplementation;
@@ -35,8 +36,11 @@ public class FileController {
     @Autowired
     private UserServiceImplementation userService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
+    @Autowired
+    private RoomServiceImplementation roomService;
+
+    @PostMapping("/upload/{roomId}")
+    public ResponseEntity<?> uploadFile(@PathVariable String roomId, @RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -44,11 +48,11 @@ public class FileController {
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
-        String roomId = headers.get("roomid");
 
-
-        if (roomId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
+        try {
+            roomService.getById(roomId);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
         }
 
         String userId = null;
