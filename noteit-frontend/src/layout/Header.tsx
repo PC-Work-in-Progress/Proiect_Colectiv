@@ -20,7 +20,7 @@ export const Header: React.FC = () => {
                             <IonTitle class="header-title ion-padding">NoteIt</IonTitle>
                         </IonButton>
                     </IonButtons>
-                    {token != "" && (
+                    {token !== "" && (
                     <IonButtons slot="end" > 
                         <IonButton class="header-button"  onClick={handleLogout} href="/login">
                             <IonLabel class="ion-padding">Logout</IonLabel>
