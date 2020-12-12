@@ -63,6 +63,11 @@ public class UserController {
             System.out.println(authToken);
             System.out.println(updateRequest.getUpdateString());
 
+            if (userRepository.findByToken(authToken) == null) {
+                return new ResponseEntity(new ApiResponse(false, "Invalid token"),
+                        HttpStatus.OK);
+            }
+
             try {
                 switch (field){
                     case "username":
