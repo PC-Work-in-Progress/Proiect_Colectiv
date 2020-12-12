@@ -142,6 +142,31 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public FileDB acceptFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
