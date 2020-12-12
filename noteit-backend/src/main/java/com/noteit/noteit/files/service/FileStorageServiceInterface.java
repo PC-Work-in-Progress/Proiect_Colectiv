@@ -7,7 +7,6 @@ import com.noteit.noteit.files.model.FileRoomDB;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface FileStorageServiceInterface {
