@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @CrossOrigin
+@RequestMapping("/api/files")
 public class FileController {
     @Autowired
     private FileStorageService fileService;
@@ -39,7 +40,7 @@ public class FileController {
     @Autowired
     private RoomServiceImplementation roomService;
 
-    @PostMapping("/upload")
+    @PostMapping("/UploadFile")
     public ResponseEntity<?> uploadFile(@RequestParam  String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
@@ -89,7 +90,7 @@ public class FileController {
         }
     }
 
-    @GetMapping("/files")
+    @GetMapping("/ApprovedFiles")
     public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -139,7 +140,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
-    @GetMapping("/files/review")
+    @GetMapping("/InReviewFiles")
     public ResponseEntity<?> getInReviewFiles(@RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -178,7 +179,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
-    @GetMapping("/files/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
@@ -212,7 +213,7 @@ public class FileController {
     }
 
 
-    @GetMapping("/files/details/{id}")
+    @GetMapping("/details/{id}")
     public ResponseEntity<?> getDetailsFile(@PathVariable String id) {
         try {
             return ResponseEntity.ok().body(fileService.getDetails(id));
