@@ -169,7 +169,7 @@ public class FileController {
         }
     }
 
-    @GetMapping("/download/{fileID}")
+    @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable String id) {
         Optional<FileDB> optionalFile = fileService.getFile(id);
 
