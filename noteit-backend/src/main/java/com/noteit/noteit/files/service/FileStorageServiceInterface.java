@@ -7,6 +7,8 @@ import com.noteit.noteit.files.model.FileRoomDB;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface FileStorageServiceInterface {
@@ -14,5 +16,6 @@ public interface FileStorageServiceInterface {
     FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
     FileDbDto getDetails(String id);
+    Optional<FileDB> getFile(String id);
     Stream<FileDB> getNotAcceptedFiles();
 }

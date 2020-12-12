@@ -2,11 +2,9 @@ package com.noteit.noteit.entities;
 
 import lombok.Data;
 import lombok.Getter;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="user", schema = "public")
@@ -17,8 +15,7 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String id, String email, String token, String full_name, String username, String password) {
-        this.id = id;
+    public UserEntity(String email, String token, String full_name, String username, String password) {
         this.email = email;
         this.token = token;
         this.full_name = full_name;
@@ -28,10 +25,6 @@ public class UserEntity {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -76,6 +69,8 @@ public class UserEntity {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     @Column(name="email")
     private String email;
