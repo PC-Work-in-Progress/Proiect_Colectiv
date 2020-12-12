@@ -10,8 +10,6 @@ export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
     const handleLogout = () => {
         logout?.();
-        console.log("Redirect")
-        return <Redirect to={{ pathname: "/login" }} />;
       }
     return (
         <>
@@ -23,8 +21,8 @@ export const Header: React.FC = () => {
                         </IonButton>
                     </IonButtons>
                     {token != "" && (
-                    <IonButton slot="end" class="header-button" onClick={handleLogout}> 
-                        <IonLabel class="ion-padding ion-margin">Logout</IonLabel>
+                    <IonButton slot="end" class="header-button"  onClick={handleLogout} href="/login"> 
+                        <IonLabel class="ion-padding">Logout</IonLabel>
                     </IonButton> )}
                     {token === "" && (<IonButtons slot="end">
                         <IonButton class="header-button" href="/login">
