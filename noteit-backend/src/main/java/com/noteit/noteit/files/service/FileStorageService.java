@@ -54,6 +54,15 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileDBRepository.findById(id).get();
     }
 
+    /**
+     * @param file file to be saved
+     * @param userId id of user that sent the file
+     * @param roomId id of room where we save the file
+     * @param tags string containing the tags given for file
+     * @return saved FileDB
+     * @throws IOException
+     * @throws FileException if file is already in current room
+     */
     @Override
     @Transactional
     public FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException {
@@ -94,6 +103,11 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     }
 
+
+    /**
+     * @param tags string that contains tags separated with ,
+     * @param fileId id of file that contains given tags
+     */
     private void saveTags(String tags, String fileId){
         String[] elems = tags.strip().split(",");
         for (String tag : elems){
@@ -108,6 +122,11 @@ public class FileStorageService implements FileStorageServiceInterface {
         }
     }
 
+    /**
+     * function that returns a stream with all files in a given room
+     * @param roomId id of room
+     * @return stream with files for specified room
+     */
     @Override
     public Stream<FileDB> getFilesForRoom(String roomId) {
         List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(roomId);
@@ -146,11 +165,21 @@ public class FileStorageService implements FileStorageServiceInterface {
     public Optional<FileDB> getFile(String id) {
         return fileDBRepository.findById(id);
     }
+
+
+    /**
+     * @return a stream of files that must be accepted
+     */
     @Override
     public Stream<FileDB> getNotAcceptedFiles() {
         return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
     }
 
+    /**
+     * function that marks a file as accepted
+     * @param fileId id of file to accepted
+     * @return the modified FileDB entitu
+     */
     @Override
     public FileDB acceptFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
@@ -160,6 +189,11 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileDBRepository.save(f);
     }
 
+    /**
+     * function that marks a file as denied
+     * @param fileId id of file to be denied
+     * @return the modified FileDB entity
+     */
     @Override
     public FileDB denyFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
