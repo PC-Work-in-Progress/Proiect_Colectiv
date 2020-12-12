@@ -2,7 +2,8 @@ import React, {useContext, useState} from "react";
 import {IonButton, IonCard, IonCardHeader, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import {AuthContext} from "./AuthProvider";
 import {Link, Redirect, RouteComponentProps} from "react-router-dom";
-import "./Login.css"
+import "./Auth.css"
+import { Header } from "../layout/Header";
 
 interface LoginState {
     username?: string;
@@ -13,16 +14,6 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) =>{
     const [state, setState] = useState<LoginState>({});
     const { username, password } = state;
     const { isAuthenticated, isAuthenticating, login, authenticationError } = useContext(AuthContext);
-    {/*
-    let [text, setText] = useState('');
-    useEffect(() => {
-        const fetchMessage = async () => {
-            let s = await getMessage();
-            setText(s);
-        };
-        fetchMessage();
-    }, []);
-    */}
     console.log("Render login");
     const handleLogin = () => {
         login?.(username, password);
@@ -33,6 +24,7 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) =>{
     return (
         <IonPage>
             <IonContent>
+                <Header/>
                 <div className = "page">
                 <div className ="login-div">
                     <IonCard>
