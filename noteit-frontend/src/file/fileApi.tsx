@@ -3,7 +3,12 @@ import axios from "axios";
 
 const homeUrl = "http://localhost:8080/files"
 
-export const getFileContent: (token: string, fileId: string) => Promise<string> = async (token, fileId) => {
+interface FileResponse {
+    nume: string;
+    content: string;
+}
+
+export const getFileContent: (token: string, fileId: string) => Promise<FileResponse> = async (token, fileId) => {
     const url = homeUrl + `/${fileId}`;
     return withLogs(axios.get(url, fileConfig(token)), 'getFileContent');
 }

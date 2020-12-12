@@ -17,6 +17,7 @@ interface FilePageProps extends RouteComponentProps<{
 
 interface FileState {
     fileContent: String;
+    fileName: String;
     fetchingFile: boolean;
     fetchFileError: Error | null;
     objectUrl?: any;
@@ -25,7 +26,8 @@ interface FileState {
 const initialState: FileState = {
     fileContent: "",
     fetchFileError: null,
-    fetchingFile: false
+    fetchingFile: false,
+    fileName: ""
 }
 
 export const File: React.FC<FilePageProps> = ({history, match}) => {
@@ -66,7 +68,7 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 setFileState({...fileState, fetchingFile: true, fetchFileError: null});
                 // server get file data
                 let file = await getFileContent(token, match.params.fileId);
-
+                console.log(bin2String(file.content));
                 // const blob = new Blob([file], {
                 //     type: 'application/pdf'
                 // });
@@ -77,13 +79,28 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 log('fetchFileContent succeeded');
                 if (!canceled) {
                     // setFileState({fetchFileError: null, fetchingFile: false, fileContent: file, objectUrl: objectURL});
-                    setFileState({fetchFileError: null, fetchingFile: false, fileContent: file});
+
+                    setFileState({
+                        fetchFileError: null,
+                        fetchingFile: false,
+                        fileContent: bin2String(file.content),
+                        fileName: file.nume
+                    });
                 }
             } catch (error) {
                 log('fetchFileContent failed');
                 setFileState({...fileState, fetchFileError: error, fetchingFile: false})
             }
         }
+    }
+
+    function bin2String(array: string) {
+        var result = "";
+        for (var i = 0; i < array.length; i++) {
+            console.log(array[i]);
+            result += String.fromCharCode(parseInt(array[i].charCodeAt(0).toString(2), 2));
+        }
+        return result;
     }
 }
 
