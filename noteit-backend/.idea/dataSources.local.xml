@@ -10,9 +10,13 @@
       <user-name>postgres</user-name>
       <schema-mapping>
         <introspection-scope>
+<<<<<<< HEAD
+          <node kind="database" qname="postgres" />
+=======
           <node kind="database" qname="@">
             <node kind="schema" qname="@" />
           </node>
+>>>>>>> main
         </introspection-scope>
       </schema-mapping>
     </data-source>
