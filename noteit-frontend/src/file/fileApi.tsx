@@ -1,7 +1,7 @@
 import {authConfig, withLogs} from "../shared";
 import axios from "axios";
 
-const homeUrl = "http://localhost:8080/files"
+const homeUrl = "http://localhost:8080/api/files"
 
 interface FileResponse {
     nume: string;

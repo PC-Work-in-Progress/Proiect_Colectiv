@@ -68,23 +68,23 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 setFileState({...fileState, fetchingFile: true, fetchFileError: null});
                 // server get file data
                 let file = await getFileContent(token, match.params.fileId);
-                console.log(bin2String(file.content));
-                // const blob = new Blob([file], {
-                //     type: 'application/pdf'
-                // });
-                // const objectURL = URL.createObjectURL(blob);
-                // console.log(objectURL);
-                // window.open(objectURL);
-
+                let arrayBuffer = base64ToArrayBuffer(file.content);
+                let objectURL;
+                let content;
+                const ext = file.nume.split(".")[1];
+                if (ext === "pdf") {
+                    objectURL = "data:application/pdf;base64, " + file.content;
+                } else {
+                    content = ab2str(arrayBuffer);
+                }
                 log('fetchFileContent succeeded');
                 if (!canceled) {
-                    // setFileState({fetchFileError: null, fetchingFile: false, fileContent: file, objectUrl: objectURL});
-
                     setFileState({
                         fetchFileError: null,
                         fetchingFile: false,
-                        fileContent: bin2String(file.content),
-                        fileName: file.nume
+                        fileContent: content || "",
+                        fileName: file.nume,
+                        objectUrl: objectURL
                     });
                 }
             } catch (error) {
@@ -94,13 +94,18 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
         }
     }
 
-    function bin2String(array: string) {
-        var result = "";
-        for (var i = 0; i < array.length; i++) {
-            console.log(array[i]);
-            result += String.fromCharCode(parseInt(array[i].charCodeAt(0).toString(2), 2));
+    function base64ToArrayBuffer(base64: string) {
+        const binary_string = window.atob(base64);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
         }
-        return result;
+        return bytes.buffer;
+    }
+
+    function ab2str(buf: ArrayBuffer) {
+        return new TextDecoder().decode(buf);
     }
 }
 
