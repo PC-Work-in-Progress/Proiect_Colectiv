@@ -41,28 +41,28 @@ public class FileController {
     private RoomServiceImplementation roomService;
 
     @PostMapping("/UploadFile")
-    public ResponseEntity<?> uploadFile(@RequestParam  String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> uploadFile(@RequestParam String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags, @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
         try {
             roomService.getById(roomId);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
         }
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
@@ -91,21 +91,21 @@ public class FileController {
     }
 
     @GetMapping("/ApprovedFiles")
-    public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
-        if (roomId == null){
+        if (roomId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
         try {
             roomService.getById(roomId);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
         }
 
@@ -113,14 +113,14 @@ public class FileController {
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
-        List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x->x.getApproved()==1).map(dbFile -> {
+        List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x -> x.getApproved() == 1).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")
@@ -143,19 +143,19 @@ public class FileController {
     @GetMapping("/InReviewFiles")
     public ResponseEntity<?> getInReviewFiles(@RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
         var notAcceptedFiles = fileService.getNotAcceptedFiles();
@@ -182,26 +182,26 @@ public class FileController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
         }
 
         FileDB fileDB;
         try {
             fileDB = fileService.getById(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File not found"));
 
         }
@@ -209,7 +209,67 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-                .body(new ResponseContentFile(fileDB.getUploaded_file() ,fileDB.getName()));
+                .body(new ResponseContentFile(fileDB.getUploaded_file(), fileDB.getName()));
+    }
+
+    @PutMapping("/AcceptFile/{id}")
+    public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+        }
+
+        try {
+            var f = fileService.acceptFile(id);
+            if (f != null)
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File accepted successfully!"));
+            else
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseMessage("Conflict with curent state! File already accepted!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not accept this file! Invalid id!"));
+        }
+    }
+
+    @PutMapping("/DenyFile/{id}")
+    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+        }
+
+        try {
+            var f = fileService.denyFile(id);
+            if (f != null)
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File denied successfully!"));
+            else
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseMessage("Conflict with curent state! File already denied!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not deny this file! Invalid id!"));
+        }
     }
 
 
