@@ -238,4 +238,66 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\"" + file.getName() + "\"")
                 .body(new ByteArrayResource(file.getUploaded_file()));
     }
+
+    @PutMapping("/AcceptFile/{id}")
+    public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+        }
+
+        try {
+            var f = fileService.acceptFile(id);
+            if (f != null)
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File accepted successfully!"));
+            else
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseMessage("Conflict with curent state! File already accepted!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not accept this file! Invalid id!"));
+        }
+    }
+
+    @PutMapping("/DenyFile/{id}")
+    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+        }
+
+        try {
+            var f = fileService.denyFile(id);
+            if (f != null)
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File denied successfully!"));
+            else
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseMessage("Conflict with curent state! File already denied!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not deny this file! Invalid id!"));
+        }
+    }
+
+
 }
