@@ -17,6 +17,7 @@ public interface FileStorageServiceInterface {
     List<FileRoomDB> findByRoomId(String roomId);
     FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
+    List<FileRoomDB> getRecentFilesFromToken(String token);
 
     FileDbDto getDetails(String id);
 }

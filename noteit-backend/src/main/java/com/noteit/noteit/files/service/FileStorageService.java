@@ -132,4 +132,14 @@ public class FileStorageService implements FileStorageServiceInterface {
         }
         return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
     }
+
+    @Override
+    public List<FileRoomDB> getRecentFilesFromToken(String token)
+    {
+        List<FileRoomDB> fileRoomDBList = new ArrayList<>();
+
+
+
+        return fileRoomDBList;
+    }
 }

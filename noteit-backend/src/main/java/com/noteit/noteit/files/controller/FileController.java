@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -161,6 +162,30 @@ public class FileController {
         try {
             return ResponseEntity.ok().body(fileService.getDetails(id));
         } catch (ServiceException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /// most recent files added to user's Rooms
+    /// primesc token ul userului si il caut dupa token
+    /// verific in ce room-uri ii (user_room)
+    /// trebuie sa vad cum pot sa fac upload la un file de pe backend
+    /// am nevoie si de service-ul lui user_room
+    /// Maria trimite nr paginii, eu stiu cate sunt pe pagina => pot sa deduc indexul curent
+    @GetMapping("/files/recentFiles")
+    public ResponseEntity<?> getRecentFilesFromToken(HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            return ResponseEntity.ok().body(fileService.getRecentFilesFromToken(authToken));
+        }
+        catch (ServiceException e)
+        {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
