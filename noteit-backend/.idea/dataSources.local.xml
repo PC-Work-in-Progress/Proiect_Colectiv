@@ -6,11 +6,17 @@
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
-      <secret-storage>master_key</secret-storage>
+      <secret-storage>forget</secret-storage>
       <user-name>postgres</user-name>
       <schema-mapping>
         <introspection-scope>
+<<<<<<< HEAD
           <node kind="database" qname="postgres" />
+=======
+          <node kind="database" qname="@">
+            <node kind="schema" qname="@" />
+          </node>
+>>>>>>> main
         </introspection-scope>
       </schema-mapping>
     </data-source>
