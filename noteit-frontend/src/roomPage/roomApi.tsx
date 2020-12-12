@@ -16,7 +16,7 @@ export const getFilesConfig = (token?: string) => ({
 })
 
 export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
-    return withLogs(axios.get(`http://${baseUrl}/files/${roomId}`, getFilesConfig(token)), 'getFiles');
+    return withLogs(axios.get(`http://${baseUrl}/api/files/ApprovedFiles?roomId=${roomId}`, getFilesConfig(token)), 'getFiles');
 }
 
 export const uploadConfig = (token?: string) => ({
@@ -31,5 +31,5 @@ export interface UploadResponse {
 } 
 
 export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<FileProps> = (token, file, roomId) => {
-    return withLogs(axios.post(`http://${baseUrl}/upload/${roomId}`,file, uploadConfig(token)), 'uploadFile');
+    return withLogs(axios.post(`http://${baseUrl}/api/files/UploadFile?roomId=${roomId}&tags=tag1`,file, uploadConfig(token)), 'uploadFile');
 }   
