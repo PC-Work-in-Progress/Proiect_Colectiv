@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import { getLogger } from '../shared';
 import { login as loginApi, signup as signupApi } from './authApi';
 import { Storage } from "@capacitor/core";
+import { Plugins } from '@capacitor/core';
+
+
+const { BackgroundTask } = Plugins;
+
 
 const log = getLogger('AuthProvider');
 
 type LoginFn = (username?: string, password?: string) => void;
+type LogoutFn = () => void;
 type SignUpFn = (username?: string, password?: string, full_name?: string, email?: string) => void;
 
 export interface AuthState {
@@ -14,6 +20,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   login?: LoginFn;
+  logout? : LogoutFn;
   pendingAuthentication?: boolean;
   username?: string;
   password?: string;
@@ -68,9 +75,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, setState] = useState<AuthState>(initialState);
   const { isAuthenticated, isAuthenticating, authenticationError, pendingAuthentication, token } = state;
   const login = useCallback<LoginFn>(loginCallback, []);
+  const logout = useCallback<LogoutFn>(logoutCallback, []);
   useEffect(authenticationEffect, [pendingAuthentication]);
   
-  const value = { isAuthenticated, login, isAuthenticating, authenticationError, token};
+  const value = { isAuthenticated, login, logout, isAuthenticating, authenticationError, token};
   log('render');
   return (
     <SignUpContext.Provider value = {valueS}>
@@ -103,6 +111,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
   }
 
+  function logoutCallback(): void {
+    log('logout');
+    (async () => {
+      await Storage.set({
+        key: 'token',
+        value: ''
+      });
+    setState({
+        ...state,
+        token: '',
+        isAuthenticated: false,
+    });
+
+    })();
+}
+
+async function logoutBT() {
+  let taskId = BackgroundTask.beforeExit(async () => {
+    logoutCallback();
+  BackgroundTask.finish({
+    taskId
+    });
+  });
+}
+
   function signupEffect() {
     let canceled = false;
     sign();
@@ -123,6 +156,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
         const { username, password, full_name, email } = signUpState;
         const {message, success} = await signupApi(username, password, full_name, email);
+        console.log(message)
         if (canceled) {
           return;
         }
@@ -163,6 +197,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   function authenticationEffect() {
     let canceled = false;
     authenticate();
+    logoutBT()
     return () => {
       canceled = true;
     }
@@ -172,7 +207,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       var token = await Storage.get({ key: 'token' });
       console.log(token.value)
       
-      if(token.value){
+      if(token.value && token.value != ''){
         setState({
             ...state,
             token: token.value,

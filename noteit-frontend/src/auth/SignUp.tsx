@@ -38,7 +38,7 @@ export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
                     onIonChange={e => setState({...state, password: e.detail.value || ''})}/>
                 <IonLoading isOpen={isSigning}/>
                     {signupError && (
-                        <div>{signupError.message || 'Failed to sign up'}</div>)}
+                        <div>{'Failed to sign up'}</div>)}
                     {message1 && (
                         <div> {message1} </div>
                     )}

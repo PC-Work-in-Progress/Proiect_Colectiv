@@ -1,6 +1,8 @@
 package com.noteit.noteit.files.service;
 
 import com.noteit.noteit.entities.FileTagEntity;
+import com.noteit.noteit.entities.FileTagPK;
+import com.noteit.noteit.entities.TagEntity;
 import com.noteit.noteit.files.dtos.FileDbDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.mapper.FileDbMapper;
@@ -53,23 +55,8 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
-    public FileDB add(FileDB fileDB) {
-        return fileDBRepository.save(fileDB);
-    }
-
-    @Override
-    public FileRoomDB addFileRoom(FileRoomDB fileRoomDB) {
-        return fileRoomDBRepository.save(fileRoomDB);
-    }
-
-    @Override
-    public List<FileRoomDB> findByRoomId(String roomId) {
-        return fileRoomDBRepository.findById_RoomId(roomId);
-    }
-
-    @Override
     @Transactional
-    public FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException {
+    public FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Integer size = file.getBytes().length;
         FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
@@ -89,6 +76,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                 System.out.println("se adauga in alt room");
                 //exista fisierul in alt room
                 fileRoomDBRepository.save(new FileRoomDB(new FileRoomCompositePK(roomId, cautat.getId())));
+                saveTags(tags, cautat.getId());
                 return cautat;
             }
         } else {
@@ -100,7 +88,23 @@ public class FileStorageService implements FileStorageServiceInterface {
             FileDB saved = fileDBRepository.save(fileDB);
             FileRoomDB f = new FileRoomDB(new FileRoomCompositePK(roomId, saved.getId()));
             fileRoomDBRepository.save(f);
+            saveTags(tags, saved.getId());
             return saved;
+        }
+
+    }
+
+    private void saveTags(String tags, String fileId){
+        String[] elems = tags.strip().split(",");
+        for (String tag : elems){
+            if (tagRepository.findByName(tag) == null){
+                TagEntity t = new TagEntity();
+                t.setName(tag);
+                TagEntity savedTag = tagRepository.save(t);
+                FileTagEntity fileTagEntity = new FileTagEntity();
+                fileTagEntity.setId(new FileTagPK(fileId, savedTag.getId()));
+                fileTagRepository.save(fileTagEntity);
+            }
         }
     }
 
@@ -133,7 +137,20 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
     }
 
+<<<<<<< HEAD
+    /*
+        Get whole file with its content
+        params: id - String
+        return Optional<FileDB>
+     */
     @Override
+    public Optional<FileDB> getFile(String id) {
+        return fileDBRepository.findById(id);
+    }
+    @Override
+    public Stream<FileDB> getNotAcceptedFiles() {
+        return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
+>>>>>>> 885706b6df9bf23b20eabf2a9f70e4a6e481f85a    @Override
     public List<FileRoomDB> getRecentFilesFromToken(String token)
     {
         List<FileRoomDB> fileRoomDBList = new ArrayList<>();
@@ -141,5 +158,6 @@ public class FileStorageService implements FileStorageServiceInterface {
 
 
         return fileRoomDBList;
+=======
     }
 }

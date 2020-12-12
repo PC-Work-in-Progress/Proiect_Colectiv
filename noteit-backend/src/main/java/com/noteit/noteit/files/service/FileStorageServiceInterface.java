@@ -8,16 +8,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface FileStorageServiceInterface {
     FileDB getById(String id);
-    FileDB add(FileDB fileDB);
-    FileRoomDB addFileRoom(FileRoomDB fileRoomDB);
-    List<FileRoomDB> findByRoomId(String roomId);
-    FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException;
+    FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
     List<FileRoomDB> getRecentFilesFromToken(String token);
 
     FileDbDto getDetails(String id);
+    Optional<FileDB> getFile(String id);
+    Stream<FileDB> getNotAcceptedFiles();
 }

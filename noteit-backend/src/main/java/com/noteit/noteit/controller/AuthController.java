@@ -68,27 +68,27 @@ public class AuthController {
 
         if(userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
         }
 
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
         }
 
         switch (validateInputs(signUpRequest)) {
             case INVALID_NAME:
                 return new ResponseEntity(new ApiResponse(false, "Invalid name"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.OK);
             case INVALID_EMAIL:
                 return new ResponseEntity(new ApiResponse(false, "Invalid email"),
-                        HttpStatus.BAD_REQUEST);
+                        HttpStatus.OK);
             case INVALID_USERNAME:
                 return new ResponseEntity(new ApiResponse(false, "Invalid username"),
-                        HttpStatus.BAD_REQUEST);
+                        HttpStatus.OK);
             case INVALID_PASSWORD:
                 return new ResponseEntity(new ApiResponse(false, "Invalid password"),
-                        HttpStatus.BAD_REQUEST);
+                        HttpStatus.OK);
             // SUCCESS
             default:
                 // Creating user's account
@@ -96,7 +96,7 @@ public class AuthController {
                 if (userRepository.getMaxId() != null) {
                     userId = userRepository.getMaxId() + 1;
                 }
-                UserEntity user = new UserEntity(String.valueOf(userId), signUpRequest.getEmail(), "token" + userId,
+                UserEntity user = new UserEntity(signUpRequest.getEmail(), "token" + userId,
                         signUpRequest.getFull_name(), signUpRequest.getUsername(), signUpRequest.getPassword());
 
                 user.setPassword(passwordEncoder.encode(user.getPassword()));

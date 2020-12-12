@@ -3,8 +3,6 @@ import React, { useRef } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Header } from "../layout/Header";
 import { MyFile } from "./file/File";
-import UFile from "./UFile";
-import { UploadFile } from "./UploadFile";
 import { useRoom } from "./useRoomPage";
 
 
@@ -57,8 +55,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                     cssClass='create-room-popover'
                     backdropDismiss={false}>
                     
-                    <UploadFile uploading={uploading} uploadFile={uploadFile} uploadFileError={uploadError}
-                                hide={hideUploadFile}/>
                 </IonPopover>
                 <IonGrid>
                   <IonRow >
