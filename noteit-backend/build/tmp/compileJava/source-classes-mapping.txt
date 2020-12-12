@@ -20,8 +20,8 @@ com/noteit/noteit/files/message/ResponseFile.java
  com.noteit.noteit.files.message.ResponseFile
 com/noteit/noteit/security/JwtTokenProvider.java
  com.noteit.noteit.security.JwtTokenProvider
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
+com/noteit/noteit/helper/mapper/UserMapper.java
+ com.noteit.noteit.helper.mapper.UserMapper
 com/noteit/noteit/entities/FileTagPK.java
  com.noteit.noteit.entities.FileTagPK
 com/noteit/noteit/entities/TagEntity.java
@@ -73,8 +73,8 @@ com/noteit/noteit/files/dtos/FileDbDto.java
  com.noteit.noteit.files.dtos.FileDbDto
 com/noteit/noteit/helper/mapper/RoomMapper.java
  com.noteit.noteit.helper.mapper.RoomMapper
-com/noteit/noteit/config/SecurityConfig.java
- com.noteit.noteit.config.SecurityConfig
+com/noteit/noteit/entities/UserEntity.java
+ com.noteit.noteit.entities.UserEntity
 com/noteit/noteit/entities/TestEntity.java
  com.noteit.noteit.entities.TestEntity
 com/noteit/noteit/repositories/RoomRepository.java
@@ -109,20 +109,24 @@ com/noteit/noteit/payload/ApiResponse.java
  com.noteit.noteit.payload.ApiResponse
 com/noteit/noteit/security/UserPrincipal.java
  com.noteit.noteit.security.UserPrincipal
+com/noteit/noteit/payload/UpdateRequest.java
+ com.noteit.noteit.payload.UpdateRequest
+com/noteit/noteit/payload/FullUpdateRequest.java
+ com.noteit.noteit.payload.FullUpdateRequest
+com/noteit/noteit/controller/AuthController.java
+ com.noteit.noteit.controller.AuthController
+ com.noteit.noteit.controller.AuthController$1
 com/noteit/noteit/repositories/UserRepository.java
  com.noteit.noteit.repositories.UserRepository
 com/noteit/noteit/security/CustomUserDetailsService.java
  com.noteit.noteit.security.CustomUserDetailsService
 com/noteit/noteit/services/UserServiceImplementation.java
  com.noteit.noteit.services.UserServiceImplementation
-com/noteit/noteit/helper/mapper/UserMapper.java
- com.noteit.noteit.helper.mapper.UserMapper
 com/noteit/noteit/services/RoomServiceImplementation.java
  com.noteit.noteit.services.RoomServiceImplementation
-com/noteit/noteit/entities/UserEntity.java
- com.noteit.noteit.entities.UserEntity
+com/noteit/noteit/config/SecurityConfig.java
+ com.noteit.noteit.config.SecurityConfig
 com/noteit/noteit/files/service/FileStorageService.java
  com.noteit.noteit.files.service.FileStorageService
-com/noteit/noteit/controller/AuthController.java
- com.noteit.noteit.controller.AuthController
- com.noteit.noteit.controller.AuthController$1
+com/noteit/noteit/controller/UserController.java
+ com.noteit.noteit.controller.UserController
