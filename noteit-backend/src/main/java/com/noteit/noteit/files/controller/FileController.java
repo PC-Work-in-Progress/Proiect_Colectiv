@@ -9,14 +9,15 @@ import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.service.FileStorageService;
-import com.noteit.noteit.files.service.FileStorageServiceInterface;
 import com.noteit.noteit.services.RoomServiceImplementation;
 import org.hibernate.service.spi.ServiceException;
 import com.noteit.noteit.helper.mapper.UserMapper;
 import com.noteit.noteit.services.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -220,5 +222,20 @@ public class FileController {
         } catch (ServiceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadFile(@PathVariable String id) {
+        Optional<FileDB> optionalFile = fileService.getFile(id);
+
+        if(optionalFile.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("No such file!"));
+
+        FileDB file = optionalFile.get();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(file.getType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\"" + file.getName() + "\"")
+                .body(new ByteArrayResource(file.getUploaded_file()));
     }
 }
