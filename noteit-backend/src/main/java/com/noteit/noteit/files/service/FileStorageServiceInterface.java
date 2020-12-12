@@ -13,13 +13,9 @@ import java.util.stream.Stream;
 
 public interface FileStorageServiceInterface {
     FileDB getById(String id);
-    FileDB add(FileDB fileDB);
-    FileRoomDB addFileRoom(FileRoomDB fileRoomDB);
-    List<FileRoomDB> findByRoomId(String roomId);
-    FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException;
+    FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
-
     FileDbDto getDetails(String id);
-
     Optional<FileDB> getFile(String id);
+    Stream<FileDB> getNotAcceptedFiles();
 }
