@@ -165,6 +165,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         console.log(roomId)
                         console.log("ROOM ID")
                         let result = await getFiles(token, roomId)
+                        console.log(result)
                         //let result: FileProps[] = [];
                         log('fetchFiles succeeded');
                         if(!canceled) {

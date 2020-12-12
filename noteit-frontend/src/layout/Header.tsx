@@ -10,6 +10,7 @@ export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
     const handleLogout = () => {
         logout?.();
+        console.log("Redirect")
         return <Redirect to={{ pathname: "/login" }} />;
       }
     return (
