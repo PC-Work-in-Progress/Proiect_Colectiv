@@ -1,4 +1,3 @@
-import {UserProps} from "./user";
 import {authConfig, withLogs} from "../shared";
 import axios from "axios";
 import {RoomProps} from "./room";

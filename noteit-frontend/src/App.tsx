@@ -25,7 +25,8 @@ import {Login} from "./auth";
 import {Home} from "./home";
 import {SignUp} from './auth/SignUp';
 import {AuthProvider} from './auth/AuthProvider';
-import { RoomPage } from './roomPage/Room';
+import {RoomPage} from './roomPage/Room';
+import {File} from './file';
 
 const App: React.FC = () => (
     <IonApp>
@@ -35,6 +36,7 @@ const App: React.FC = () => (
                     <Route path="/login" component={Login} exact={true}/>
                     <Route path="/signup" component={SignUp} exact={true}/>
                     <Route path="/home" component={Home} exact={true}/>
+                    <Route path="/room/:id/:fileId" component={File} exact={true}/>
                     <Route path='/room/:id' component={RoomPage} exact={true}/>
                     <Route exact path="/" render={() => <Redirect to="/login"/>}/>
                 </AuthProvider>

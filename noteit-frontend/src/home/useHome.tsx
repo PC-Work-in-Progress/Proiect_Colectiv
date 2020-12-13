@@ -4,7 +4,7 @@ import {RoomProps} from "./room";
 import {UserProps} from "./user";
 import {NotificationProps} from "./recentfiles";
 import {AuthContext} from "../auth/AuthProvider";
-import {addRoom, getRooms, getUser} from "./homeApi";
+import {addRoom, getRecentFiles, getRooms, getUser} from "./homeApi";
 
 const log = getLogger("useHome");
 
@@ -207,8 +207,8 @@ export const useHome = () => {
                 log(`fetchRecentFiles started`);
                 dispatch({type: FETCH_RECENT_FILES_STARTED});
                 // server get recent files
-                // let result = await getRecentFiles();
-                let result: NotificationProps[] = [];
+                let result = await getRecentFiles(token);
+                // let result: NotificationProps[] = [];
                 log('fetchRecentFiles succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_RECENT_FILES_SUCCEEDED, payload: {recentFiles: result}});
