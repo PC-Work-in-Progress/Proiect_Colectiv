@@ -13,6 +13,11 @@ export const getFileContent: (token: string, fileId: string) => Promise<FileResp
     return withLogs(axios.get(url, fileConfig(token)), 'getFileContent');
 }
 
+export const fileDownload: (token: string, fileId: string) => Promise<string> = async (token, fileId) => {
+    const url = homeUrl + `/download/${fileId}`;
+    return withLogs(axios.get(url, fileConfig(token)), 'downloadFile');
+}
+
 export const fileConfig = (token?: string) => ({
     headers: {
         'Content-Type': 'application/json',

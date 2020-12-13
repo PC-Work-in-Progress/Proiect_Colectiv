@@ -18,7 +18,8 @@
 
 .file-content-container {
     align-self: center;
-    width: 1300px;
+    /*width: 1300px;*/
+    width: 70%;
     height: 90%;
     overflow-y: scroll;
     font-weight: normal;
@@ -36,3 +37,21 @@
     height: 100%;
 }
 
+.file-card-content {
+    height: 100%;
+}
+
+.file-image {
+    width: 70%;
+    align-self: center;
+    margin-top: 10px;
+}
+
+.error {
+    text-align: center;
+}
+
+.download-btn {
+    width: 200px;
+    align-self: center;
+}
