@@ -49,6 +49,7 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     private FileDbMapper fileDbMapper = new FileDbMapper();
 
+
     @Override
     public FileDB getById(String id) {
         return fileDBRepository.findById(id).get();
@@ -168,14 +169,6 @@ public class FileStorageService implements FileStorageServiceInterface {
 
 
     /**
-     * @return a stream of files that must be accepted
-     */
-    @Override
-    public Stream<FileDB> getNotAcceptedFiles() {
-        return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
-    }
-
-    /**
      * function that marks a file as accepted
      * @param fileId id of file to accepted
      * @return the modified FileDB entitu
@@ -183,10 +176,17 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public FileDB acceptFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
-        if (f.getApproved().equals(1))
+        if (f.getApproved().equals(1)) {
+            System.out.println("############################################################################");
+            System.out.println("a fost acceptat deja");
             return null;
+        }
         f.setApproved(1);
-        return fileDBRepository.save(f);
+        var a = fileDBRepository.save(f);
+        System.out.println("afisam rez save");
+        System.out.println("############################################################################");
+        System.out.println(a);
+        return a;
     }
 
     /**
@@ -197,9 +197,11 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public FileDB denyFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
-        if (f.getApproved().equals(0))
-            return null;
-        f.setApproved(0);
-        return fileDBRepository.save(f);
+        var fileRoomDBList = fileRoomDBRepository.findById_FileId(fileId);
+        for (var fr: fileRoomDBList){
+            fileRoomDBRepository.delete(fr);
+        }
+        fileDBRepository.delete(f);
+        return null;
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface FileRoomDBRepository extends JpaRepository<FileRoomDB, FileRoomCompositePK> {
-    List<FileRoomDB> findById_RoomId(String fileId);
+    List<FileRoomDB> findById_RoomId(String roomId);
     List<FileRoomDB> findById_FileIdAndId_RoomId(String fileId, String roomId);
+    List<FileRoomDB> findById_FileId(String fileId);
 }

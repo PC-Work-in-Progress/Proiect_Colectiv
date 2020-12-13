@@ -17,7 +17,6 @@ public interface FileStorageServiceInterface {
     Stream<FileDB> getFilesForRoom(String roomId);
     FileDbDto getDetails(String id);
     Optional<FileDB> getFile(String id);
-    Stream<FileDB> getNotAcceptedFiles();
     FileDB acceptFile(String fileId);
     FileDB denyFile(String fileId);
 }
