@@ -201,10 +201,12 @@ class FileControllerTest extends NoteitApplicationTests {
         fileRoom2.setId(new FileRoomCompositePK(this.roomEntity.getId(),file2.getId()));
         fileRoom2 = fileRoomDBRepository.save(fileRoom2);
 
-        mock.perform(put("/api/files/DenyFile/"+file2.getId())).andExpect(status().isUnauthorized());
-        mock.perform(put("/api/files/DenyFile/"+file2.getId()).header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
-        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
-        mock.perform(put("/api/files/DenyFile/"+file2.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=tt")).andExpect(status().isUnauthorized());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=tt").header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"f"+"?roomId=tt").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=rr").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
 
         fileRoomDBRepository.delete(fileRoom2);
         fileDBRepository.delete(file2);
