@@ -47,7 +47,7 @@ public class FileController {
         String message = "";
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -65,7 +65,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         try {
@@ -96,7 +96,7 @@ public class FileController {
     public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -119,7 +119,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x->x.getApproved()==1).map(dbFile -> {
@@ -146,7 +146,7 @@ public class FileController {
     public ResponseEntity<?> getInReviewFiles(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -158,7 +158,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         if (roomId == null){
@@ -195,7 +195,7 @@ public class FileController {
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems =fullToken.split(" ");
         String token = elems[1];
@@ -207,7 +207,7 @@ public class FileController {
 
         }
         if (userId == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         FileDB fileDB;
@@ -253,7 +253,7 @@ public class FileController {
     public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems = fullToken.split(" ");
         String token = elems[1];
@@ -265,7 +265,7 @@ public class FileController {
 
         }
         if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         try {
@@ -283,7 +283,7 @@ public class FileController {
     public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
         var elems = fullToken.split(" ");
         String token = elems[1];
@@ -295,7 +295,7 @@ public class FileController {
 
         }
         if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action! Invalid token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
 

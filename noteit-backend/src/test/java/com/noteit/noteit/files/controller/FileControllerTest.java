@@ -8,6 +8,8 @@ import com.noteit.noteit.entities.RoomEntity;
 import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.model.FileDB;
+import com.noteit.noteit.files.model.FileRoomCompositePK;
+import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.files.service.FileStorageService;
@@ -59,10 +61,11 @@ class FileControllerTest extends NoteitApplicationTests {
     private FileDB file;
     private UserEntity userEntity;
     private RoomEntity roomEntity;
+    private FileRoomDB fileRoomDB = new FileRoomDB();
     private ObjectMapper mapper = new ObjectMapper();
 
     public void set_Up(){
-        this.file =fileDBRepository.save(new FileDB("", "",new byte[10], "", "2"));
+
         var u = new UserEntity();
         u.setUsername("test");
         u.setPassword("testParola");
@@ -87,7 +90,10 @@ class FileControllerTest extends NoteitApplicationTests {
             mock.perform(post("/api/auth/signup").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(signUpRequest)));
             mock.perform(post("/api/auth/signin").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(loginRequest)));
             this.userEntity = userRepository.findByUsername("test");
+            this.file =fileDBRepository.save(new FileDB("file_test", "",new byte[11], "", userEntity.getId()));
             this.roomEntity = roomRepository.save(new RoomEntity("test_room", this.userEntity.getId()));
+            this.fileRoomDB.setId(new FileRoomCompositePK(this.roomEntity.getId(),this.file.getId()));
+            this.fileRoomDB = fileRoomDBRepository.save(this.fileRoomDB);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,7 +103,7 @@ class FileControllerTest extends NoteitApplicationTests {
 
 
     void setOff(){
-
+        fileRoomDBRepository.delete(this.fileRoomDB);
         roomRepository.delete(this.roomEntity);
         fileDBRepository.delete(this.file);
         userRepository.delete(this.userEntity);
@@ -151,22 +157,58 @@ class FileControllerTest extends NoteitApplicationTests {
     }
 
     @Test
-    void getApprovedFilesForRoom() {
-        assert true;
+    void getApprovedFilesForRoom() throws Exception {
+        set_Up();
+        mock.perform(get("/api/files/ApprovedFiles?roomId="+roomEntity.getId())).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/ApprovedFiles?roomId="+roomEntity.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(get("/api/files/ApprovedFiles?roomId="+roomEntity.getId()+"f").header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/ApprovedFiles").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(put("/api/files/AcceptFile/"+file.getId()).header("authorization", "Bearer "+userEntity.getToken()));
+        var rez = mock.perform(get("/api/files/ApprovedFiles?roomId="+roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk()).andReturn();
+        String json = rez.getResponse().getContentAsString();
+        assert !json.equals("[]");
+        setOff();
     }
 
     @Test
-    void getInReviewFiles() {
-        assert true;
+    void getInReviewFiles() throws Exception {
+        set_Up();
+        mock.perform(get("/api/files/InReviewFiles?roomId="+roomEntity.getId())).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/InReviewFiles?roomId="+roomEntity.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(get("/api/files/InReviewFiles?roomId="+roomEntity.getId()+"f").header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/InReviewFiles").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        var rez = mock.perform(get("/api/files/InReviewFiles?roomId="+roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk()).andReturn();
+        String json = rez.getResponse().getContentAsString();
+        assert !json.equals("[]");
+        setOff();
     }
 
     @Test
-    void getFile() {
-        assert true;
+    void getFile() throws Exception {
+        set_Up();
+        mock.perform(get("/api/files/"+this.file.getId())).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/"+this.file.getId()).header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/"+this.file.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isExpectationFailed());
+        mock.perform(get("/api/files/"+this.file.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
+        setOff();
     }
 
     @Test
-    void denyFile() {
-        assert true;
+    void denyFile() throws Exception {
+        set_Up();
+        var file2 =fileDBRepository.save(new FileDB("test22", "",new byte[12], "", this.userEntity.getId()));
+        var fileRoom2 = new FileRoomDB();
+        fileRoom2.setId(new FileRoomCompositePK(this.roomEntity.getId(),file2.getId()));
+        fileRoom2 = fileRoomDBRepository.save(fileRoom2);
+
+        mock.perform(put("/api/files/DenyFile/"+file2.getId())).andExpect(status().isUnauthorized());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()).header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(put("/api/files/DenyFile/"+file2.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
+
+        fileRoomDBRepository.delete(fileRoom2);
+        fileDBRepository.delete(file2);
+        setOff();
+
     }
 }
