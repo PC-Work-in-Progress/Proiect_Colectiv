@@ -280,7 +280,7 @@ public class FileController {
     }
 
     @PutMapping("/DenyFile/{id}")
-    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Anauthorized action!"));
@@ -299,18 +299,8 @@ public class FileController {
         }
 
 
-        if (roomId == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
-        }
-
         try {
-            roomService.getById(roomId);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
-        }
-
-        try {
-            var f = fileService.denyFile(id, roomId);
+            var f = fileService.denyFile(id);
             if (f == null)
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File denied successfully!"));
             else

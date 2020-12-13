@@ -195,10 +195,12 @@ public class FileStorageService implements FileStorageServiceInterface {
      * @return the modified FileDB entity
      */
     @Override
-    public FileDB denyFile(String fileId, String roomId) {
+    public FileDB denyFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
-        var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
-        fileRoomDBRepository.delete(fileRoom);
+        var fileRoomDBList = fileRoomDBRepository.findById_FileId(fileId);
+        for (var fr: fileRoomDBList){
+            fileRoomDBRepository.delete(fr);
+        }
         fileDBRepository.delete(f);
         return null;
     }
