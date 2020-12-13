@@ -2,8 +2,12 @@ package com.noteit.noteit.files.service;
 
 import com.noteit.noteit.entities.FileTagEntity;
 import com.noteit.noteit.entities.FileTagPK;
+import com.noteit.noteit.entities.RoomEntity;
+import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.entities.TagEntity;
+import com.noteit.noteit.entities.UserRoomEntity;
 import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.files.dtos.FileRoomDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.mapper.FileDbMapper;
 import com.noteit.noteit.files.model.FileDB;
@@ -11,9 +15,7 @@ import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
-import com.noteit.noteit.repositories.FileTagRepository;
-import com.noteit.noteit.repositories.TagRepository;
-import com.noteit.noteit.repositories.UserRepository;
+import com.noteit.noteit.repositories.*;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,9 +33,9 @@ import java.util.stream.Stream;
 public class FileStorageService implements FileStorageServiceInterface {
     @Autowired
     private FileDBRepository fileDBRepository;
+
     @Autowired
     private FileRoomDBRepository fileRoomDBRepository;
-
 
     @Autowired
     private UserRepository userRepository;
@@ -46,6 +45,12 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     @Autowired
     private FileTagRepository fileTagRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private UserRoomRepository userRoomRepository;
 
     private FileDbMapper fileDbMapper = new FileDbMapper();
 
@@ -137,7 +142,7 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
     }
 
-<<<<<<< HEAD
+
     /*
         Get whole file with its content
         params: id - String
@@ -147,17 +152,149 @@ public class FileStorageService implements FileStorageServiceInterface {
     public Optional<FileDB> getFile(String id) {
         return fileDBRepository.findById(id);
     }
+
     @Override
     public Stream<FileDB> getNotAcceptedFiles() {
-        return fileDBRepository.findAll().stream().filter(x->x.getApproved()==0);
->>>>>>> 885706b6df9bf23b20eabf2a9f70e4a6e481f85a    @Override
-    public List<FileRoomDB> getRecentFilesFromToken(String token)
+        return fileDBRepository.findAll().stream().filter(x -> x.getApproved() == 0);
+    }
+
+    @Override
+    public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber, int filesPerPage)
     {
-        List<FileRoomDB> fileRoomDBList = new ArrayList<>();
+        List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
+        int startFileIndex = pageNumber * filesPerPage;
+        UserEntity user = userRepository.findByToken(token);
+        List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
+        List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
+        for (UserRoomEntity userRoomEntity : userRoomEntities)
+        {
+            String roomId = userRoomEntity.getUserRoomId().getRoomId();
+            Optional<RoomEntity> room = roomRepository.findById(roomId);
+            if (room.isPresent())
+            {
+                List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
+                for (FileRoomDB fileRoomDB : fileRoomDBList)
+                {
+                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+                    if (fileDB.isPresent())
+                    {
+                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                        if (fileTagEntities.isPresent())
+                        {
+                            List<String> tagNames = new ArrayList<>();
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
+                            {
+                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                if (tagEntity.isPresent())
+                                {
+                                    tagNames.add(tagEntity.get().getName());
+                                }
+                            }
+                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                        }
+                    }
+                }
+            }
+        }
 
+        Collections.sort(fileRoomDtoList);
 
-        return fileRoomDBList;
-=======
+        for (int currentFileIndex = startFileIndex; currentFileIndex <= startFileIndex + filesPerPage - 1 && currentFileIndex < fileRoomDtoList.size(); currentFileIndex++)
+        {
+            currentFileRoomDtoList.add(fileRoomDtoList.get(currentFileIndex));
+        }
+
+        return currentFileRoomDtoList;
+    }
+
+    @Override
+    public List<FileRoomDto> getSearchedFilesFromName(String token, String filename)
+    {
+        UserEntity user = userRepository.findByToken(token);
+        List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
+
+        List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
+        for (UserRoomEntity userRoomEntity : userRoomEntities)
+        {
+            String roomId = userRoomEntity.getUserRoomId().getRoomId();
+            Optional<RoomEntity> room = roomRepository.findById(roomId);
+            if (room.isPresent())
+            {
+                List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
+                for (FileRoomDB fileRoomDB : fileRoomDBList)
+                {
+                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+                    if (fileDB.isPresent() && fileDB.get().getName().contains(filename))
+                    {
+                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                        if (fileTagEntities.isPresent())
+                        {
+                            List<String> tagNames = new ArrayList<>();
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
+                            {
+                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                if (tagEntity.isPresent())
+                                {
+                                    tagNames.add(tagEntity.get().getName());
+                                }
+                            }
+                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                        }
+                    }
+                }
+            }
+        }
+
+        return fileRoomDtoList;
+    }
+
+    @Override
+    public List<FileRoomDto> getSearchedFilesFromTag(String token, String tag)
+    {
+        UserEntity user = userRepository.findByToken(token);
+        List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
+
+        List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
+        for (UserRoomEntity userRoomEntity : userRoomEntities)
+        {
+            String roomId = userRoomEntity.getUserRoomId().getRoomId();
+            Optional<RoomEntity> room = roomRepository.findById(roomId);
+            if (room.isPresent())
+            {
+                List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
+                for (FileRoomDB fileRoomDB : fileRoomDBList)
+                {
+                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+                    if (fileDB.isPresent())
+                    {
+                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                        if (fileTagEntities.isPresent())
+                        {
+                            boolean foundTag = false;
+                            List<String> tagNames = new ArrayList<>();
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
+                            {
+                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                if (tagEntity.isPresent())
+                                {
+                                    tagNames.add(tagEntity.get().getName());
+                                }
+                                if (tagEntity.isPresent() && tagEntity.get().getName().contains(tag))
+                                {
+                                    foundTag = true;
+                                }
+                            }
+                            if (foundTag == true)
+                            {
+                                fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return fileRoomDtoList;
     }
 }
