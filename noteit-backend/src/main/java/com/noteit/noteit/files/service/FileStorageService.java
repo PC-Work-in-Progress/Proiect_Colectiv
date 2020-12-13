@@ -177,15 +177,10 @@ public class FileStorageService implements FileStorageServiceInterface {
     public FileDB acceptFile(String fileId) {
         var f = fileDBRepository.findById(fileId).get();
         if (f.getApproved().equals(1)) {
-            System.out.println("############################################################################");
-            System.out.println("a fost acceptat deja");
             return null;
         }
         f.setApproved(1);
         var a = fileDBRepository.save(f);
-        System.out.println("afisam rez save");
-        System.out.println("############################################################################");
-        System.out.println(a);
         return a;
     }
 
