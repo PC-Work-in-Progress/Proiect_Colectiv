@@ -156,6 +156,7 @@ async function logoutBT() {
         });
         const { username, password, full_name, email } = signUpState;
         const {message, success} = await signupApi(username, password, full_name, email);
+        console.log(message)
         if (canceled) {
           return;
         }

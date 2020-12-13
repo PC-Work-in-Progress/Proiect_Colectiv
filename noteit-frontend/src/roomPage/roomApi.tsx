@@ -2,31 +2,26 @@ import { authConfig, withLogs } from "../shared";
 import { FileProps } from "./file/FileProps";
 import axios from "axios";
 
-const homeUrl = "localhost:8080"
-
 export const baseUrl = 'localhost:8080'
 
 export const getFile: (token: string, idFile: string) => Promise<FileProps> = (token, idFile) => {
     return withLogs(axios.get(`http://${baseUrl}/files/details/${idFile}`, authConfig(token)), 'getFile');
 }
 
-export const getFilesConfig = (token?: string, roomId?: string) => ({
+export const getFilesConfig = (token?: string) => ({
     headers: {
         'Content-Type': 'application/json',
-        'RoomId' : roomId, 
         Authorization: `Bearer ${token}`,
     }
 })
 
 export const getFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
-    console.log(roomId);
-    return withLogs(axios.get(`http://${baseUrl}/files`, getFilesConfig(token, roomId)), 'getFiles');
+    return withLogs(axios.get(`http://${baseUrl}/api/files/ApprovedFiles?roomId=${roomId}`, getFilesConfig(token)), 'getFiles');
 }
 
-export const uploadConfig = (token?: string, roomId?: string) => ({
+export const uploadConfig = (token?: string) => ({
     headers: {
         'Content-Type': 'multipart/form-data',
-        RoomId : roomId,
         Authorization: `Bearer ${token}`,
     },
 });
@@ -36,7 +31,5 @@ export interface UploadResponse {
 } 
 
 export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<FileProps> = (token, file, roomId) => {
-    console.log(file.get("file"));
-    console.log(roomId);
-    return withLogs(axios.post(`http://${baseUrl}/upload`,file, uploadConfig(token, roomId)), 'uploadFile');
+    return withLogs(axios.post(`http://${baseUrl}/api/files/UploadFile?roomId=${roomId}&tags=tag1`,file, uploadConfig(token)), 'uploadFile');
 }   

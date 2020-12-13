@@ -1,8 +1,10 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonContent, IonHeader, IonInput, IonLoading, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import React, { useState } from "react";
 import { useContext } from "react"
-import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Link, Redirect, RouteComponentProps } from "react-router-dom";
 import { SignUpContext } from "./AuthProvider";
+import "./Auth.css"
+import { Header } from "../layout/Header";
 
 interface SignUpState {
     email?: string;
@@ -22,27 +24,37 @@ export const SignUp: React.FC<RouteComponentProps> = ({ history }) => {
     }
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Sign Up</IonTitle>
-                </IonToolbar>
-            </IonHeader>
             <IonContent>
-                <IonInput placeholder="Username" value={username} 
-                    onIonChange={e => setState({...state, username: e.detail.value || ''})}/>
-                <IonInput placeholder="Email" value={email} 
-                    onIonChange={e => setState({...state, email: e.detail.value || ''})}/>
-                <IonInput placeholder="Full Name" value={full_name} 
-                    onIonChange={e => setState({...state, full_name: e.detail.value || ''})}/>
-                <IonInput type="password" placeholder="Password" value={password}
-                    onIonChange={e => setState({...state, password: e.detail.value || ''})}/>
-                <IonLoading isOpen={isSigning}/>
-                    {signupError && (
-                        <div>{signupError.message || 'Failed to sign up'}</div>)}
-                    {message1 && (
-                        <div> {message1} </div>
-                    )}
-                <IonButton onClick={handleSignUp}>Sign Up</IonButton>
+                <Header/>
+                <div className = "page">
+                <div className ="login-div">
+                <IonCard>
+                        <IonCardHeader>
+                           <h5> Sign Up </h5>
+                        </IonCardHeader>
+                        <div className="form">
+                            <IonInput placeholder="Username" value={username} 
+                                onIonChange={e => setState({...state, username: e.detail.value || ''})}/>
+                            <IonInput placeholder="Email" value={email} 
+                                onIonChange={e => setState({...state, email: e.detail.value || ''})}/>
+                            <IonInput placeholder="Full Name" value={full_name} 
+                                onIonChange={e => setState({...state, full_name: e.detail.value || ''})}/>
+                            <IonInput type="password" placeholder="Password" value={password}
+                                onIonChange={e => setState({...state, password: e.detail.value || ''})}/>
+                            <IonLoading isOpen={isSigning}/>
+                                {signupError && (
+                                    <div>{'Failed to sign up'}</div>)}
+                                {message1 && (
+                                    <div> {message1} </div>
+                                )}
+                            <IonButton onClick={handleSignUp}>Sign Up</IonButton>
+                            <br></br>
+                            <br></br>
+                            <Link to="/login">I already have an account</Link>
+                        </div>
+                </IonCard>
+                </div>
+                </div>
       </IonContent>
     </IonPage>
     )     
