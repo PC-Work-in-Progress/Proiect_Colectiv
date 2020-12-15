@@ -3,14 +3,29 @@ package com.noteit.noteit.hwrecognition;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TextDetector {
 
+    private static String TEMP_PATH = "src/main/java/com/noteit/noteit/hwrecognition/temp";
+    /**
+     * Detects given handwritten input from image at filePath using Google Vision API
+     * @param filePath path to the image
+     * @return path to the txt file that contains the processed input from the image
+     * @throws IOException
+     */
     public static String detectDocumentText(String filePath) throws IOException {
+        String[] pathComps = filePath.split("/");
+        String tempFilename = pathComps[pathComps.length - 1];
+        String[] fileComps = tempFilename.split("\\.");
+        tempFilename = fileComps[0];
+        String tempPath = TEMP_PATH + "/files/" + tempFilename + ".txt";
+
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
         ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
@@ -65,7 +80,13 @@ public class TextDetector {
                 }
                 System.out.println("%nComplete annotation:");
                 System.out.println(annotation.getText());
-                return annotation.getText();
+                File tempFile = new File(tempPath);
+                if(tempFile.createNewFile()){
+                    FileWriter writer = new FileWriter(tempPath);
+                    writer.write(annotation.getText());
+                    writer.close();
+                }
+                return tempPath;
             }
         }
         return null;

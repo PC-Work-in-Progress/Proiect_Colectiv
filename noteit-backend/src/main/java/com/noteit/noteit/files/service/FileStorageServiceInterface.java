@@ -16,4 +16,5 @@ public interface FileStorageServiceInterface {
     List<FileRoomDB> findByRoomId(String roomId);
     FileDB store(MultipartFile file, String userId, String roomId) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
+    String detectHandwriting(MultipartFile file, String userId) throws IOException;
 }
