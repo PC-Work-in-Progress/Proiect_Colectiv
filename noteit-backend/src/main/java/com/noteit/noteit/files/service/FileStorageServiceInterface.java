@@ -19,4 +19,5 @@ public interface FileStorageServiceInterface {
     Optional<FileDB> getFile(String id);
     FileDB acceptFile(String fileId);
     FileDB denyFile(String fileId ,String roomId);
+    String detectHandwriting(MultipartFile file, String userId) throws IOException;
 }

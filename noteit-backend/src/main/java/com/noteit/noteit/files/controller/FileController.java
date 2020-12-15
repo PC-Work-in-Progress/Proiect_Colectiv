@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -319,5 +322,26 @@ public class FileController {
         }
     }
 
+    @PostMapping("/recognition")
+    public ResponseEntity<byte[]> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers){
+        String userId = headers.get("authorization");
+        try {
+            String resultPath = fileService.detectHandwriting(file, userId);
+            File f = new File(resultPath);
+
+            // work only for 2GB file, because array index can only up to Integer.MAX
+            // change it into something that can support bigger files
+
+            byte[] buffer = new byte[(int)f.length()];
+            FileInputStream is = new FileInputStream(resultPath);
+            is.read(buffer);
+            is.close();
+
+            return ResponseEntity.status(HttpStatus.OK).body(buffer);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+        }
+    }
 
 }
