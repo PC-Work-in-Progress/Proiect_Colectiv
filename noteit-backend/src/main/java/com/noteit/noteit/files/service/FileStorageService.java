@@ -205,9 +205,6 @@ public class FileStorageService implements FileStorageServiceInterface {
         if (fileRoomDBList.size() == 0)
             fileDBRepository.delete(f);
         return null;
-    @Override
-    public Stream<FileDB> getNotAcceptedFiles() {
-        return fileDBRepository.findAll().stream().filter(x -> x.getApproved() == 0);
     }
 
     @Override
