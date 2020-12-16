@@ -16,7 +16,7 @@ public interface FileStorageServiceInterface {
     FileDB getById(String id);
     FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
     Stream<FileDB> getFilesForRoom(String roomId);
-    List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber, int filesPerPage);
+    List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber);
     List<FileRoomDto> getSearchedFilesFromName(String token, String filename);
     List<FileRoomDto> getSearchedFilesFromTag(String token, String tag);
 
@@ -24,4 +24,5 @@ public interface FileStorageServiceInterface {
     Optional<FileDB> getFile(String id);
     FileDB acceptFile(String fileId);
     FileDB denyFile(String fileId ,String roomId);
+    String detectHandwriting(MultipartFile file, String userId) throws IOException;
 }

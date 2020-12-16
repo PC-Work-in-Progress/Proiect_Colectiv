@@ -15,6 +15,7 @@ import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
+import com.noteit.noteit.hwrecognition.TextDetector;
 import com.noteit.noteit.repositories.*;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -208,9 +213,25 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
-    public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber, int filesPerPage)
+    public String detectHandwriting(MultipartFile file, String userId) throws IOException {
+        String TEMP_PATH = "src/main/java/com/noteit/noteit/hwrecognition/temp";
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String path = TEMP_PATH + "/images/" + fileName;
+        File localFile = new File(path);
+        if(localFile.createNewFile()){
+//            file.transferTo(localFile);
+            OutputStream os = Files.newOutputStream(Paths.get(path));
+            os.write(file.getBytes());
+            os.close();
+            return TextDetector.detectDocumentText(path);
+        }
+        else throw new IOException("Could not process image file " + fileName);
+    }
+
+    public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber)
     {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
+        int filesPerPage = 15;
         int startFileIndex = pageNumber * filesPerPage;
         UserEntity user = userRepository.findByToken(token);
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());

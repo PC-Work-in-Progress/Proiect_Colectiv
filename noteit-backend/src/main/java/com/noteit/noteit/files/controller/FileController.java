@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -317,6 +320,27 @@ public class FileController {
         }
     }
 
+    @PostMapping("/recognition")
+    public ResponseEntity<byte[]> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers){
+        String userId = headers.get("authorization");
+        try {
+            String resultPath = fileService.detectHandwriting(file, userId);
+            File f = new File(resultPath);
+
+            // work only for 2GB file, because array index can only up to Integer.MAX
+            // change it into something that can support bigger files
+
+            byte[] buffer = new byte[(int)f.length()];
+            FileInputStream is = new FileInputStream(resultPath);
+            is.read(buffer);
+            is.close();
+
+            return ResponseEntity.status(HttpStatus.OK).body(buffer);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+        }
+    }
 
     @GetMapping("/recentFiles/{pageNumber}")
     public ResponseEntity<?> getRecentFilesFromToken(@PathVariable String pageNumber, HttpServletRequest request) {
@@ -328,14 +352,11 @@ public class FileController {
             }
 
             String authToken = header.split(" ")[1];
-            //String pageNumber = request.getHeader("pageNumber");
-            String filesPerPage = request.getHeader("filesPerPage");
-            if (pageNumber == null || filesPerPage == null)
+            if (pageNumber == null)
             {
                 throw new ServiceException("Header params are missing");
             }
-            return ResponseEntity.ok().body(fileService.getRecentFilesFromToken(authToken, Integer.parseInt(pageNumber),
-                    Integer.parseInt(filesPerPage)));
+            return ResponseEntity.ok().body(fileService.getRecentFilesFromToken(authToken, Integer.parseInt(pageNumber)));
         }
         catch (ServiceException e)
         {
