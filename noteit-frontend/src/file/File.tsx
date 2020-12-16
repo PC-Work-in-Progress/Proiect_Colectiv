@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
-import {IonButton, IonCard, IonCardContent, IonContent, IonLoading, IonTabButton} from '@ionic/react';
+import {IonButton, IonCard, IonCardContent, IonContent, IonLoading} from '@ionic/react';
 import {Header} from "../layout/Header";
 import "./File.css"
 import {RouteComponentProps} from "react-router";
 import {getLogger} from "../shared";
 import {AuthContext} from "../auth/AuthProvider";
-import {fileDownload, getFileContent} from "./fileApi";
+import {getFileContent} from "./fileApi";
 
 const log = getLogger("File");
 
@@ -16,12 +16,13 @@ interface FilePageProps extends RouteComponentProps<{
 }
 
 interface FileState {
-    fileContent: String;
-    fileName: String;
+    fileContent: string;
+    fileName: string;
     fetchingFile: boolean;
     fetchFileError: Error | null;
     objectUrl?: any;
     imageUrl?: any;
+    base64Content?: string;
 }
 
 const initialState: FileState = {
@@ -34,7 +35,7 @@ const initialState: FileState = {
 export const File: React.FC<FilePageProps> = ({history, match}) => {
     const {token} = useContext(AuthContext);
     const [fileState, setFileState] = useState(initialState);
-    let {fileContent, fetchingFile, fetchFileError, objectUrl, imageUrl} = fileState;
+    let {fileContent, fetchingFile, fetchFileError, objectUrl, imageUrl, fileName, base64Content} = fileState;
     useEffect(fetchFileContentEffect, [token, match.params.id, match.params.fileId]);
 
     return (
@@ -76,12 +77,17 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 let objectURL;
                 let imageURL;
                 let content;
-                const ext = file.nume.split(".")[1];
+                const split_dot = file.nume.split(".");
+                const ext = split_dot[split_dot.length - 1];
                 if (ext === "pdf") {
                     objectURL = "data:application/pdf;base64, " + file.content;
                 } else {
                     if (["jpg", "jpeg", "png"].indexOf(ext) >= 0) {
                         imageURL = "data:image/jpg;base64, " + file.content;
+                    } else if (ext === "docx" || ext === "pptx" || ext === "doc") {
+                        downloadLink(arrayBuffer, {type: "application/msword"}, file.nume);
+                        history.push(`/room/${match.params.id}`);
+                        return;
                     } else {
                         content = ab2str(arrayBuffer);
                     }
@@ -94,7 +100,8 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                         fileContent: content || "",
                         fileName: file.nume,
                         objectUrl: objectURL,
-                        imageUrl: imageURL
+                        imageUrl: imageURL,
+                        base64Content: file.content
                     });
                 }
             } catch (error) {
@@ -121,6 +128,14 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
         return new TextDecoder().decode(buf);
     }
 
+    function downloadLink(content: SharedArrayBuffer | ArrayBuffer, type: any, fileName: string) {
+        const link = document.createElement('a');
+        const blob = new Blob([content], type);
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName.toString();
+        link.click();
+    }
+
     function downloadFile() {
         let canceled = false;
         download();
@@ -131,10 +146,21 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
         async function download() {
             try {
                 log(`download started`);
-                // setFileState({...fileState, fetchingFile: true, fetchFileError: null});
-                // server get file data
-                // let file = await fileDownload(token, match.params.fileId);
-                // console.log(file);
+                const split_dot = fileName.split(".");
+                const ext = split_dot[split_dot.length - 1];
+                let type;
+                let content = base64ToArrayBuffer(base64Content || "");
+                if (ext === "pdf") {
+                    type = {type: "application/pdf"};
+                } else {
+                    if (["jpg", "jpeg", "png"].indexOf(ext) >= 0) {
+                        type = {type: "image/jpeg"}
+                    } else {
+                        type = {type: "text/plain"}
+                    }
+                }
+                downloadLink(content, type, fileName);
+                log('download succeeded');
             } catch (error) {
                 log('download failed');
                 if (error.response.status === 417) {
