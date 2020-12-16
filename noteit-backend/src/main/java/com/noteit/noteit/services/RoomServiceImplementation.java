@@ -59,6 +59,9 @@ public class RoomServiceImplementation implements RoomServiceInterface {
 
     @Override
     public RoomEntity getById(String id) {
-        return roomRepository.findById(id).get();
+        Optional<RoomEntity> roomEntity = roomRepository.findById(id);
+        if (roomEntity.isPresent())
+            return new RoomEntity(roomEntity.get().getId(), roomEntity.get().getName(), roomEntity.get().getOwnerId());
+        return null;
     }
 }

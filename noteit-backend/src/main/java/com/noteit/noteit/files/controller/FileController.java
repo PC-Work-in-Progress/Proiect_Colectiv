@@ -1,17 +1,13 @@
 package com.noteit.noteit.files.controller;
 
-import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.message.ResponseContentFile;
 import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.files.model.FileDB;
-import com.noteit.noteit.files.model.FileRoomCompositePK;
-import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.services.RoomServiceImplementation;
 import org.hibernate.service.spi.ServiceException;
-import com.noteit.noteit.helper.mapper.UserMapper;
 import com.noteit.noteit.services.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -24,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -241,7 +238,7 @@ public class FileController {
     public ResponseEntity<?> downloadFile(@PathVariable String id) {
         Optional<FileDB> optionalFile = fileService.getFile(id);
 
-        if(optionalFile.isEmpty())
+        if (optionalFile.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("No such file!"));
 
         FileDB file = optionalFile.get();
@@ -249,6 +246,7 @@ public class FileController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(file.getType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\"" + file.getName() + "\"")
+
                 .body(new ByteArrayResource(file.getUploaded_file()));
     }
 
@@ -344,4 +342,59 @@ public class FileController {
         }
     }
 
+    @GetMapping("/recentFiles/{pageNumber}")
+    public ResponseEntity<?> getRecentFilesFromToken(@PathVariable String pageNumber, HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            if (pageNumber == null)
+            {
+                throw new ServiceException("Header params are missing");
+            }
+            return ResponseEntity.ok().body(fileService.getRecentFilesFromToken(authToken, Integer.parseInt(pageNumber)));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/filename/{filename}")
+    public ResponseEntity<?> getSearchedFilesByName(@PathVariable String filename, HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+            String authToken = header.split(" ")[1];
+            return ResponseEntity.ok().body(fileService.getSearchedFilesFromName(authToken, filename));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/tag/{tag}")
+    public ResponseEntity<?> getSearchedFilesByTag(@PathVariable String tag, HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+            String authToken = header.split(" ")[1];
+            return ResponseEntity.ok().body(fileService.getSearchedFilesFromTag(authToken, tag));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

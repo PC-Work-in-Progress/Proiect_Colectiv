@@ -21,4 +21,8 @@ public class UserRoomEntity implements Serializable {
     {
         this.userRoomId = new com.noteit.noteit.entities.UserRoomIdEntity<>(userId, roomId);
     }
+
+    public UserRoomIdEntity<String, String> getUserRoomId() {
+        return userRoomId;
+    }
 }
