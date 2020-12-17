@@ -8,9 +8,6 @@ export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,
         <>
             <IonItem onClick={() => onView?.()}>
                 <IonLabel class="bold">{name}</IonLabel>
-                <IonButton fill="clear" slot="end">
-                    <IonIcon color="dark" icon={closeSharp}/>
-                </IonButton>
             </IonItem>
         </>
     );
