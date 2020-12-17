@@ -4,12 +4,11 @@ import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.services.RoomServiceInterface;
 import lombok.AllArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/rooms")
@@ -67,5 +66,20 @@ public class RoomController {
         {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<?> getSearchedRoomsByName(@PathVariable String name){
+        try{
+            return ResponseEntity.ok().body(roomService.getByName(name));
+        }catch(ServiceException exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/filterRooms/{filterTags}")
+    public ResponseEntity<?> getFilteredRoomsByFileTags(@PathVariable String filterTags){
+        String[] tags=filterTags.split(",");
+        return ResponseEntity.ok().body(roomService.filterRooms(Arrays.asList(tags)));
     }
 }
