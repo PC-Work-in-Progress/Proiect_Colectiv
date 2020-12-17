@@ -8,6 +8,7 @@
     flex-direction: column;
     height: 100%;
     background-color: #E9ECEF;
+    overflow-y: hidden;
 }
 
 

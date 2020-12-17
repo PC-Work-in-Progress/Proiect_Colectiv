@@ -35,16 +35,6 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
         fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications, notificationsPage, previousNotifications
     } = state;
 
-    function getMaxRecentFilesNr() {
-        console.log("getMaxRecentFiles");
-        // console.log(notificationsPage * 15 + 15);
-        // console.log(recentFiles.length);
-        if (notificationsPage * 15 + 15 >= recentFiles.length) {
-            return recentFiles.length;
-        }
-        return notificationsPage * 15 + 15;
-    }
-
     return (
         <IonContent class="fullscreen">
             <div className="flex-page">
@@ -119,7 +109,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                     <IonList class="notification-list">
                                         {recentFiles.length > 0 && (
                                             recentFiles
-                                                .map(({fileId, fileName, roomName, userName, fileDate, tags}) =>
+                                                .map(({fileId, fileName, roomName, userName, fileDate, tags, roomId}) =>
                                                     <Notification key={fileId}
                                                                   fileId={fileId}
                                                                   fileName={fileName}
@@ -127,10 +117,11 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                                                   userName={userName}
                                                                   fileDate={fileDate}
                                                                   tags={tags}
+                                                                  roomId={roomId}
                                                                   onView={() => {
-                                                                      history.push(`/room/${fileId}`)
+                                                                      history.push(`/room/${roomId}/${fileId}`)
                                                                   }}/>)
-                                                .slice(notificationsPage * 15, getMaxRecentFilesNr())
+                                                .slice(notificationsPage * 15, getRecentFilesNr())
                                         )}
                                     </IonList>
                                     <IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>
@@ -144,5 +135,13 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
             </div>
         </IonContent>
     );
+
+    function getRecentFilesNr() {
+        log("getRecentFilesNr");
+        if (notificationsPage * 15 + 15 >= recentFiles.length) {
+            return recentFiles.length;
+        }
+        return notificationsPage * 15 + 15;
+    }
 }
 

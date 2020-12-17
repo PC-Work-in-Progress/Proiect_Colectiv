@@ -9,7 +9,7 @@ export const User: React.FC<UserProps> = ({fullName, userName, email}) => {
         <>
             <IonCardHeader>
                 <div className="user-div">
-                    <IonIcon  class="user-icon" icon={personCircle}/>
+                    <IonIcon class="user-icon" icon={personCircle}/>
                     <div className="user-info">
                         <IonCardTitle class="user-name">{userName}</IonCardTitle>
                         <IonCardSubtitle class="user-full-name">{fullName}</IonCardSubtitle>
