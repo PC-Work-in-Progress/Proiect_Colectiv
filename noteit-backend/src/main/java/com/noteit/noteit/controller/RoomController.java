@@ -70,11 +70,7 @@ public class RoomController {
 
     @GetMapping("/{name}")
     public ResponseEntity<?> getSearchedRoomsByName(@PathVariable String name){
-        try{
-            return ResponseEntity.ok().body(roomService.getByName(name));
-        }catch(ServiceException exception){
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+        return ResponseEntity.ok().body(roomService.getByName(name));
     }
 
     @GetMapping("/filterRooms/{filterTags}")
