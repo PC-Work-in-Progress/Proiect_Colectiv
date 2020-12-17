@@ -261,7 +261,8 @@ public class FileStorageService implements FileStorageServiceInterface {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
-                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                            UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                            fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -309,7 +310,8 @@ public class FileStorageService implements FileStorageServiceInterface {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
-                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                            UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                            fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -357,7 +359,8 @@ public class FileStorageService implements FileStorageServiceInterface {
                             }
                             if (foundTag == true)
                             {
-                                fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                                UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                                fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }
                         }
                     }

@@ -3,6 +3,7 @@ package com.noteit.noteit.services;
 import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.entities.*;
 import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
@@ -108,5 +109,19 @@ public class RoomServiceImplementation implements RoomServiceInterface {
                     rooms.add(room.get());
         }
         return rooms;
+    }
+
+    @Override
+    public String checkIfIsAdmin(String token, String roomId) {
+        RoomEntity roomEntity = roomRepository.findById(roomId).get();
+        UserEntity userEntity = userRepository.findByToken(token);
+        if (roomEntity != null && userEntity != null)
+        {
+            if (roomEntity.getOwnerId().equals(userEntity.getId()))
+            {
+                return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "true" + '"' + "}]";
+            }
+        }
+        return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "false" + '"' + "}]";
     }
 }

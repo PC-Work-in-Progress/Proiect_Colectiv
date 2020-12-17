@@ -78,4 +78,21 @@ public class RoomController {
         String[] tags=filterTags.split(",");
         return ResponseEntity.ok().body(roomService.filterRooms(Arrays.asList(tags)));
     }
+
+    @GetMapping("/isAdmin/{roomId}")
+    public ResponseEntity<?> checkIfIsAdmin(@PathVariable String roomId, HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+            String authToken = header.split(" ")[1];
+            return ResponseEntity.ok().body(roomService.checkIfIsAdmin(authToken, roomId));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

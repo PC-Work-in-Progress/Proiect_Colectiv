@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface UserRoomRepository  extends JpaRepository<UserRoomEntity, UserRoomIdEntity<String, String>> {
     List<UserRoomEntity> findUserRoomEntityByUserRoomId_UserId(String user_id);
+    UserRoomEntity findUserRoomEntityByUserRoomId_RoomId(String room_id);
 }
