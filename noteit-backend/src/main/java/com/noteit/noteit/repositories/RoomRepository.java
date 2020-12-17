@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<RoomEntity, String> {
     Optional<List<RoomEntity>> findByOwnerId(String ownerId);
     Optional<RoomEntity> findById(String id);
+    Optional<List<RoomEntity>> findByNameContains(String name);
 }

@@ -1,15 +1,16 @@
 package com.noteit.noteit.services;
 
 import com.noteit.noteit.dtos.RoomDto;
-import com.noteit.noteit.entities.RoomEntity;
-import com.noteit.noteit.entities.UserEntity;
-import com.noteit.noteit.entities.UserRoomEntity;
-import com.noteit.noteit.repositories.RoomRepository;
-import com.noteit.noteit.repositories.UserRepository;
-import com.noteit.noteit.repositories.UserRoomRepository;
+import com.noteit.noteit.entities.*;
+import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.files.model.FileRoomDB;
+import com.noteit.noteit.files.repository.FileDBRepository;
+import com.noteit.noteit.files.repository.FileRoomDBRepository;
+import com.noteit.noteit.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.HTML;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,9 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     private RoomRepository roomRepository;
     private UserRepository userRepository;
     private UserRoomRepository userRoomRepository;
+    private FileRoomDBRepository fileRoomRepository;
+    private FileTagRepository fileTagRepository;
+    private TagRepository tagRepository;
 
     @Override
     public List<RoomDto> getRooms() {
@@ -63,5 +67,46 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         if (roomEntity.isPresent())
             return new RoomEntity(roomEntity.get().getId(), roomEntity.get().getName(), roomEntity.get().getOwnerId());
         return null;
+    }
+
+    @Override
+    public List<RoomEntity> getByName(String name) {
+        List<RoomEntity> rooms=new ArrayList<>();
+       Optional<List<RoomEntity>> roomsList=roomRepository.findByNameContains(name);
+       if(roomsList.isPresent())
+           for(var room: roomsList.get())
+               rooms.add(new RoomEntity(room.getId(), room.getName(), room.getOwnerId()));
+       return rooms;
+    }
+
+    @Override
+    public List<RoomEntity> filterRooms(List<String> tagNames) {
+        List<TagEntity> tags=new ArrayList<>();
+        for(var name:tagNames){
+            TagEntity tag=tagRepository.findByName(name);
+            if(tag!=null)
+                tags.add(tag);
+        }
+
+        List<FileTagEntity> fileTags=new ArrayList<>();
+        for(var tag:tags){
+            Optional<List<FileTagEntity>> fileTagsWithTag=fileTagRepository.findById_TagId(tag.getId());
+            if(fileTagsWithTag.isPresent())
+                fileTags.addAll(fileTagsWithTag.get());
+        }
+        List<FileRoomDB> fileRooms=new ArrayList<>();
+        for(var fileTag:fileTags){
+            List<FileRoomDB> fileRoomsWithFileTag=fileRoomRepository.findById_FileId(fileTag.getId().getFileId());
+            fileRooms.addAll(fileRoomsWithFileTag);
+        }
+
+        List<RoomEntity> rooms=new ArrayList<>();
+        for(var fileRoom:fileRooms){
+            Optional<RoomEntity> room=roomRepository.findById(fileRoom.getId().getRoomId());
+            if(room.isPresent())
+                if(!rooms.contains(room.get()))
+                    rooms.add(room.get());
+        }
+        return rooms;
     }
 }
