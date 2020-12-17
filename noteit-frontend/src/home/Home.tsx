@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     IonButton,
     IonCard,
@@ -7,7 +7,7 @@ import {
     IonCardTitle,
     IonCol,
     IonContent,
-    IonGrid,
+    IonGrid, IonInfiniteScroll, IonInfiniteScrollContent,
     IonList,
     IonLoading,
     IonPopover,
@@ -21,13 +21,21 @@ import {RouteComponentProps} from "react-router";
 import {useHome} from "./useHome";
 import {CreateRoom} from "./CreateRoom";
 import {User} from "./user/User";
+import {getLogger} from "../shared";
+
+const log = getLogger("Home");
 
 export const Home: React.FC<RouteComponentProps> = ({history}) => {
-    const {state, createRoom, hideCreateRoom, showCreateRoom} = useHome();
+    const {state, createRoom, hideCreateRoom, showCreateRoom, nextPage} = useHome();
+    const [disableInfiniteScroll, setDisableInfiniteScroll] = useState<boolean>(false);
     const {
         rooms, user, recentFiles, showAddRoom, creatingError, creating, fetchingRoomsError, fetchingRooms,
-        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError
+        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications
     } = state;
+    useEffect(() => {
+        setDisableInfiniteScroll(!hasMoreNotifications);
+    }, [hasMoreNotifications]);
+
     return (
         <IonContent>
             <div className="flex-page">
@@ -97,6 +105,12 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                                   time={new Date(Date.now())} id="2" roomId="1" onView={() => {
                                         history.push(`/room/1`)
                                     }}/>
+                                    <IonInfiniteScroll threshold="100px" disabled={disableInfiniteScroll}
+                                                       onIonInfinite={(e: CustomEvent<void>) => searchNext(e)}>
+                                        <IonInfiniteScrollContent
+                                            loadingText="Loading more posts...">
+                                        </IonInfiniteScrollContent>
+                                    </IonInfiniteScroll>
                                 </IonCardContent>
                             </IonCard>
                         </IonCol>
@@ -105,5 +119,11 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
             </div>
         </IonContent>
     );
+
+    async function searchNext(e: CustomEvent<void>) {
+        log("searchNext");
+        await nextPage?.();
+        (e.target as HTMLIonInfiniteScrollElement).complete();
+    }
 }
 

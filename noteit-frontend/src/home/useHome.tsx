@@ -10,6 +10,7 @@ const log = getLogger("useHome");
 
 export type CreateRoomFn = (name: string) => void;
 export type HideCreateRoomFn = () => void;
+type NextPageFn = () => Promise<any>;
 
 interface HomeState {
     rooms: RoomProps[];
@@ -24,6 +25,9 @@ interface HomeState {
     fetchingRecentFilesError?: Error | null;
     fetchingUser: boolean;
     fetchingUserError?: Error | null;
+    notificationsPage: number;
+    nextPage?: NextPageFn;
+    hasMoreNotifications: boolean;
 }
 
 const initialState: HomeState = {
@@ -38,7 +42,9 @@ const initialState: HomeState = {
     creating: false,
     fetchingRooms: false,
     fetchingRecentFiles: false,
-    fetchingUser: false
+    fetchingUser: false,
+    notificationsPage: 0,
+    hasMoreNotifications: false
 };
 
 interface ActionProps {
@@ -60,6 +66,7 @@ const FETCH_RECENT_FILES_SUCCEEDED = 'FETCH_RECENT_FILES_SUCCEEDED';
 const FETCH_USER_STARTED = 'FETCH_USER_STARTED';
 const FETCH_USER_FAILED = 'FETCH_USER_FAILED';
 const FETCH_USER_SUCCEEDED = 'FETCH_USER_SUCCEEDED';
+const FETCH_NEXT_PAGE = 'FETCH_NEXT_PAGE';
 
 const reducer: (state: HomeState, action: ActionProps) => HomeState =
     (state, {type, payload}) => {
@@ -110,14 +117,20 @@ const reducer: (state: HomeState, action: ActionProps) => HomeState =
                     } else {
                         recentFiles[index] = file;
                     }
-                })
-                return {...state, fetchingRecentFiles: false, recentFiles: recentFiles}
+                });
+                let more = false;
+                if (payload.recentFiles.length === 15) {
+                    more = true;
+                }
+                return {...state, fetchingRecentFiles: false, recentFiles: recentFiles, hasMoreNotifications: more}
             case FETCH_USER_STARTED:
                 return {...state, fetchingUser: true, fetchingUserError: null}
             case FETCH_USER_FAILED:
                 return {...state, fetchingUsers: false, fetchingUserError: payload.error}
             case FETCH_USER_SUCCEEDED:
                 return {...state, fetchingUser: false, user: payload.user}
+            case FETCH_NEXT_PAGE:
+                return {...state, page: state.notificationsPage + 1};
             default:
                 return state;
         }
@@ -127,12 +140,18 @@ export const useHome = () => {
     const {token} = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, initialState);
     const createRoom = useCallback<CreateRoomFn>(createRoomCallback, [token]);
-    const hideCreateRoom = useCallback<HideCreateRoomFn>(hideCreateRoomCallback, []);
-    const showCreateRoom = useCallback<HideCreateRoomFn>(showCreateRoomCallback, []);
+    const hideCreateRoom = useCallback<HideCreateRoomFn>(hideCreateRoomCallback, [token]);
+    const showCreateRoom = useCallback<HideCreateRoomFn>(showCreateRoomCallback, [token]);
+    const nextPage = useCallback<NextPageFn>(fetchNextPage, [token]);
     useEffect(fetchRoomsEffect, [token]);
-    useEffect(fetchRecentFilesEffect, [token]);
+    useEffect(fetchRecentFilesEffect, [token, state.notificationsPage]);
     useEffect(fetchUserEffect, [token]);
-    return {state, createRoom, hideCreateRoom, showCreateRoom};
+    return {state, createRoom, hideCreateRoom, showCreateRoom, nextPage};
+
+    async function fetchNextPage() {
+        log('fetchNextPage');
+        dispatch({type: FETCH_NEXT_PAGE});
+    }
 
     async function hideCreateRoomCallback() {
         log('hideRoomPopover');
@@ -153,7 +172,7 @@ export const useHome = () => {
                 dispatch({type: CREATE_ROOM_FAILED, payload: {error: {message: "Room name must be entered"}}});
                 return;
             }
-            const createdRoom = await addRoom(token, {id:"", name});
+            const createdRoom = await addRoom(token, {id: "", name});
             // const createdRoom = {id: Date.now(), name: name};
             log('createRoom succeeded');
 
@@ -207,8 +226,9 @@ export const useHome = () => {
                 log(`fetchRecentFiles started`);
                 dispatch({type: FETCH_RECENT_FILES_STARTED});
                 // server get recent files
-                let result = await getRecentFiles(token);
-                // let result: NotificationProps[] = [];
+                // let result = await getRecentFiles(token);
+                // let result = await getRecentFiles(token, state.notificationsPage);
+                let result: NotificationProps[] = [];
                 log('fetchRecentFiles succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_RECENT_FILES_SUCCEEDED, payload: {recentFiles: result}});
