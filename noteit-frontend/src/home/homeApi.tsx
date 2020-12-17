@@ -27,10 +27,11 @@ export const getRooms: (token: string) => Promise<RoomProps[]> = (token) => {
 }
 
 export const getRecentFiles: (token: string, page?: number) => Promise<NotificationProps[]> = (token, page) => {
-    let url = homeUrl;
-    if (page){
-        url = url + `?page=${page}`;
+    let url = homeUrl + "/api/files/recentFiles";
+    if (!page){
+        page = 0;
     }
+    url = url + `/${page}`;
     return withLogs(axios.get(url, authConfig(token)), 'getRecentFiles');
 }
 

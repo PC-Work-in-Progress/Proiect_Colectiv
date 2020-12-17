@@ -4,6 +4,7 @@
 
 .title {
     font-size: large;
+    margin-right: 7px;
 }
 
 .userName {
@@ -13,4 +14,8 @@
 
 .room {
     font-weight: 500;
+}
+
+.tag {
+    /*margin-: 5px;*/
 }

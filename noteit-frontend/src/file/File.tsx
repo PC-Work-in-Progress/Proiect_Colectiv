@@ -42,20 +42,23 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
         <IonContent>
             <div className="flex-page">
                 <Header/>
-                {objectUrl && <iframe title="ceva" className="pdf" src={objectUrl}/>}
-                {imageUrl && <img className="file-image" src={imageUrl}/>}
-                {fileContent !== "" && <IonCard class="file-content-container">
-                    <IonCardContent class="file-card-content ion-align-self-center">
-                        <pre className="file-content">{fileContent}</pre>
-                    </IonCardContent>
-                </IonCard>}
-                {!objectUrl && <IonButton color="secondary" class="download-btn" onClick={() => {
-                    downloadFile();
-                }
-                }>Download</IonButton>}
-                <IonLoading isOpen={fetchingFile} message="Fetching file"/>
-                {fetchFileError &&
-                <div className="error">{fetchFileError.message}</div>}
+                <div className="file-content-div flex-page">
+                    {objectUrl && <iframe title="ceva" className="pdf" src={objectUrl}/>}
+                    {imageUrl && <img className="file-image" src={imageUrl}/>}
+                    {fileContent !== "" && <IonCard class="file-content-container">
+                        <IonCardContent class="file-card-content ion-align-self-center">
+                            <h1>{fileName}</h1>
+                            <pre className="file-content">{fileContent}</pre>
+                        </IonCardContent>
+                    </IonCard>}
+                    {!objectUrl && <IonButton color="secondary" class="download-btn" onClick={() => {
+                        downloadFile();
+                    }
+                    }>Download</IonButton>}
+                    <IonLoading isOpen={fetchingFile} message="Fetching file"/>
+                    {fetchFileError &&
+                    <div className="error">{fetchFileError.message}</div>}
+                </div>
             </div>
         </IonContent>
     );

@@ -1,6 +1,6 @@
-.fullscreen {
-    height: 100%;
-}
+/*.fullscreen {*/
+/*    height: 100%;*/
+/*}*/
 
 
 .flex-page {
@@ -20,7 +20,7 @@
     align-self: center;
     /*width: 1300px;*/
     width: 70%;
-    height: 90%;
+    height: 100%;
     overflow-y: scroll;
     font-weight: normal;
     padding-left: 40px;
@@ -30,6 +30,8 @@
 .file-content {
     white-space: pre-wrap;
     color: #2a2a2a;
+    padding-bottom: 20px;
+    padding-top: 40px;
 }
 
 .pdf {
@@ -43,6 +45,7 @@
 
 .file-image {
     width: 70%;
+    max-height: 95%;
     align-self: center;
     margin-top: 10px;
 }
@@ -54,4 +57,8 @@
 .download-btn {
     width: 200px;
     align-self: center;
+}
+
+.file-content-div {
+    height: 90%;
 }

@@ -27,7 +27,9 @@ interface HomeState {
     fetchingUserError?: Error | null;
     notificationsPage: number;
     nextPage?: NextPageFn;
+    previousPage?: NextPageFn;
     hasMoreNotifications: boolean;
+    previousNotifications: boolean;
 }
 
 const initialState: HomeState = {
@@ -44,7 +46,8 @@ const initialState: HomeState = {
     fetchingRecentFiles: false,
     fetchingUser: false,
     notificationsPage: 0,
-    hasMoreNotifications: false
+    hasMoreNotifications: false,
+    previousNotifications: false
 };
 
 interface ActionProps {
@@ -67,6 +70,7 @@ const FETCH_USER_STARTED = 'FETCH_USER_STARTED';
 const FETCH_USER_FAILED = 'FETCH_USER_FAILED';
 const FETCH_USER_SUCCEEDED = 'FETCH_USER_SUCCEEDED';
 const FETCH_NEXT_PAGE = 'FETCH_NEXT_PAGE';
+const FETCH_PREVIOUS_PAGE = 'FETCH_PREVIOUS_PAGE';
 
 const reducer: (state: HomeState, action: ActionProps) => HomeState =
     (state, {type, payload}) => {
@@ -111,7 +115,7 @@ const reducer: (state: HomeState, action: ActionProps) => HomeState =
             case FETCH_RECENT_FILES_SUCCEEDED:
                 let recentFiles = state.recentFiles;
                 payload.recentFiles.forEach((file: NotificationProps) => {
-                    const index = state.recentFiles.findIndex(f => f.id === file.id);
+                    const index = state.recentFiles.findIndex(f => f.fileId === file.fileId);
                     if (index === -1) {
                         recentFiles.push(file);
                     } else {
@@ -130,7 +134,24 @@ const reducer: (state: HomeState, action: ActionProps) => HomeState =
             case FETCH_USER_SUCCEEDED:
                 return {...state, fetchingUser: false, user: payload.user}
             case FETCH_NEXT_PAGE:
-                return {...state, page: state.notificationsPage + 1};
+                const nextPage = state.notificationsPage + 1;
+                return {
+                    ...state,
+                    notificationsPage: nextPage,
+                    previousNotifications: true
+                };
+            case FETCH_PREVIOUS_PAGE:
+                const currentPage = state.notificationsPage - 1;
+                let previous = true;
+                if (currentPage === 0) {
+                    previous = false;
+                }
+                return {
+                    ...state,
+                    notificationsPage: currentPage,
+                    previousNotifications: previous,
+                    hasMoreNotifications: true
+                };
             default:
                 return state;
         }
@@ -143,14 +164,20 @@ export const useHome = () => {
     const hideCreateRoom = useCallback<HideCreateRoomFn>(hideCreateRoomCallback, [token]);
     const showCreateRoom = useCallback<HideCreateRoomFn>(showCreateRoomCallback, [token]);
     const nextPage = useCallback<NextPageFn>(fetchNextPage, [token]);
+    const previousPage = useCallback<NextPageFn>(fetchPreviousPage, [token]);
     useEffect(fetchRoomsEffect, [token]);
     useEffect(fetchRecentFilesEffect, [token, state.notificationsPage]);
     useEffect(fetchUserEffect, [token]);
-    return {state, createRoom, hideCreateRoom, showCreateRoom, nextPage};
+    return {state, createRoom, hideCreateRoom, showCreateRoom, nextPage, previousPage};
 
     async function fetchNextPage() {
         log('fetchNextPage');
         dispatch({type: FETCH_NEXT_PAGE});
+    }
+
+    async function fetchPreviousPage() {
+        log('fetchPreviousPage');
+        dispatch({type: FETCH_PREVIOUS_PAGE});
     }
 
     async function hideCreateRoomCallback() {
@@ -212,7 +239,11 @@ export const useHome = () => {
     }
 
     function fetchRecentFilesEffect() {
+        log("fetchRecentFilesEffect");
         let canceled = false;
+        // if (state.notificationsPage * 15 + 15 <= state.recentFiles.length) {
+        //     return;
+        // }
         fetchRecentFiles();
         return () => {
             canceled = true;
@@ -227,8 +258,8 @@ export const useHome = () => {
                 dispatch({type: FETCH_RECENT_FILES_STARTED});
                 // server get recent files
                 // let result = await getRecentFiles(token);
-                // let result = await getRecentFiles(token, state.notificationsPage);
-                let result: NotificationProps[] = [];
+                let result = await getRecentFiles(token, state.notificationsPage);
+                // let result: NotificationProps[] = [];
                 log('fetchRecentFiles succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_RECENT_FILES_SUCCEEDED, payload: {recentFiles: result}});
