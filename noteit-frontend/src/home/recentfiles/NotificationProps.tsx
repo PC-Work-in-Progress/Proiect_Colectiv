@@ -1,10 +1,10 @@
 export interface NotificationProps {
-    id: string;
     userName: string;
-    roomId: string;
     roomName: string;
     fileId: string;
+    roomId: string;
     fileName: string;
-    time: Date;
+    fileDate: string;
+    tags: string[];
     onView: () => void;
 }

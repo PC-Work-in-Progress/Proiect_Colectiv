@@ -9,6 +9,7 @@ interface Room {
     id: string;
     name: string;
 }
+
 interface UserProps2 {
     full_name: string;
     email: string;
@@ -25,8 +26,13 @@ export const getRooms: (token: string) => Promise<RoomProps[]> = (token) => {
     return withLogs(axios.get(url, authConfig(token)), 'getRooms');
 }
 
-export const getRecentFiles: (token: string) => Promise<NotificationProps[]> = (token) => {
-    return withLogs(axios.get(homeUrl, authConfig(token)), 'getRecentFiles');
+export const getRecentFiles: (token: string, page?: number) => Promise<NotificationProps[]> = (token, page) => {
+    let url = homeUrl + "/api/files/recentFiles";
+    if (!page){
+        page = 0;
+    }
+    url = url + `/${page}`;
+    return withLogs(axios.get(url, authConfig(token)), 'getRecentFiles');
 }
 
 export const addRoom: (token: string, room: Room) => Promise<RoomProps[]> = (token, room) => {

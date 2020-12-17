@@ -1,6 +1,7 @@
 import React from "react";
 import {
     IonButton,
+    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -8,6 +9,7 @@ import {
     IonCol,
     IonContent,
     IonGrid,
+    IonIcon,
     IonList,
     IonLoading,
     IonPopover,
@@ -21,15 +23,20 @@ import {RouteComponentProps} from "react-router";
 import {useHome} from "./useHome";
 import {CreateRoom} from "./CreateRoom";
 import {User} from "./user/User";
+import {getLogger} from "../shared";
+import {chevronBack, chevronForward} from "ionicons/icons";
+
+const log = getLogger("Home");
 
 export const Home: React.FC<RouteComponentProps> = ({history}) => {
-    const {state, createRoom, hideCreateRoom, showCreateRoom} = useHome();
+    const {state, createRoom, hideCreateRoom, showCreateRoom, nextPage, previousPage} = useHome();
     const {
         rooms, user, recentFiles, showAddRoom, creatingError, creating, fetchingRoomsError, fetchingRooms,
-        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError
+        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications, notificationsPage, previousNotifications
     } = state;
+
     return (
-        <IonContent>
+        <IonContent class="fullscreen">
             <div className="flex-page">
                 <Header/>
                 <IonPopover
@@ -51,59 +58,90 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                         <div className="create-room-error">{fetchingUserError.message}</div>}
                                     </IonCardContent>
                                 </IonCard>
-                                <IonCard class="rooms">
-                                    <IonCardHeader>
-                                        <IonCardTitle>Your Rooms</IonCardTitle>
-                                    </IonCardHeader>
-                                    <IonCardContent>
-                                        {rooms && (<IonList class="list-size">
-                                            {rooms.map(({id, name}) => <Room onView={() => {
-                                                history.push(`/room/${id}`)
-                                            }} name={name} id={id} key={id}/>)}
-                                        </IonList>)}
-                                        <IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>
-                                        {fetchingRoomsError &&
-                                        <div className="create-room-error">{fetchingRoomsError.message}</div>}
-                                    </IonCardContent>
-                                </IonCard>
-                                <div className="button-div">
-                                    <IonButton color="secondary" onClick={() => showCreateRoom()}>
-                                        Create room</IonButton>
+                                <div className="rooms">
+                                    <IonCard>
+                                        <IonCardHeader>
+                                            <IonCardTitle>Your Rooms</IonCardTitle>
+                                        </IonCardHeader>
+                                        <IonCardContent>
+                                            {rooms && (<IonList class="list-size">
+                                                {rooms.map(({id, name}) => <Room onView={() => {
+                                                    history.push(`/room/${id}`)
+                                                }} name={name} id={id} key={id}/>)}
+                                            </IonList>)}
+                                            <IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>
+                                            {fetchingRoomsError &&
+                                            <div className="create-room-error">{fetchingRoomsError.message}</div>}
+                                        </IonCardContent>
+                                    </IonCard>
+                                    <div className="button-div">
+                                        <IonButton color="secondary" onClick={() => showCreateRoom()}>
+                                            Create room</IonButton>
+                                    </div>
                                 </div>
                             </div>
                         </IonCol>
                         <IonCol class="fullscreen" size="8.5">
-                            <IonCard class="fullscreen">
+                            <IonCard class="notification-list-card">
                                 <IonCardHeader>
-                                    <IonCardTitle>Recent files</IonCardTitle>
+                                    <div className="recent-files-title">
+                                        <IonCardTitle>Recent files</IonCardTitle>
+                                        <IonButtons>
+                                            <IonButton disabled={!previousNotifications}
+                                                       onClick={async () => {
+                                                           log("searchNext");
+                                                           await previousPage?.();
+                                                       }}>
+                                                <IonIcon icon={chevronBack}/>
+                                            </IonButton>
+                                            <span>{notificationsPage}</span>
+                                            <IonButton disabled={!hasMoreNotifications}
+                                                       onClick={async () => {
+                                                           log("searchPrevious");
+                                                           await nextPage?.();
+                                                       }}>
+                                                <IonIcon icon={chevronForward}/>
+                                            </IonButton>
+                                        </IonButtons>
+                                    </div>
                                 </IonCardHeader>
                                 <IonCardContent>
-                                    {recentFiles && (<IonList>
-                                        {recentFiles.map(({fileId, fileName, roomName, userName, time, id, roomId}) =>
-                                            <Notification fileId={fileId} fileName={fileName} roomName={roomName}
-                                                          userName={userName}
-                                                          time={time} id={id} roomId={roomId} onView={() => {
-                                                history.push(`/room/${roomId}`)
-                                            }}/>)}
-                                    </IonList>)}
+                                    <IonList class="notification-list">
+                                        {recentFiles.length > 0 && (
+                                            recentFiles
+                                                .map(({fileId, fileName, roomName, userName, fileDate, tags, roomId}) =>
+                                                    <Notification key={fileId}
+                                                                  fileId={fileId}
+                                                                  fileName={fileName}
+                                                                  roomName={roomName}
+                                                                  userName={userName}
+                                                                  fileDate={fileDate}
+                                                                  tags={tags}
+                                                                  roomId={roomId}
+                                                                  onView={() => {
+                                                                      history.push(`/room/${roomId}/${fileId}`)
+                                                                  }}/>)
+                                                .slice(notificationsPage * 15, getRecentFilesNr())
+                                        )}
+                                    </IonList>
                                     <IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>
-                                    {fetchingRecentFilesError &&
-                                    <div className="create-room-error">{fetchingRecentFilesError.message}</div>}
-                                    <Notification fileId="" fileName="File1" roomName="Room 1" userName="User1"
-                                                  time={new Date(Date.now())} id="1" roomId="0" onView={() => {
-                                        history.push(`/room/0`)
-                                    }}/>
-                                    <Notification fileId="" fileName="File2" roomName="Room 1" userName="User2"
-                                                  time={new Date(Date.now())} id="2" roomId="1" onView={() => {
-                                        history.push(`/room/1`)
-                                    }}/>
                                 </IonCardContent>
                             </IonCard>
+                            {fetchingRecentFilesError &&
+                            <div className="create-room-error">{fetchingRecentFilesError.message}</div>}
                         </IonCol>
                     </IonRow>
                 </IonGrid>
             </div>
         </IonContent>
     );
+
+    function getRecentFilesNr() {
+        log("getRecentFilesNr");
+        if (notificationsPage * 15 + 15 >= recentFiles.length) {
+            return recentFiles.length;
+        }
+        return notificationsPage * 15 + 15;
+    }
 }
 
