@@ -21,4 +21,5 @@ public interface RoomServiceInterface {
 
     List<RoomEntity> filterRooms(List<String> tagNames);
 
+    String checkIfIsAdmin(String token, String roomId);
 }
