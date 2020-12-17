@@ -68,8 +68,11 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                     {files && (<IonList>
                                         {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)
                                             }}></MyFile>
-                                        )}
-                                    </IonList>)}
+                                        )}</IonList>)}
+                                    {files.length === 0 &&  <IonList>
+                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} onView={() => {}}> </MyFile>
+                                    </IonList>
+                                    }
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
                                     {fetchingFilesError &&
                                        <div className="create-room-error">{fetchingFilesError.message}</div>}
