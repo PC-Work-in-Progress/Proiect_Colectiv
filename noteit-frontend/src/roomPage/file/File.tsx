@@ -1,19 +1,17 @@
-import { IonCardHeader, IonCardSubtitle, IonCardTitle } from "@ionic/react";
+import { IonButton, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem, IonLabel } from "@ionic/react";
+import { closeSharp } from "ionicons/icons";
 import React from "react";
 import { FileProps } from "./FileProps";
 
-export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,URL,size}) => {
+export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,URL,size, onView}) => {
     return (
         <>
-            <IonCardHeader>
-                <div className="file-div">
-                    <div className="file-info">
-                        <IonCardTitle class="file-name">{name}</IonCardTitle>
-                        {/* <IonCardSubtitle class="file-full-name">{"Posted by User1"}</IonCardSubtitle> */}
-                        <div className="file-name">{date}</div>
-                    </div>
-                </div>
-            </IonCardHeader>
+            <IonItem onClick={() => onView?.()}>
+                <IonLabel class="bold">{name}</IonLabel>
+                <IonButton fill="clear" slot="end">
+                    <IonIcon color="dark" icon={closeSharp}/>
+                </IonButton>
+            </IonItem>
         </>
     );
 }
