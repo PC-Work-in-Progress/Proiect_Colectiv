@@ -6,4 +6,5 @@ export interface FileProps {
     date: string;
     URL: string;
     size: string;
+    onView?: () => void;
 }

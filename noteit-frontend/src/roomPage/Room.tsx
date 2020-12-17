@@ -17,7 +17,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     fetchingFile, fetchingFileError
   } = state
 
-  const routeId = match.params.id
+  const roomId = match.params.id
   interface InternalValues {
     file: any;
   }
@@ -40,7 +40,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     formData.append("file", values.current.file, values.current.file.name);
     console.log(formData.get("file"));
     try {
-     uploadFile(formData, routeId)
+     uploadFile(formData, roomId)
     } catch (err) {
       console.log(err);
     }
@@ -66,9 +66,13 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                   <IonCardContent>
                                     {console.log(files)}
                                     {files && (<IonList>
-                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size}></MyFile>
-                                        )}
-                                    </IonList>)}
+                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)
+                                            }}></MyFile>
+                                        )}</IonList>)}
+                                    {files.length === 0 &&  <IonList>
+                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} onView={() => {}}> </MyFile>
+                                    </IonList>
+                                    }
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
                                     {fetchingFilesError &&
                                        <div className="create-room-error">{fetchingFilesError.message}</div>}
