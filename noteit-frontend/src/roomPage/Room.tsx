@@ -17,7 +17,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     fetchingFile, fetchingFileError
   } = state
 
-  const routeId = match.params.id
+  const roomId = match.params.id
   interface InternalValues {
     file: any;
   }
@@ -40,7 +40,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     formData.append("file", values.current.file, values.current.file.name);
     console.log(formData.get("file"));
     try {
-     uploadFile(formData, routeId)
+     uploadFile(formData, roomId)
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +66,8 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                   <IonCardContent>
                                     {console.log(files)}
                                     {files && (<IonList>
-                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size}></MyFile>
+                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)
+                                            }}></MyFile>
                                         )}
                                     </IonList>)}
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
