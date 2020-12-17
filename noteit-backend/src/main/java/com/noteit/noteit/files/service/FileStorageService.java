@@ -261,7 +261,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
-                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -309,7 +309,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
-                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                            fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -357,7 +357,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                             }
                             if (foundTag == true)
                             {
-                                fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
+                                fileRoomDtoList.add(new FileRoomDto(user.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }
                         }
                     }

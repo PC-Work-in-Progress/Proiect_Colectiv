@@ -9,18 +9,20 @@ import java.util.List;
 public class FileRoomDto implements Comparable<FileRoomDto>{
     private String userName;
     private String roomName;
+    private String roomId;
     private String fileId;
     private String fileName;
     private String fileDate;
     private List<String> tags;
 
-    public FileRoomDto(String userName, String roomName, String fileId, String fileName, String fileDate, List<String> tags) {
+    public FileRoomDto(String userName, String roomName, String roomId , String fileId, String fileName, String fileDate, List<String> tags) {
         this.userName = userName;
         this.roomName = roomName;
-        this.fileId = fileId;
+        this.roomId   = roomId;
+        this.fileId   = fileId;
         this.fileName = fileName;
         this.fileDate = fileDate;
-        this.tags = tags;
+        this.tags     = tags;
     }
 
     public String getUserName() {
@@ -71,11 +73,20 @@ public class FileRoomDto implements Comparable<FileRoomDto>{
         this.tags = tags;
     }
 
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
     @Override
     public String toString() {
         return "FileRoomDto{" +
                 "userName='" + userName + '\'' +
                 ", roomName='" + roomName + '\'' +
+                ", roomId='" + roomId + '\'' +
                 ", fileId='" + fileId + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", fileDate='" + fileDate + '\'' +

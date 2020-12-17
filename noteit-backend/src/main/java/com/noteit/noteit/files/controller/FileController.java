@@ -373,6 +373,7 @@ public class FileController {
                 throw new ServiceException("No JWT token found in request headers");
             }
             String authToken = header.split(" ")[1];
+            System.out.println(authToken);
             return ResponseEntity.ok().body(fileService.getSearchedFilesFromName(authToken, filename));
         }
         catch (ServiceException e)
