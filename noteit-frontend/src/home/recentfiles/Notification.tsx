@@ -14,7 +14,7 @@ export const Notification: React.FC<NotificationProps> = ({onView, userName, roo
                 <div className="userName">{userName}</div>
             </IonLabel>
             <IonLabel>posted in <span className="room">{roomName}</span></IonLabel>
-            <IonNote slot="end">{fileDate}</IonNote>
+            <IonNote slot="end">{fileDate.substring(0, fileDate.length - 7)}</IonNote>
         </IonItem>
     );
 }
