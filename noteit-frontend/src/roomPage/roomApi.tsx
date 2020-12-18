@@ -16,13 +16,9 @@ export const getFilesConfig = (token?: string) => ({
     }
 })
 
-export const getFilesConfig2 = (token?: string) => ({
+export const reviewFileConfig = (token: string) => ({
     headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
-        'Access-Control-Allow-Origin' : '*',
-        'Access-Control-Allow-Methods' : "DELETE, POST, GET, OPTIONS",
-        'Access-Control-Allow-Headers' : "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
     }
 })
 
@@ -35,11 +31,11 @@ export const getInReviewFiles: (token: string, roomId: string) => Promise<FilePr
 }
 
 export const acceptFile: (token: string, fileId: string) => Promise<ResponseMessage> = (token, fileId) => {
-    return withLogs(axios.get(`http://${baseUrl}/api/files/AcceptFile/${fileId}`, getFilesConfig2(token)), 'acceptFile');
+    return withLogs(axios.put(`http://${baseUrl}/api/files/AcceptFile/${fileId}`,{}, reviewFileConfig(token)), 'acceptFile');
 }
 
-export const denyFile: (token: string, fileId: string) => Promise<ResponseMessage> = (token, fileId) => {
-    return withLogs(axios.get(`http://${baseUrl}/api/files/DenyFile/${fileId}`, getFilesConfig2(token)), 'denyFile');
+export const denyFile: (token: string,roomId: string, fileId: string) => Promise<ResponseMessage> = (token,roomId, fileId) => {
+    return withLogs(axios.put(`http://${baseUrl}/api/files/DenyFile/${fileId}?roomId=${roomId}`,{}, reviewFileConfig(token)), 'denyFile');
 }
 
 export const isAdmin: (token: string, roomId: string) => Promise<any> = (token, roomId) => {

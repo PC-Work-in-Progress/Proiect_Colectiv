@@ -123,9 +123,10 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 let files3 = state.files;
                 var i, poz = 0;
                 for(i = 0; i < files3.length; i = i + 1)
-                    if ( files3[i].fileId === state.fileId )
+                    if ( files3[i].fileId === payload.fileId )
                         poz = i;
-                files3.splice(poz,i)
+                files3.splice(poz,1)
+                return {...state, files: files3}
 
 
             case FETCH_ISADMIN_STARTED:
@@ -173,9 +174,9 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         const response = await acceptFile(token, fileId);
                     }
                     else {
-                        const response = await denyFile(token, fileId);
+                        const response = await denyFile(token,roomId, fileId);
                     }
-                    dispatch({type: REVIEW_FILE_SUCCEEDED});
+                    dispatch({type: REVIEW_FILE_SUCCEEDED, payload: {fileId}});
                 }
                 catch(error) {
                     dispatch({type: REVIEW_FILE_FAILED, payload: {error}})
