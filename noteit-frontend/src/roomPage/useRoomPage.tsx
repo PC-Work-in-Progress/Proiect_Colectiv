@@ -2,13 +2,14 @@ import { useCallback, useContext, useEffect, useReducer } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
-import { getFile, getFiles } from "./roomApi";
+import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdmin } from "./roomApi";
 import {uploadFile as uploadFileApi} from "./roomApi"
 
 const log = getLogger("useRoomPage");
 
 export type UploadFileFn = (file: FormData, routeId: string) => void;
 export type HideUploadFileFn = () => void;
+export type ReviewFileFn = (fileId: string, type: string) => void;
 
 interface RoomState {
     files: FileProps[];
@@ -21,6 +22,7 @@ interface RoomState {
     fetchingFiles: boolean;
     fetchingFile: boolean; 
     fetchingFileError?: Error | null;
+    isAdmin: boolean;
 }
 
 const initialState: RoomState = {
@@ -38,7 +40,8 @@ const initialState: RoomState = {
     showAddFile: false,
     uploading: false,
     fetchingFiles: false,
-    fetchingFile: false
+    fetchingFile: false,
+    isAdmin: false
 }
 
 interface ActionProps {
@@ -57,6 +60,12 @@ const FETCH_FILES_SUCCEEDED = 'FETCH_FILES_SUCCEEDED';
 const FETCH_FILE_STARTED = 'FETCH_FILE_STARTED';
 const FETCH_FILE_FAILED = 'FETCH_FILE_FAILED';
 const FETCH_FILE_SUCCEEDED = 'FETCH_FILE_SUCCEEDED';
+const REVIEW_FILE_STARTED = 'REVIEW_FILE_STARTED';
+const REVIEW_FILE_FAILED = 'REVIEW_FILE_FAILED';
+const REVIEW_FILE_SUCCEEDED = 'REVIEW_FILE_SUCCEEDED';
+const FETCH_ISADMIN_STARTED = 'FETCH_ISADMIN_STARTED';
+const FETCH_ISADMIN_FAILED = 'FETCH_ISADMIN_FAILED';
+const FETCH_ISADMIN_SUCCEDED ='FETCH_ISADMIN_SUCCEDED';
 
 const reducer: (state: RoomState, action: ActionProps) => RoomState =
     (state, {type, payload}) => {
@@ -104,9 +113,30 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 return {...state, fetchingFile: false,fetchingFileError: payload.error}
             case FETCH_FILE_SUCCEEDED:
                 return {...state, fetchingFile: false, file: payload.file}
+
+
+            case REVIEW_FILE_STARTED:
+                return state;
+            case REVIEW_FILE_FAILED:
+                return state;
+            case REVIEW_FILE_SUCCEEDED:
+                let files3 = state.files;
+                var i, poz = 0;
+                for(i = 0; i < files3.length; i = i + 1)
+                    if ( files3[i].fileId === state.fileId )
+                        poz = i;
+                files3.splice(poz,i)
+
+
+            case FETCH_ISADMIN_STARTED:
+                return state;
+            case FETCH_ISADMIN_FAILED:
+                return {...state, isAdmin: false}
+            case FETCH_ISADMIN_SUCCEDED:
+                return {...state, isAdmin: true}
+
             default:
                 return state;
-
         }
     };
 
@@ -117,14 +147,16 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
 
-            useEffect(fetchFilesEffect, []);
-            useEffect(fetchFileEffect, [state.fileId]);
-            return {state, uploadFile, hideUploadFile, showUploadFile}
+            const reviewFile = useCallback<ReviewFileFn>(reviewFileCallback, []);
+
+            useEffect(fetchFilesEffect, [token]);
+            useEffect(fetchFileEffect, [state.fileId,token]);
+            useEffect(fetchIsAdminEffect, [token])
+            return {state, uploadFile, hideUploadFile, showUploadFile, reviewFile}
 
             async function hideUploadFileCallback() {
                 log('hide UploadFile Popover');
-                dispatch({type: HIDE_ADD_FILE
-                })
+                dispatch({type: HIDE_ADD_FILE})
             }
 
             async function showUploadFileCallback() {
@@ -132,18 +164,62 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 dispatch({type: SHOW_ADD_FILE})
             }
 
+            async function reviewFileCallback(fileId: string, type: string) 
+            {
+                try {
+                    log('acceptFile started');
+                    dispatch({type: REVIEW_FILE_STARTED});
+                    if (type === "accept") {
+                        const response = await acceptFile(token, fileId);
+                    }
+                    else {
+                        const response = await denyFile(token, fileId);
+                    }
+                    dispatch({type: REVIEW_FILE_SUCCEEDED});
+                }
+                catch(error) {
+                    dispatch({type: REVIEW_FILE_FAILED, payload: {error}})
+                }
+            }
+
             async function uploadFileCallback(file: FormData, routeId: string) {
                 try {
                     log('uploadFile started');
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
-                    console.log(routeId)
+                    //console.log(routeId)
                     const response = await uploadFileApi(token, file,routeId);
-                    console.log(response)
+                    //console.log(response)
                     dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: response}})
                 }
                 catch(error) {
                     dispatch({type: UPLOAD_FILE_FAILED, payload: {error}})
+                }
+            }
+
+            function fetchIsAdminEffect() {
+                let canceled = false;
+                fetchIsAdmin();
+                return () => {
+                    canceled = true;
+                }
+
+                async function fetchIsAdmin() {
+                    if (!token?.trim()) {
+                        return;
+                    }
+
+                    try {
+                        log('fetchIsAdmin started')
+                        dispatch({type: FETCH_ISADMIN_STARTED})
+                        let result = await isAdmin(token, roomId)
+                        if(!canceled) {
+                            dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: result}})
+                        }
+                    }
+                    catch (error) {
+                        dispatch({type: FETCH_ISADMIN_FAILED, payload: {error}})
+                    }
                 }
             }
 
@@ -164,7 +240,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         dispatch({type: FETCH_FILES_STARTED})
                         console.log(roomId)
                         console.log("ROOM ID")
-                        let result = await getFiles(token, roomId)
+                        let result = await getInReviewFiles(token, roomId)
                         console.log(result)
                         //let result: FileProps[] = [];
                         log('fetchFiles succeeded');
@@ -174,7 +250,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     }
                     catch (error) {
                         log('fetchFiles failed')
-                        dispatch({type: FETCH_FILES_SUCCEEDED, payload: {error}})
+                        dispatch({type: FETCH_FILES_FAILED, payload: {error}})
                     }
                 }
             }

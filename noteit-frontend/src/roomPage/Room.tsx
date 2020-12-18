@@ -11,10 +11,10 @@ interface RoomPageProps extends RouteComponentProps<{
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state, uploadFile, hideUploadFile, showUploadFile} = useRoom(match.params.id);
+  const {state, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
-    fetchingFile, fetchingFileError
+    fetchingFile, fetchingFileError, isAdmin
   } = state
 
   const roomId = match.params.id
@@ -66,8 +66,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                   <IonCardContent>
                                     {console.log(files)}
                                     {files && (<IonList>
-                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)
-                                            }}></MyFile>
+                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
                                         )}</IonList>)}
                                     {files.length === 0 &&  <IonList>
                                           <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} onView={() => {}}> </MyFile>

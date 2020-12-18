@@ -1,5 +1,5 @@
 export interface FileProps {
-    fileId?: string;
+    fileId: string;
     name: string;
     type: string;
     username: string;
@@ -7,4 +7,6 @@ export interface FileProps {
     URL: string;
     size: string;
     onView?: () => void;
+    onReview?: (fileId: string, type: string) => void;
+    isAdmin?: boolean;
 }
