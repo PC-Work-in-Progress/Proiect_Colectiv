@@ -92,16 +92,15 @@ public class AuthController {
             // SUCCESS
             default:
                 // Creating user's account
-                Long userId = Long.valueOf(1);
-                if (userRepository.getMaxId() != null) {
-                    userId = userRepository.getMaxId() + 1;
-                }
-                UserEntity user = new UserEntity(signUpRequest.getEmail(), "token" + userId,
+
+                UserEntity user = new UserEntity(signUpRequest.getEmail(), "token",
                         signUpRequest.getFull_name(), signUpRequest.getUsername(), signUpRequest.getPassword());
 
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+
                 UserEntity result = userRepository.save(user);
+                userRepository.updateToken(user.getUsername(), "token" + user.getId());
 
                 URI location = ServletUriComponentsBuilder
                         .fromCurrentContextPath().path("/users/{username}")

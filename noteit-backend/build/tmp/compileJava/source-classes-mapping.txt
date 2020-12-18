@@ -18,24 +18,24 @@ com/noteit/noteit/services/RoomServiceInterface.java
  com.noteit.noteit.services.RoomServiceInterface
 com/noteit/noteit/files/message/ResponseFile.java
  com.noteit.noteit.files.message.ResponseFile
-com/noteit/noteit/security/UserPrincipal.java
- com.noteit.noteit.security.UserPrincipal
 com/noteit/noteit/security/JwtTokenProvider.java
  com.noteit.noteit.security.JwtTokenProvider
-com/noteit/noteit/security/CustomUserDetailsService.java
- com.noteit.noteit.security.CustomUserDetailsService
-com/noteit/noteit/services/UserServiceImplementation.java
- com.noteit.noteit.services.UserServiceImplementation
+com/noteit/noteit/hwrecognition/TextDetector.java
+ com.noteit.noteit.hwrecognition.TextDetector
+com/noteit/noteit/entities/FileTagPK.java
+ com.noteit.noteit.entities.FileTagPK
+com/noteit/noteit/entities/TagEntity.java
+ com.noteit.noteit.entities.TagEntity
 com/noteit/noteit/exception/ResourceNotFoundException.java
  com.noteit.noteit.exception.ResourceNotFoundException
-com/noteit/noteit/entities/UserEntity.java
- com.noteit.noteit.entities.UserEntity
+com/noteit/noteit/payload/JwtAuthenticationResponse.java
+ com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/repositories/TagRepository.java
  com.noteit.noteit.repositories.TagRepository
 com/noteit/noteit/services/TestServiceImplementation.java
  com.noteit.noteit.services.TestServiceImplementation
-com/noteit/noteit/files/service/FileStorageService.java
- com.noteit.noteit.files.service.FileStorageService
+com/noteit/noteit/files/controller/FileController.java
+ com.noteit.noteit.files.controller.FileController
 com/noteit/noteit/controller/UserRoomController.java
  com.noteit.noteit.controller.UserRoomController
 com/noteit/noteit/files/message/ResponseContentFile.java
@@ -67,12 +67,14 @@ com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$SQLiteUniqueDelegate
 com/noteit/noteit/services/TestServiceInterface.java
  com.noteit.noteit.services.TestServiceInterface
-com/noteit/noteit/repositories/UserRepository.java
- com.noteit.noteit.repositories.UserRepository
+com/noteit/noteit/entities/FileTagEntity.java
+ com.noteit.noteit.entities.FileTagEntity
 com/noteit/noteit/files/dtos/FileDbDto.java
  com.noteit.noteit.files.dtos.FileDbDto
-com/noteit/noteit/services/RoomServiceImplementation.java
- com.noteit.noteit.services.RoomServiceImplementation
+com/noteit/noteit/helper/mapper/RoomMapper.java
+ com.noteit.noteit.helper.mapper.RoomMapper
+com/noteit/noteit/files/dtos/FileRoomDto.java
+ com.noteit.noteit.files.dtos.FileRoomDto
 com/noteit/noteit/config/SecurityConfig.java
  com.noteit.noteit.config.SecurityConfig
 com/noteit/noteit/entities/TestEntity.java
@@ -109,24 +111,26 @@ com/noteit/noteit/dtos/UserDto.java
  com.noteit.noteit.dtos.UserDto
 com/noteit/noteit/files/repository/FileRoomDBRepository.java
  com.noteit.noteit.files.repository.FileRoomDBRepository
+com/noteit/noteit/payload/ApiResponse.java
+ com.noteit.noteit.payload.ApiResponse
+com/noteit/noteit/security/UserPrincipal.java
+ com.noteit.noteit.security.UserPrincipal
+com/noteit/noteit/controller/UserController.java
+ com.noteit.noteit.controller.UserController
+com/noteit/noteit/repositories/UserRepository.java
+ com.noteit.noteit.repositories.UserRepository
+com/noteit/noteit/security/CustomUserDetailsService.java
+ com.noteit.noteit.security.CustomUserDetailsService
+com/noteit/noteit/services/UserServiceImplementation.java
+ com.noteit.noteit.services.UserServiceImplementation
 com/noteit/noteit/helper/mapper/UserMapper.java
  com.noteit.noteit.helper.mapper.UserMapper
+com/noteit/noteit/services/RoomServiceImplementation.java
+ com.noteit.noteit.services.RoomServiceImplementation
+com/noteit/noteit/entities/UserEntity.java
+ com.noteit.noteit.entities.UserEntity
+com/noteit/noteit/files/service/FileStorageService.java
+ com.noteit.noteit.files.service.FileStorageService
 com/noteit/noteit/controller/AuthController.java
  com.noteit.noteit.controller.AuthController
  com.noteit.noteit.controller.AuthController$1
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController
-com/noteit/noteit/payload/JwtAuthenticationResponse.java
- com.noteit.noteit.payload.JwtAuthenticationResponse
-com/noteit/noteit/helper/mapper/RoomMapper.java
- com.noteit.noteit.helper.mapper.RoomMapper
-com/noteit/noteit/payload/ApiResponse.java
- com.noteit.noteit.payload.ApiResponse
-com/noteit/noteit/entities/TagEntity.java
- com.noteit.noteit.entities.TagEntity
-com/noteit/noteit/entities/FileTagPK.java
- com.noteit.noteit.entities.FileTagPK
-com/noteit/noteit/entities/FileTagEntity.java
- com.noteit.noteit.entities.FileTagEntity
-com/noteit/noteit/controller/UserController.java
- com.noteit.noteit.controller.UserController
