@@ -1,0 +1,18 @@
+.grid {
+    height: 100%;
+}
+
+.rows {
+    height: 33%;
+}
+
+.note-error {
+    color: #990b0b;
+}
+
+.flex-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #E9ECEF;
+}
