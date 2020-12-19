@@ -27,10 +27,12 @@ export const getApprovedFiles: (token: string, roomId: string) => Promise<FilePr
 }
 
 export const getInReviewFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
+    console.log(token);
     return withLogs(axios.get(`http://${baseUrl}/api/files/InReviewFiles?roomId=${roomId}`, getFilesConfig(token)), 'getFiles');
 }
 
 export const acceptFile: (token: string, fileId: string) => Promise<ResponseMessage> = (token, fileId) => {
+    console.log(token);
     return withLogs(axios.put(`http://${baseUrl}/api/files/AcceptFile/${fileId}`,{}, reviewFileConfig(token)), 'acceptFile');
 }
 
@@ -53,6 +55,7 @@ export interface UploadResponse {
     message: string;
 } 
 
-export const uploadFile: (token: string, file: FormData, roomId: string) => Promise<FileProps> = (token, file, roomId) => {
-    return withLogs(axios.post(`http://${baseUrl}/api/files/UploadFile?roomId=${roomId}&tags=tag1`,file, uploadConfig(token)), 'uploadFile');
+export const uploadFile: (token: string, file: FormData, roomId: string, tags: string) => Promise<FileProps> = (token, file, roomId, tags) => {
+    console.log(token);
+    return withLogs(axios.post(`http://${baseUrl}/api/files/UploadFile?roomId=${roomId}&tags=${tags}`,file, uploadConfig(token)), 'uploadFile');
 }   

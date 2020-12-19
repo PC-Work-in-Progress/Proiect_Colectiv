@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonList, IonLoading, IonPopover, IonRow } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonList, IonLoading, IonPopover, IonRow } from "@ionic/react";
 import React, { useRef } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Header } from "../layout/Header";
@@ -11,12 +11,13 @@ interface RoomPageProps extends RouteComponentProps<{
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
+  const {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
-    fetchingFile, fetchingFileError, isAdmin
-  } = state
+    fetchingFile, fetchingFileError, isAdmin, acceptedFiles
+  } = state;
 
+  let { tags } = state;
   const roomId = match.params.id
   interface InternalValues {
     file: any;
@@ -40,7 +41,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     formData.append("file", values.current.file, values.current.file.name);
     console.log(formData.get("file"));
     try {
-     uploadFile(formData, roomId)
+     uploadFile(formData, roomId, tags)
     } catch (err) {
       console.log(err);
     }
@@ -58,18 +59,17 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                 </IonPopover>
                 <IonGrid>
                   <IonRow >
-                            <IonCol size="8.5"></IonCol>
+                            <IonCol size="8.5">
                               <IonCard>
                                   <IonCardHeader>
-                                      <IonCardTitle>Room files</IonCardTitle>
+                                      <IonCardTitle>In Review files</IonCardTitle>
                                   </IonCardHeader>
                                   <IonCardContent>
-                                    {console.log(files)}
-                                    {files && (<IonList>
-                                        {files.map(({fileId,name,type,username,date,URL,size}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
+                                    {files && isAdmin && (<IonList>
+                                        {files.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved = {1} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
                                         )}</IonList>)}
                                     {files.length === 0 &&  <IonList>
-                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} onView={() => {}}> </MyFile>
+                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in review"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={1} onView={() => {}}> </MyFile>
                                     </IonList>
                                     }
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
@@ -77,6 +77,24 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                        <div className="create-room-error">{fetchingFilesError.message}</div>}
                                     </IonCardContent>
                               </IonCard>
+                              <IonCard>
+                                <IonCardHeader>
+                                      <IonCardTitle>Room files</IonCardTitle>
+                                </IonCardHeader>
+                                <IonCardContent>
+                                  {acceptedFiles && (<IonList>
+                                        {acceptedFiles.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved={0} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
+                                        )}</IonList>)}
+                                    {acceptedFiles.length === 0 &&  <IonList>
+                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in room"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={0} onView={() => {}}> </MyFile>
+                                    </IonList>
+                                    }
+                                    <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
+                                    {fetchingFilesError &&
+                                       <div className="create-room-error">{fetchingFilesError.message}</div>} 
+                                </IonCardContent>
+                              </IonCard>
+                              </IonCol>
                             <IonCol size="3.5">
                                 
                                     {/*
@@ -85,6 +103,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                       */}
                                         <IonItem> <input type="file" onChange={(ev) => onFileChange(ev)}></input>
                                         </IonItem>
+                                        <IonInput placeholder="tags" value={tags} onIonInput={(e: any) => {tags = e.target.value}}/> 
                                         <IonButton color="primary" expand="full" onClick={() => submitForm()}>
                                           Upload
                                         </IonButton>
