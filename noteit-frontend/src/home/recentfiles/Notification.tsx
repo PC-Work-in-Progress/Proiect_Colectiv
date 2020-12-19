@@ -5,7 +5,7 @@ import {NotificationProps} from "./NotificationProps";
 
 export const Notification: React.FC<NotificationProps> = ({onView, userName, roomName, fileId, fileName, fileDate, tags}) => {
     return (
-        <IonItem key={fileId} onClick={() => onView()}>
+        <IonItem button={true} key={fileId} onClick={() => onView()}>
             <IonLabel>
                 <span className="title bold">{fileName}</span>
                 {tags.slice(0, 3).map(tag =>

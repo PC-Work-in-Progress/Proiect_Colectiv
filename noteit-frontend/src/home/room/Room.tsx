@@ -6,7 +6,7 @@ import {RoomProps} from "./RoomProps";
 
 export const Room: React.FC<RoomProps> = ({name, id, onView}) => {
     return (
-        <IonItem onClick={() => onView?.()}>
+        <IonItem button={true} onClick={() => onView?.()}>
             <IonLabel class="bold">{name}</IonLabel>
             <IonButton fill="clear" slot="end">
                 <IonIcon color="dark" icon={closeSharp}/>
