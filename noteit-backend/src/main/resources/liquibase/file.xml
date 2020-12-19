@@ -41,4 +41,8 @@
             <column name="name" type="varchar(250)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="drop_approved" author="cris">
+        <dropColumn tableName="file" schemaName="public" columnName="approved"/>
+    </changeSet>
 </databaseChangeLog>

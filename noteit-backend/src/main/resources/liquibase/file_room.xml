@@ -14,4 +14,21 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="20122020-moved_approved_field" author="cris">
+        <addColumn tableName="file_room" schemaName="public">
+            <column name="approved" type="integer">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="20122020-added_views_and_downloads" author="cris">
+        <addColumn tableName="file_room" schemaName="public">
+            <column name="views" type="integer"/>
+        </addColumn>
+        <addColumn tableName="file_room" schemaName="public">
+            <column name="downloads" type="integer"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
