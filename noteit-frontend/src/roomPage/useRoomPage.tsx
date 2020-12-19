@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useReducer } from "react";
+import { useCallback, useContext, useEffect, useReducer, useState } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
@@ -7,12 +7,13 @@ import {uploadFile as uploadFileApi} from "./roomApi"
 
 const log = getLogger("useRoomPage");
 
-export type UploadFileFn = (file: FormData, routeId: string) => void;
+export type UploadFileFn = (file: FormData, routeId: string, tags: string) => void;
 export type HideUploadFileFn = () => void;
 export type ReviewFileFn = (fileId: string, type: string) => void;
 
 interface RoomState {
     files: FileProps[];
+    acceptedFiles: FileProps[];
     file: FileProps;
     fileId: string;
     showAddFile: boolean;
@@ -23,10 +24,12 @@ interface RoomState {
     fetchingFile: boolean; 
     fetchingFileError?: Error | null;
     isAdmin: boolean;
+    tags: string,
 }
 
 const initialState: RoomState = {
     files: [],
+    acceptedFiles: [],
     fileId: "file1",
     file: {
         fileId: "",
@@ -35,13 +38,15 @@ const initialState: RoomState = {
         type: "",
         date: "",
         size: "",
-        URL: ""
+        URL: "",
+        approved: 0
     },
     showAddFile: false,
     uploading: false,
     fetchingFiles: false,
     fetchingFile: false,
-    isAdmin: false
+    isAdmin: false,
+    tags: ""
 }
 
 interface ActionProps {
@@ -94,7 +99,8 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             case FETCH_FILES_FAILED:
                 return {... state, fetchingFiles: false, fetchingFileError: payload.error}
             case FETCH_FILES_SUCCEEDED:
-                let files2 = state.files;
+                let files2 = payload.files;
+                /*
                 payload.files.forEach((file: FileProps) => {
                 const index = state.files.findIndex(f => f.fileId === file.fileId);
                 if (index === -1) {
@@ -103,9 +109,23 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     files2[index] = file;
                     //files2.push(file);
                 }
-                console.log(files2);
+                //console.log(files2);
                 })
-                return {...state, fetchingFiles: false, files: files2}
+                */
+                let acceptedFiles1 = payload.acceptedFiles;
+                /*
+                payload.acceptedFiles.forEach((afile: FileProps) => {
+                    const index = state.acceptedFiles.findIndex(f => f.fileId === afile.fileId);
+                    if (index === -1) {
+                        acceptedFiles1.push(afile);
+                    } else {
+                        acceptedFiles1[index] = afile;
+                        //files2.push(file);
+                    }
+                    //console.log(files2);
+                    })
+                */
+                return {...state, fetchingFiles: false, files: files2, acceptedFiles: acceptedFiles1}
 
             case FETCH_FILE_STARTED:
                 return {...state, fetchingFile: true,fetchingFileError: null }
@@ -121,12 +141,16 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 return state;
             case REVIEW_FILE_SUCCEEDED:
                 let files3 = state.files;
+                let acceptedFiles3 = state.acceptedFiles;
                 var i, poz = 0;
                 for(i = 0; i < files3.length; i = i + 1)
                     if ( files3[i].fileId === payload.fileId )
                         poz = i;
+                if(payload.type == "accept")
+                    acceptedFiles3.push(files3[poz])
                 files3.splice(poz,1)
-                return {...state, files: files3}
+                
+                return {...state, files: files3, acceptedFiles: acceptedFiles3}
 
 
             case FETCH_ISADMIN_STARTED:
@@ -142,18 +166,20 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
     };
 
         export const useRoom = (roomId: string) => {
+            const [ignored, setState] = useState<RoomState>(initialState);
             const {token} = useContext(AuthContext);
             const [state, dispatch] = useReducer(reducer, initialState);
             const uploadFile = useCallback<UploadFileFn>(uploadFileCallback, [token]);
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
 
-            const reviewFile = useCallback<ReviewFileFn>(reviewFileCallback, []);
+            const reviewFile = useCallback<ReviewFileFn>(reviewFileCallback, [token]);
 
             useEffect(fetchFilesEffect, [token]);
             useEffect(fetchFileEffect, [state.fileId,token]);
             useEffect(fetchIsAdminEffect, [token])
-            return {state, uploadFile, hideUploadFile, showUploadFile, reviewFile}
+
+            return {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile}
 
             async function hideUploadFileCallback() {
                 log('hide UploadFile Popover');
@@ -170,26 +196,27 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 try {
                     log('acceptFile started');
                     dispatch({type: REVIEW_FILE_STARTED});
+                    console.log(token);
                     if (type === "accept") {
                         const response = await acceptFile(token, fileId);
                     }
                     else {
                         const response = await denyFile(token,roomId, fileId);
                     }
-                    dispatch({type: REVIEW_FILE_SUCCEEDED, payload: {fileId}});
+                    dispatch({type: REVIEW_FILE_SUCCEEDED, payload: {fileId: fileId, type: type}});
                 }
                 catch(error) {
                     dispatch({type: REVIEW_FILE_FAILED, payload: {error}})
                 }
             }
 
-            async function uploadFileCallback(file: FormData, routeId: string) {
+            async function uploadFileCallback(file: FormData, routeId: string, tags: string) {
                 try {
                     log('uploadFile started');
                     dispatch({type: UPLOAD_FILE_STARTED});
                     // File check and upload
                     //console.log(routeId)
-                    const response = await uploadFileApi(token, file,routeId);
+                    const response = await uploadFileApi(token, file,routeId, tags);
                     //console.log(response)
                     dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: response}})
                 }
@@ -239,14 +266,12 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     try {
                         log('fetchFiles started')
                         dispatch({type: FETCH_FILES_STARTED})
-                        console.log(roomId)
-                        console.log("ROOM ID")
-                        let result = await getInReviewFiles(token, roomId)
-                        console.log(result)
+                        let result = await getInReviewFiles(token, roomId);
+                        let result2 = await getApprovedFiles(token, roomId);
                         //let result: FileProps[] = [];
                         log('fetchFiles succeeded');
                         if(!canceled) {
-                            dispatch({type: FETCH_FILES_SUCCEEDED, payload: {files: result}})
+                            dispatch({type: FETCH_FILES_SUCCEEDED, payload: {files: result, acceptedFiles: result2}})
                         }
                     }
                     catch (error) {
