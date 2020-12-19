@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20122020-create_rank" author="cris">
+        <createTable tableName="rank">
+            <column name="id" type="varchar(250)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rank_name" type="varchar(100)">
+                <constraints unique="true"/>
+            </column>
+            <column name="minimum_score" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

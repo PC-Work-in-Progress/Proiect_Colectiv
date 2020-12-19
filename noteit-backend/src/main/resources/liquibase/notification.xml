@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20122020-create_notification" author="cris">
+        <createTable tableName="notification">
+            <column name="id" type="varchar(250)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="varchar(250)">
+                <constraints foreignKeyName="id" references="user(id)"/>
+            </column>
+            <column name="message" type="varchar(250)"/>
+            <column name="viewed" type="integer">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
