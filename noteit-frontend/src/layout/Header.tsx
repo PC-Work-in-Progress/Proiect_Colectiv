@@ -22,6 +22,9 @@ export const Header: React.FC = () => {
                     </IonButtons>
                     {token !== "" && (
                     <IonButtons slot="end" >
+                        <IonButton class="header-button" href="/discover">
+                            <IonLabel class="ion-padding">Discover rooms</IonLabel>
+                        </IonButton>
                         <IonButton class="header-button" href="/user">
                             <IonLabel class="ion-padding">User</IonLabel>
                         </IonButton>
