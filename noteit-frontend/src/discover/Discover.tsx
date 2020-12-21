@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
-    IonButtons,
+    IonButton,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -8,21 +8,33 @@ import {
     IonCol,
     IonContent,
     IonGrid,
-    IonRow, IonSearchbar
+    IonList,
+    IonRow,
+    IonSearchbar, IonTabButton
 } from '@ionic/react';
 import {Header} from "../layout/Header";
 import {getLogger} from "../shared";
 import {RouteComponentProps} from "react-router";
 import "./Discover.css"
+import {TagProps, useDiscover} from "./useDiscover";
+import {Room} from "./Room";
+import {Tag} from "./Tag";
 
 const log = getLogger("Discover");
 
+export interface TagCheck extends TagProps {
+    checked: boolean;
+}
+
+const initialState: TagCheck[] = []
+
+
 export const Discover: React.FC<RouteComponentProps> = ({history}) => {
-    // const {state, createRoom, hideCreateRoom, showCreateRoom, nextPage, previousPage} = useHome();
-    // const {
-    //     rooms, user, recentFiles, showAddRoom, creatingError, creating, fetchingRoomsError, fetchingRooms,
-    //     fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications, notificationsPage, previousNotifications
-    // } = state;
+    const {state, changeSearch, filterRooms} = useDiscover();
+    const [tagCheck, setTagCheck] = useState(initialState);
+    const {rooms, fetchingRoomsError, fetchingRooms, searchText, tags} = state;
+
+    useEffect(initializeTagState, [tags]);
 
     return (
         <IonContent class="fullscreen">
@@ -36,11 +48,20 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                                     <IonCardTitle>Filter</IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
-                                    {/*{rooms && (<IonList class="list-size">*/}
-                                    {/*    {rooms.map(({id, name}) => <Room onView={() => {*/}
-                                    {/*        history.push(`/room/${id}`)*/}
-                                    {/*    }} name={name} id={id} key={id}/>)}*/}
-                                    {/*</IonList>)}*/}
+                                    {tagCheck && (<IonList>
+                                        {tagCheck.map(({id, name, checked}) => <Tag
+                                            onCheck={() => {
+                                                log("changeCheck");
+                                                const index = tagCheck.findIndex(t => t.id === id);
+                                                tagCheck[index].checked = !tagCheck[index].checked;
+                                                setTagCheck(tagCheck);
+                                            }}
+                                            checked={checked}
+                                            name={name} id={id} key={id}/>)}
+                                    </IonList>)}
+                                    <div className="filter-button"><IonButton onClick={() => {
+                                        filterByTags();
+                                    }}>Filter</IonButton></div>
                                     {/*<IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>*/}
                                     {/*{fetchingRoomsError &&*/}
                                     {/*<div className="create-room-error">{fetchingRoomsError.message}</div>}*/}
@@ -48,10 +69,14 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                             </IonCard>
                         </IonCol>
                         <IonCol class="fullscreen" size="8">
-                            <IonSearchbar showCancelButton="focus"/>
-                            <IonCard class="notification-list-card">
+                            <IonSearchbar placeholder="Room name" value={searchText}
+                                          onIonChange={e => {
+                                              changeSearch(e.detail.value!);
+                                          }}
+                                          debounce={700}/>
+                            <IonCard class="room-list-card">
                                 <IonCardHeader>
-                                    <div className="recent-files-title">
+                                    <div className="rooms-title">
                                         {/*<IonButtons>*/}
                                         {/*<IonButton disabled={!previousNotifications}*/}
                                         {/*           onClick={async () => {*/}
@@ -72,24 +97,18 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                                     </div>
                                 </IonCardHeader>
                                 <IonCardContent>
-                                    {/*<IonList class="notification-list">*/}
-                                    {/*{recentFiles.length > 0 && (*/}
-                                    {/*    recentFiles*/}
-                                    {/*        .map(({fileId, fileName, roomName, userName, fileDate, tags, roomId}) =>*/}
-                                    {/*            <Notification key={fileId}*/}
-                                    {/*                          fileId={fileId}*/}
-                                    {/*                          fileName={fileName}*/}
-                                    {/*                          roomName={roomName}*/}
-                                    {/*                          userName={userName}*/}
-                                    {/*                          fileDate={fileDate}*/}
-                                    {/*                          tags={tags}*/}
-                                    {/*                          roomId={roomId}*/}
-                                    {/*                          onView={() => {*/}
-                                    {/*                              history.push(`/room/${roomId}/${fileId}`)*/}
-                                    {/*                          }}/>)*/}
-                                    {/*        .slice(notificationsPage * 15, getRecentFilesNr())*/}
-                                    {/*)}*/}
-                                    {/*</IonList>*/}
+                                    <IonList class="room-list">
+                                        {rooms.length > 0 && (
+                                            rooms
+                                                .map(({id, name}) =>
+                                                    <Room key={id}
+                                                          id={id}
+                                                          name={name}
+                                                          onView={() => {
+                                                              history.push(`/room/${id}`)
+                                                          }}/>)
+                                        )}
+                                    </IonList>
                                     {/*<IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>*/}
                                 </IonCardContent>
                             </IonCard>
@@ -101,6 +120,24 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
             </div>
         </IonContent>
     );
+
+    function initializeTagState() {
+        let result: TagCheck[] = [];
+        tags.forEach(t => {
+            result.push({id: t.id, name: t.name, checked: false});
+        })
+        setTagCheck(result);
+    }
+
+    function filterByTags() {
+        const tagList: string[] = [];
+        tagCheck.forEach(t => {
+            if (t.checked) {
+                tagList.push(t.name);
+            }
+        })
+        filterRooms(tagList);
+    }
 
     // function getRecentFilesNr() {
     //     log("getRecentFilesNr");
