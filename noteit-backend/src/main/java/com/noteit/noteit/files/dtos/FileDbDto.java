@@ -18,7 +18,7 @@ public class FileDbDto {
     private String type;
     private String date;
     private String username;
-    private Integer size;
+    private Long size;
     private List<String> tags;
 
     public List<String> getTags() {
@@ -61,11 +61,11 @@ public class FileDbDto {
         this.username = username;
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 }

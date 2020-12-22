@@ -1,5 +1,6 @@
 package com.noteit.noteit.files.controller;
 
+import com.noteit.noteit.entities.RoomEntity;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.message.ResponseContentFile;
 import com.noteit.noteit.files.message.ResponseFile;
@@ -43,28 +44,26 @@ public class FileController {
     private RoomServiceImplementation roomService;
 
     @PostMapping("/UploadFile")
-    public ResponseEntity<?> uploadFile(@RequestParam  String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags,  @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> uploadFile(@RequestParam String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags, @RequestHeader Map<String, String> headers) {
         String message = "";
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
-        try {
-            roomService.getById(roomId);
-        }catch (Exception e){
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
-        }
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
@@ -93,99 +92,95 @@ public class FileController {
     }
 
     @GetMapping("/ApprovedFiles")
-    public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getApprovedFilesForRoom(@RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
-        if (roomId == null){
+        if (roomId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
-        try {
-            roomService.getById(roomId);
-        }catch (Exception e){
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
-        }
 
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
-        List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x->x.getApproved()==1).map(dbFile -> {
+        List<ResponseFile> files = fileService.getWrappedFilesForRoom(roomId).filter(x -> x.getApproved() == 1).map(wrappedFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/api/files/")
-                    .path(dbFile.getId())
+                    .path(wrappedFile.getFileId())
                     .toUriString();
 
             return new ResponseFile(
-                    dbFile.getName(),
+                    wrappedFile.getFileName(),
                     fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getSize(),
-                    dbFile.getDate(),
-                    userService.getUsernameById(dbFile.getUser_id()),
-                    dbFile.getId());
+                    wrappedFile.getFileType(),
+                    wrappedFile.getSize(),
+                    wrappedFile.getDate(),
+                    wrappedFile.getUsername(),
+                    wrappedFile.getFileId());
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
     @GetMapping("/InReviewFiles")
-    public ResponseEntity<?> getInReviewFiles(@RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getInReviewFiles(@RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
-        if (roomId == null){
+        if (roomId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
-        try {
-            roomService.getById(roomId);
-        }catch (Exception e){
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
-        }
 
-        List<ResponseFile> files = fileService.getFilesForRoom(roomId).filter(x->x.getApproved()==0).map(dbFile -> {
+        List<ResponseFile> files = fileService.getWrappedFilesForRoom(roomId).filter(x -> x.getApproved() == 0).map(wrappedFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/api/files/")
-                    .path(dbFile.getId())
+                    .path(wrappedFile.getFileId())
                     .toUriString();
 
             return new ResponseFile(
-                    dbFile.getName(),
+                    wrappedFile.getFileName(),
                     fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getSize(),
-                    dbFile.getDate(),
-                    userService.getUsernameById(dbFile.getUser_id()),
-                    dbFile.getId());
+                    wrappedFile.getFileType(),
+                    wrappedFile.getSize(),
+                    wrappedFile.getDate(),
+                    wrappedFile.getUsername(),
+                    wrappedFile.getFileId());
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);
@@ -194,26 +189,26 @@ public class FileController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
-        if (fullToken == null){
+        if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
         }
-        var elems =fullToken.split(" ");
+        var elems = fullToken.split(" ");
         String token = elems[1];
 
         String userId = null;
         try {
             userId = userService.getUserIdByToken(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        if (userId == null){
+        if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
         FileDB fileDB;
         try {
             fileDB = fileService.getById(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File not found"));
 
         }
@@ -221,7 +216,7 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-                .body(new ResponseContentFile(fileDB.getUploaded_file() ,fileDB.getName()));
+                .body(new ResponseContentFile(fileDB.getUploaded_file(), fileDB.getName()));
     }
 
 
@@ -251,7 +246,7 @@ public class FileController {
     }
 
     @PutMapping("/AcceptFile/{id}")
-    public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
@@ -269,19 +264,22 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
+
         try {
-            var f = fileService.acceptFile(id);
-            if (f != null)
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File accepted successfully!"));
-            else
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseMessage("Conflict with current state! File already accepted!"));
+            fileService.acceptFile(id, roomId);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File accepted successfully!"));
+        } catch (FileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not accept this file! Invalid id!"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not accept this file! Something went wrong!"));
         }
     }
 
     @PutMapping("/DenyFile/{id}")
-    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestParam  String roomId, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<ResponseMessage> denyFile(@PathVariable String id, @RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
@@ -299,15 +297,13 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
-        if (roomId == null){
+        if (roomId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
         }
 
-        try {
-            roomService.getById(roomId);
-        }catch (Exception e){
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
-        }
 
         try {
             var f = fileService.denyFile(id, roomId);
@@ -321,7 +317,7 @@ public class FileController {
     }
 
     @PostMapping("/recognition")
-    public ResponseEntity<byte[]> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers){
+    public ResponseEntity<byte[]> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String userId = headers.get("authorization");
         try {
             String resultPath = fileService.detectHandwriting(file, userId);
@@ -330,7 +326,7 @@ public class FileController {
             // work only for 2GB file, because array index can only up to Integer.MAX
             // change it into something that can support bigger files
 
-            byte[] buffer = new byte[(int)f.length()];
+            byte[] buffer = new byte[(int) f.length()];
             FileInputStream is = new FileInputStream(resultPath);
             is.read(buffer);
             is.close();
@@ -352,14 +348,11 @@ public class FileController {
             }
 
             String authToken = header.split(" ")[1];
-            if (pageNumber == null)
-            {
+            if (pageNumber == null) {
                 throw new ServiceException("Header params are missing");
             }
             return ResponseEntity.ok().body(fileService.getRecentFilesFromToken(authToken, Integer.parseInt(pageNumber)));
-        }
-        catch (ServiceException e)
-        {
+        } catch (ServiceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -375,9 +368,7 @@ public class FileController {
             String authToken = header.split(" ")[1];
             System.out.println(authToken);
             return ResponseEntity.ok().body(fileService.getSearchedFilesFromName(authToken, filename));
-        }
-        catch (ServiceException e)
-        {
+        } catch (ServiceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -392,9 +383,7 @@ public class FileController {
             }
             String authToken = header.split(" ")[1];
             return ResponseEntity.ok().body(fileService.getSearchedFilesFromTag(authToken, tag));
-        }
-        catch (ServiceException e)
-        {
+        } catch (ServiceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

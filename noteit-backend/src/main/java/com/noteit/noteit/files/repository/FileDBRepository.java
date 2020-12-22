@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface FileDBRepository extends JpaRepository<FileDB, String> {
-    FileDB findByNameAndTypeAndSize(String name, String type, Integer size);
+    FileDB findByNameAndTypeAndSize(String name, String type, Long size);
     Optional<FileDB> findById(String id);
 }

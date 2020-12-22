@@ -7,6 +7,7 @@ import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.entities.TagEntity;
 import com.noteit.noteit.entities.UserRoomEntity;
 import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.files.dtos.FileDbWrapper;
 import com.noteit.noteit.files.dtos.FileRoomDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.mapper.FileDbMapper;
@@ -66,10 +67,10 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     /**
-     * @param file file to be saved
+     * @param file   file to be saved
      * @param userId id of user that sent the file
      * @param roomId id of room where we save the file
-     * @param tags string containing the tags given for file
+     * @param tags   string containing the tags given for file
      * @return saved FileDB
      * @throws IOException
      * @throws FileException if file is already in current room
@@ -78,7 +79,7 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Transactional
     public FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Integer size = file.getBytes().length;
+        Long size = (long)file.getBytes().length;
         FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
 
         if (cautat != null) {
@@ -95,7 +96,7 @@ public class FileStorageService implements FileStorageServiceInterface {
             } else {
                 System.out.println("se adauga in alt room");
                 //exista fisierul in alt room
-                fileRoomDBRepository.save(new FileRoomDB(new FileRoomCompositePK(roomId, cautat.getId())));
+                fileRoomDBRepository.save(new FileRoomDB(new FileRoomCompositePK(roomId, cautat.getId(), userId)));
                 saveTags(tags, cautat.getId());
                 return cautat;
             }
@@ -104,9 +105,9 @@ public class FileStorageService implements FileStorageServiceInterface {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
             Date date = new Date(System.currentTimeMillis());
             String data = formatter.format(date);
-            FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes(), data, userId);
+            FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes(), data);
             FileDB saved = fileDBRepository.save(fileDB);
-            FileRoomDB f = new FileRoomDB(new FileRoomCompositePK(roomId, saved.getId()));
+            FileRoomDB f = new FileRoomDB(new FileRoomCompositePK(roomId, saved.getId(), userId));
             fileRoomDBRepository.save(f);
             saveTags(tags, saved.getId());
             return saved;
@@ -116,13 +117,13 @@ public class FileStorageService implements FileStorageServiceInterface {
 
 
     /**
-     * @param tags string that contains tags separated with ,
+     * @param tags   string that contains tags separated with ,
      * @param fileId id of file that contains given tags
      */
-    private void saveTags(String tags, String fileId){
+    private void saveTags(String tags, String fileId) {
         String[] elems = tags.strip().split(",");
-        for (String tag : elems){
-            if (tagRepository.findByName(tag) == null){
+        for (String tag : elems) {
+            if (tagRepository.findByName(tag) == null) {
                 TagEntity t = new TagEntity();
                 t.setName(tag);
                 TagEntity savedTag = tagRepository.save(t);
@@ -135,6 +136,7 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     /**
      * function that returns a stream with all files in a given room
+     *
      * @param roomId id of room
      * @return stream with files for specified room
      */
@@ -154,17 +156,18 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public FileDbDto getDetails(String id) {
-        Optional<FileDB> fileDBOptional = fileDBRepository.findById(id);
-        if(fileDBOptional.isEmpty())
-            throw new ServiceException("No file for this id");
-
-        FileDB fileDB = fileDBOptional.get();
-        List<FileTagEntity> entities = fileTagRepository.findById_FileId(fileDB.getId()).get();
-        List<String> tags = new ArrayList<>();
-        for(FileTagEntity ft: entities) {
-            tags.add(tagRepository.findById(ft.getId().getTagId()).get().getName());
-        }
-        return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
+//        Optional<FileDB> fileDBOptional = fileDBRepository.findById(id);
+//        if(fileDBOptional.isEmpty())
+//            throw new ServiceException("No file for this id");
+//
+//        FileDB fileDB = fileDBOptional.get();
+//        List<FileTagEntity> entities = fileTagRepository.findById_FileId(fileDB.getId()).get();
+//        List<String> tags = new ArrayList<>();
+//        for(FileTagEntity ft: entities) {
+//            tags.add(tagRepository.findById(ft.getId().getTagId()).get().getName());
+//        }
+//        return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
+        return null;
     }
 
 
@@ -181,22 +184,27 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     /**
      * function that marks a file as accepted
+     *
      * @param fileId id of file to accepted
      * @return the modified FileDB entitu
      */
     @Override
-    public FileDB acceptFile(String fileId) {
-        var f = fileDBRepository.findById(fileId).get();
-        if (f.getApproved().equals(1)) {
-            return null;
-        }
-        f.setApproved(1);
-        var a = fileDBRepository.save(f);
-        return a;
+    public void acceptFile(String fileId, String roomId) throws FileException {
+        var f = fileDBRepository.findById(fileId);
+        if (f.isEmpty())
+            throw new FileException("File not found!");
+
+        var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
+        if (fileRoom.isAccepted())
+            throw new FileException("Conflict with current state! File already accepted!");
+        fileRoomDBRepository.delete(fileRoom);
+        fileRoom.Accept();
+        fileRoomDBRepository.save(fileRoom);
     }
 
     /**
      * function that marks a file as denied
+     *
      * @param fileId id of file to be denied
      * @return the modified FileDB entity
      */
@@ -218,18 +226,26 @@ public class FileStorageService implements FileStorageServiceInterface {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String path = TEMP_PATH + "/images/" + fileName;
         File localFile = new File(path);
-        if(localFile.createNewFile()){
+        if (localFile.createNewFile()) {
 //            file.transferTo(localFile);
             OutputStream os = Files.newOutputStream(Paths.get(path));
             os.write(file.getBytes());
             os.close();
             return TextDetector.detectDocumentText(path);
-        }
-        else throw new IOException("Could not process image file " + fileName);
+        } else throw new IOException("Could not process image file " + fileName);
     }
 
-    public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber)
-    {
+    @Override
+    public Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId) {
+        return fileRoomDBRepository.findById_RoomId(roomId).stream()
+                .map(x -> {
+                    var fileDb = fileDBRepository.findById(x.getId().getFileId()).get();
+                    return new FileDbWrapper(fileDb.getName(), fileDb.getId(), fileDb.getType(), fileDb.getSize(), fileDb.getDate(), userRepository.findById(x.getId().getUserId()).get().getUsername(), x.getId().getApproved());
+                });
+    }
+
+
+    public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
         int filesPerPage = 15;
         int startFileIndex = pageNumber * filesPerPage;
@@ -237,27 +253,20 @@ public class FileStorageService implements FileStorageServiceInterface {
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
         List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
-        for (UserRoomEntity userRoomEntity : userRoomEntities)
-        {
+        for (UserRoomEntity userRoomEntity : userRoomEntities) {
             String roomId = userRoomEntity.getUserRoomId().getRoomId();
             Optional<RoomEntity> room = roomRepository.findById(roomId);
-            if (room.isPresent())
-            {
+            if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
-                for (FileRoomDB fileRoomDB : fileRoomDBList)
-                {
+                for (FileRoomDB fileRoomDB : fileRoomDBList) {
                     Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent())
-                    {
+                    if (fileDB.isPresent()) {
                         Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent())
-                        {
+                        if (fileTagEntities.isPresent()) {
                             List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
-                            {
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
                                 Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent())
-                                {
+                                if (tagEntity.isPresent()) {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
@@ -271,8 +280,7 @@ public class FileStorageService implements FileStorageServiceInterface {
 
         Collections.sort(fileRoomDtoList);
 
-        for (int currentFileIndex = startFileIndex; currentFileIndex <= startFileIndex + filesPerPage - 1 && currentFileIndex < fileRoomDtoList.size(); currentFileIndex++)
-        {
+        for (int currentFileIndex = startFileIndex; currentFileIndex <= startFileIndex + filesPerPage - 1 && currentFileIndex < fileRoomDtoList.size(); currentFileIndex++) {
             currentFileRoomDtoList.add(fileRoomDtoList.get(currentFileIndex));
         }
 
@@ -280,33 +288,25 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
-    public List<FileRoomDto> getSearchedFilesFromName(String token, String filename)
-    {
+    public List<FileRoomDto> getSearchedFilesFromName(String token, String filename) {
         UserEntity user = userRepository.findByToken(token);
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
         List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
-        for (UserRoomEntity userRoomEntity : userRoomEntities)
-        {
+        for (UserRoomEntity userRoomEntity : userRoomEntities) {
             String roomId = userRoomEntity.getUserRoomId().getRoomId();
             Optional<RoomEntity> room = roomRepository.findById(roomId);
-            if (room.isPresent())
-            {
+            if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
-                for (FileRoomDB fileRoomDB : fileRoomDBList)
-                {
+                for (FileRoomDB fileRoomDB : fileRoomDBList) {
                     Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent() && fileDB.get().getName().contains(filename))
-                    {
+                    if (fileDB.isPresent() && fileDB.get().getName().contains(filename)) {
                         Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent())
-                        {
+                        if (fileTagEntities.isPresent()) {
                             List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
-                            {
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
                                 Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent())
-                                {
+                                if (tagEntity.isPresent()) {
                                     tagNames.add(tagEntity.get().getName());
                                 }
                             }
@@ -322,43 +322,33 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
-    public List<FileRoomDto> getSearchedFilesFromTag(String token, String tag)
-    {
+    public List<FileRoomDto> getSearchedFilesFromTag(String token, String tag) {
         UserEntity user = userRepository.findByToken(token);
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
         List<FileRoomDto> fileRoomDtoList = new ArrayList<>();
-        for (UserRoomEntity userRoomEntity : userRoomEntities)
-        {
+        for (UserRoomEntity userRoomEntity : userRoomEntities) {
             String roomId = userRoomEntity.getUserRoomId().getRoomId();
             Optional<RoomEntity> room = roomRepository.findById(roomId);
-            if (room.isPresent())
-            {
+            if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
-                for (FileRoomDB fileRoomDB : fileRoomDBList)
-                {
+                for (FileRoomDB fileRoomDB : fileRoomDBList) {
                     Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent())
-                    {
+                    if (fileDB.isPresent()) {
                         Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent())
-                        {
+                        if (fileTagEntities.isPresent()) {
                             boolean foundTag = false;
                             List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get())
-                            {
+                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
                                 Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent())
-                                {
+                                if (tagEntity.isPresent()) {
                                     tagNames.add(tagEntity.get().getName());
                                 }
-                                if (tagEntity.isPresent() && tagEntity.get().getName().contains(tag))
-                                {
+                                if (tagEntity.isPresent() && tagEntity.get().getName().contains(tag)) {
                                     foundTag = true;
                                 }
                             }
-                            if (foundTag == true)
-                            {
+                            if (foundTag == true) {
                                 UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
                                 fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }

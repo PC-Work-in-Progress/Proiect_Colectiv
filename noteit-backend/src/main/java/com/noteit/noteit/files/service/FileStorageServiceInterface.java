@@ -1,6 +1,7 @@
 package com.noteit.noteit.files.service;
 
 import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.files.dtos.FileDbWrapper;
 import com.noteit.noteit.files.dtos.FileRoomDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.model.FileDB;
@@ -22,7 +23,9 @@ public interface FileStorageServiceInterface {
 
     FileDbDto getDetails(String id);
     Optional<FileDB> getFile(String id);
-    FileDB acceptFile(String fileId);
+    void acceptFile(String fileId, String roomId) throws FileException;
     FileDB denyFile(String fileId ,String roomId);
     String detectHandwriting(MultipartFile file, String userId) throws IOException;
+
+    Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId);
 }
