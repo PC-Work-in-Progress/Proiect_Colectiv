@@ -206,10 +206,11 @@ class FileControllerTest extends NoteitApplicationTests {
     @Test
     void getFile() throws Exception {
         set_Up();
-        mock.perform(get("/api/files/"+this.file.getId())).andExpect(status().isUnauthorized());
-        mock.perform(get("/api/files/"+this.file.getId()).header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
-        mock.perform(get("/api/files/"+this.file.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isExpectationFailed());
-        mock.perform(get("/api/files/"+this.file.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
+        mock.perform(get("/api/files/"+this.file.getId()+"?roomId="+this.roomEntity.getId())).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/"+this.file.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/"+this.file.getId()+"f"+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isExpectationFailed());
+        mock.perform(get("/api/files/"+this.file.getId()+"?roomId="+this.roomEntity.getId()+"f").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
+        mock.perform(get("/api/files/"+this.file.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
         setOff();
     }
 

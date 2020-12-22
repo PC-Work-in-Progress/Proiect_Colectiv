@@ -32,7 +32,7 @@ public class FileRoomCompositePK implements Serializable {
         this.userId = userId;
         this.approved = 0;
         this.downloads = 0;
-        this.views = 0;
+        this.views = -1;
     }
 
     @Override
