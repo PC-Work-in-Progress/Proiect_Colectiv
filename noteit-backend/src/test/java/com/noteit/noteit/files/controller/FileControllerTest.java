@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
 import com.noteit.noteit.controller.AuthController;
 import com.noteit.noteit.dtos.RoomDto;
+import com.noteit.noteit.entities.FileTagEntity;
 import com.noteit.noteit.entities.RoomEntity;
 import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.message.ResponseFile;
@@ -15,7 +16,9 @@ import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.payload.LoginRequest;
 import com.noteit.noteit.payload.SignUpRequest;
+import com.noteit.noteit.repositories.FileTagRepository;
 import com.noteit.noteit.repositories.RoomRepository;
+import com.noteit.noteit.repositories.TagRepository;
 import com.noteit.noteit.repositories.UserRepository;
 import liquibase.pro.packaged.F;
 import liquibase.pro.packaged.L;
@@ -55,6 +58,8 @@ class FileControllerTest extends NoteitApplicationTests {
     @Autowired private UserRepository userRepository;
     @Autowired private RoomRepository roomRepository;
     @Autowired private FileRoomDBRepository fileRoomDBRepository;
+    @Autowired private TagRepository tagRepository;
+    @Autowired private FileTagRepository fileTagRepository;
 
 
 
@@ -138,14 +143,14 @@ class FileControllerTest extends NoteitApplicationTests {
         mock.perform(multipart("/api/files/UploadFile?roomId=fakeId&tags=tag1,tag2").file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
 
 
-        var rez = mock.perform(multipart("/api/files/UploadFile?tags=tag1,tag2&roomId="+this.roomEntity.getId()).file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk()).andReturn();
+        var rez = mock.perform(multipart("/api/files/UploadFile?tags=tag1ff,tag2ff&roomId="+this.roomEntity.getId()).file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk()).andReturn();
         String json = rez.getResponse().getContentAsString();
         Map<String,String> map = mapper.readValue(json, Map.class);
         String fileID = map.get("fileId");
         mock.perform(multipart("/api/files/UploadFile?tags=tag1,tag2&roomId="+this.roomEntity.getId()).file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isExpectationFailed());
 
         var room2 = roomRepository.save(new RoomEntity("test_room2", this.userEntity.getId()));
-        mock.perform(multipart("/api/files/UploadFile?tags=tag1,tag2&roomId="+room2.getId()).file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
+        mock.perform(multipart("/api/files/UploadFile?tags=tag1ff,tag2ff&roomId="+room2.getId()).file(file).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
 
 
         var fileRooms = fileRoomDBRepository.findById_FileId(fileID);
@@ -153,6 +158,20 @@ class FileControllerTest extends NoteitApplicationTests {
             fileRoomDBRepository.delete(fr);
         }
         roomRepository.delete(room2);
+        var t1 = tagRepository.findByName("tag1ff");
+        var t2 = tagRepository.findByName("tag2ff");
+        var t1List = fileTagRepository.findById_TagId(t1.getId()).get();
+        var t2List = fileTagRepository.findById_TagId(t2.getId()).get();
+        for (FileTagEntity fileTagEntity : t1List){
+            fileTagRepository.delete(fileTagEntity);
+        }
+
+        for (FileTagEntity fileTagEntity : t2List){
+            fileTagRepository.delete(fileTagEntity);
+        }
+
+        tagRepository.delete(t1);
+        tagRepository.delete(t2);
         fileDBRepository.delete(fileDBRepository.findById(fileID).get());
         setOff();
     }

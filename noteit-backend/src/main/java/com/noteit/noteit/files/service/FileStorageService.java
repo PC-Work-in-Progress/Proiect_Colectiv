@@ -130,6 +130,11 @@ public class FileStorageService implements FileStorageServiceInterface {
                 FileTagEntity fileTagEntity = new FileTagEntity();
                 fileTagEntity.setId(new FileTagPK(fileId, savedTag.getId()));
                 fileTagRepository.save(fileTagEntity);
+            } else {
+                TagEntity t = tagRepository.findByName(tag);
+                FileTagEntity fileTagEntity = new FileTagEntity();
+                fileTagEntity.setId(new FileTagPK(fileId, t.getId()));
+                fileTagRepository.save(fileTagEntity);
             }
         }
     }
