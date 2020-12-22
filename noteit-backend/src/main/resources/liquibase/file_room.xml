@@ -31,4 +31,13 @@
             <column name="downloads" type="integer"/>
         </addColumn>
     </changeSet>
+
+
+    <changeSet id="22122020-add_user_id" author="cris">
+        <addColumn tableName="file_room" schemaName="public">
+            <column name="user_id" type="varchar(250)">
+                <constraints foreignKeyName="id" references="user(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
