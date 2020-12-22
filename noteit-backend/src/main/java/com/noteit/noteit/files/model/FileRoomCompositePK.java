@@ -14,9 +14,25 @@ public class FileRoomCompositePK implements Serializable {
     @Column(name = "file_id")
     private String fileId;
 
-    public FileRoomCompositePK(String roomId, String fileId) {
+    @Column(name = "approved")
+    private Integer approved;
+
+    @Column(name = "views")
+    private Integer views;
+
+    @Column(name = "downloads")
+    private Integer downloads;
+
+    @Column(name = "user_id")
+    private String userId;
+
+    public FileRoomCompositePK(String roomId, String fileId, String userId) {
         this.roomId = roomId;
         this.fileId = fileId;
+        this.userId = userId;
+        this.approved = 0;
+        this.downloads = 0;
+        this.views = 0;
     }
 
     @Override
@@ -50,5 +66,37 @@ public class FileRoomCompositePK implements Serializable {
 
     public void setFileId(String fileId) {
         this.fileId = fileId;
+    }
+
+    public Integer getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Integer approved) {
+        this.approved = approved;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
+    }
+
+    public Integer getDownloads() {
+        return downloads;
+    }
+
+    public void setDownloads(Integer downloads) {
+        this.downloads = downloads;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
