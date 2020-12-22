@@ -187,7 +187,7 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getFile(@PathVariable String id, @RequestParam String roomId, @RequestHeader Map<String, String> headers) {
         String fullToken = headers.get("authorization");
         if (fullToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
@@ -205,15 +205,23 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
         }
 
+        if (roomId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
+        }
+
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
+
         FileDB fileDB;
         try {
             fileDB = fileService.getById(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File not found"));
-
         }
 
 
+        fileService.fileViewed(fileDB.getId(), roomId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
                 .body(new ResponseContentFile(fileDB.getUploaded_file(), fileDB.getName()));

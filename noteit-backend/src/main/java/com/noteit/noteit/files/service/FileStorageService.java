@@ -249,6 +249,14 @@ public class FileStorageService implements FileStorageServiceInterface {
                 });
     }
 
+    @Override
+    public void fileViewed(String fileId, String roomId) {
+        var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
+        fileRoomDBRepository.delete(fileRoom);
+        fileRoom.View();
+        fileRoomDBRepository.save(fileRoom);
+    }
+
 
     public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();

@@ -28,4 +28,5 @@ public interface FileStorageServiceInterface {
     String detectHandwriting(MultipartFile file, String userId) throws IOException;
 
     Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId);
+    void fileViewed(String fileId, String roomId);
 }

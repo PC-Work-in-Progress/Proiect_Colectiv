@@ -31,4 +31,8 @@ public class FileRoomDB {
     public boolean isAccepted() {
         return this.id.getApproved()==1;
     }
+
+    public void View() {
+        this.id.setViews(this.id.getViews()+1);
+    }
 }
