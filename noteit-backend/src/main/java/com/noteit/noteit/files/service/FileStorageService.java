@@ -139,19 +139,6 @@ public class FileStorageService implements FileStorageServiceInterface {
         }
     }
 
-    /**
-     * function that returns a stream with all files in a given room
-     *
-     * @param roomId id of room
-     * @return stream with files for specified room
-     */
-    @Override
-    public Stream<FileDB> getFilesForRoom(String roomId) {
-        List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(roomId);
-        var a = fileRoomDBList;
-        List<FileDB> rez = fileRoomDBList.stream().map(x -> fileDBRepository.findById(x.getId().getFileId()).get()).collect(Collectors.toList());
-        return rez.stream();
-    }
 
     /*
         Get the relevant details of a file for an user and return the specific DTO
@@ -216,14 +203,19 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public FileDB denyFile(String fileId, String roomId) {
         var f = fileDBRepository.findById(fileId).get();
-
         var fileRoomIdDB = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
         fileRoomDBRepository.delete(fileRoomIdDB);
         var fileRoomDBList = fileRoomDBRepository.findById_FileId(fileId);
-        if (fileRoomDBList.size() == 0)
+        if (fileRoomDBList.size() == 0) {
+            var fileTagList = fileTagRepository.findAllById_FileId(fileId);
+            for(var fileTag : fileTagList){
+               fileTagRepository.delete(fileTag);
+}
             fileDBRepository.delete(f);
+        }
         return null;
     }
+
 
     @Override
     public String detectHandwriting(MultipartFile file, String userId) throws IOException {
@@ -255,6 +247,11 @@ public class FileStorageService implements FileStorageServiceInterface {
         fileRoomDBRepository.delete(fileRoom);
         fileRoom.View();
         fileRoomDBRepository.save(fileRoom);
+    }
+
+    @Override
+    public String getUserIdByFileAndRoom(String fileId, String roomId) {
+        return fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
     }
 
 

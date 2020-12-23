@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface FileTagRepository extends JpaRepository<FileTagEntity, String> {
     Optional<List<FileTagEntity>> findById_FileId(String id);
     Optional<List<FileTagEntity>> findById_TagId(String id);
+    List<FileTagEntity> findAllById_FileId(String fileId);
 }

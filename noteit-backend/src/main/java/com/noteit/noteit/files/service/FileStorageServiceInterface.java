@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 public interface FileStorageServiceInterface {
     FileDB getById(String id);
     FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
-    Stream<FileDB> getFilesForRoom(String roomId);
     List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber);
     List<FileRoomDto> getSearchedFilesFromName(String token, String filename);
     List<FileRoomDto> getSearchedFilesFromTag(String token, String tag);
@@ -29,4 +28,6 @@ public interface FileStorageServiceInterface {
 
     Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId);
     void fileViewed(String fileId, String roomId);
+
+    String getUserIdByFileAndRoom(String fileId, String roomId);
 }

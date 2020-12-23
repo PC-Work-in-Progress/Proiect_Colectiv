@@ -1,11 +1,9 @@
 package com.noteit.noteit.files.repository;
 
-import com.noteit.noteit.entities.TagEntity;
 import com.noteit.noteit.files.model.FileDB;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
