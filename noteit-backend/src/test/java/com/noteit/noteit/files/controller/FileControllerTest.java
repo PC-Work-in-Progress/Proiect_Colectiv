@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
 import com.noteit.noteit.controller.AuthController;
 import com.noteit.noteit.dtos.RoomDto;
-import com.noteit.noteit.entities.FileTagEntity;
-import com.noteit.noteit.entities.RoomEntity;
-import com.noteit.noteit.entities.UserEntity;
+import com.noteit.noteit.entities.*;
 import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomCompositePK;
@@ -14,6 +12,8 @@ import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.files.service.FileStorageService;
+import com.noteit.noteit.notifications.repository.NotificationsRepository;
+import com.noteit.noteit.notifications.service.NotificationsService;
 import com.noteit.noteit.payload.LoginRequest;
 import com.noteit.noteit.payload.SignUpRequest;
 import com.noteit.noteit.repositories.FileTagRepository;
@@ -60,7 +60,7 @@ class FileControllerTest extends NoteitApplicationTests {
     @Autowired private FileRoomDBRepository fileRoomDBRepository;
     @Autowired private TagRepository tagRepository;
     @Autowired private FileTagRepository fileTagRepository;
-
+    @Autowired private NotificationsRepository notificationsRepository;
 
 
     private FileDB file;
@@ -222,6 +222,13 @@ class FileControllerTest extends NoteitApplicationTests {
         fileRoom2.setId(new FileRoomCompositePK(this.roomEntity.getId(),file2.getId(), this.userEntity.getId()));
         fileRoom2 = fileRoomDBRepository.save(fileRoom2);
 
+        var tag = new TagEntity();
+        tag.setName("tst_tag");
+        tag = tagRepository.save(tag);
+        var fileTag = new FileTagEntity();
+        fileTag.setId(new FileTagPK(file2.getId(), tag.getId()));
+        fileTag = fileTagRepository.save(fileTag);
+
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=tt")).andExpect(status().isUnauthorized());
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=tt").header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"f"+"?roomId=tt").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
@@ -229,8 +236,12 @@ class FileControllerTest extends NoteitApplicationTests {
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=rr").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
 
+        var notif = notificationsRepository.findByUserId(this.userEntity.getId());
+        notificationsRepository.delete(notif);
+        fileTagRepository.delete(fileTag);
         fileRoomDBRepository.delete(fileRoom2);
         fileDBRepository.delete(file2);
+        tagRepository.delete(tag);
         setOff();
 
     }

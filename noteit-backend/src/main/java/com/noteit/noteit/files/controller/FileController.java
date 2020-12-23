@@ -7,6 +7,7 @@ import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.service.FileStorageService;
+import com.noteit.noteit.notifications.service.NotificationsService;
 import com.noteit.noteit.services.RoomServiceImplementation;
 import org.hibernate.service.spi.ServiceException;
 import com.noteit.noteit.services.UserServiceImplementation;
@@ -42,6 +43,9 @@ public class FileController {
 
     @Autowired
     private RoomServiceImplementation roomService;
+
+    @Autowired
+    private NotificationsService notificationsService;
 
     @PostMapping("/UploadFile")
     public ResponseEntity<?> uploadFile(@RequestParam String roomId, @RequestParam("file") MultipartFile file, @RequestParam("tags") String tags, @RequestHeader Map<String, String> headers) {
@@ -314,9 +318,13 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
 
         try {
+            var file = fileService.getById(id);
+            var toNotifyId = fileService.getUserIdByFileAndRoom(id, roomId);
             var f = fileService.denyFile(id, roomId);
-            if (f == null)
+            if (f == null) {
+                notificationsService.pushNotification(toNotifyId, "File deleted! Your file: " + file.getName() + " didn't meet the room rules of "+ r.getName()+" room, so it couldn't be approved!");
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File denied successfully!"));
+            }
             else
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Unexpected file id provided!"));
         } catch (Exception e) {
