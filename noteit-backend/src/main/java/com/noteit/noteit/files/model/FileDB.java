@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "file")
@@ -103,5 +104,17 @@ public class FileDB implements Serializable {
 
     public void setSize(Long size) {
         this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return "FileDB{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", uploaded_file=" + Arrays.toString(uploaded_file) +
+                ", date='" + date + '\'' +
+                ", size=" + size +
+                '}';
     }
 }

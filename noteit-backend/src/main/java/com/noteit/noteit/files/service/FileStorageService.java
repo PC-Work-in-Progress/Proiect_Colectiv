@@ -18,6 +18,8 @@ import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.hwrecognition.TextDetector;
 import com.noteit.noteit.repositories.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +62,13 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     private FileDbMapper fileDbMapper = new FileDbMapper();
 
+    private static final Logger logger = LogManager.getLogger();
 
+
+    /**
+     * @param id id of file to be found
+     * @return FileDB entity if found
+     */
     @Override
     public FileDB getById(String id) {
         return fileDBRepository.findById(id).get();
@@ -78,6 +86,7 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     @Transactional
     public FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException {
+        logger.info("ENTER store file from user : {} in room : {} with tags {}", userId, roomId, tags);
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Long size = (long)file.getBytes().length;
         FileDB cautat = fileDBRepository.findByNameAndTypeAndSize(fileName, file.getContentType(), size);
@@ -91,6 +100,7 @@ public class FileStorageService implements FileStorageServiceInterface {
             if (nrAparitii != 0) {
                 System.out.println("se adauga in acelasi room");
                 //exista deja fisierul in room ul in care vrea sa se adauge
+                logger.info("EXIT, file id : {} already in room : {}", cautat.getId(), roomId);
                 throw new FileException("File already in this room");
 
             } else {
@@ -98,6 +108,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                 //exista fisierul in alt room
                 fileRoomDBRepository.save(new FileRoomDB(new FileRoomCompositePK(roomId, cautat.getId(), userId)));
                 saveTags(tags, cautat.getId());
+                logger.info("EXIT, file already on database, id : {}, successfully added on room {}, RETURN : {}", cautat.getId(), roomId, cautat);
                 return cautat;
             }
         } else {
@@ -110,6 +121,7 @@ public class FileStorageService implements FileStorageServiceInterface {
             FileRoomDB f = new FileRoomDB(new FileRoomCompositePK(roomId, saved.getId(), userId));
             fileRoomDBRepository.save(f);
             saveTags(tags, saved.getId());
+            logger.info("EXIT with success, file added on database, id : {}, RETURN : {}", saved.getId(), saved);
             return saved;
         }
 
@@ -121,6 +133,7 @@ public class FileStorageService implements FileStorageServiceInterface {
      * @param fileId id of file that contains given tags
      */
     private void saveTags(String tags, String fileId) {
+        logger.info("ENTER saving tags: {} for file : {}", tags, fileId);
         String[] elems = tags.strip().split(",");
         for (String tag : elems) {
             if (tagRepository.findByName(tag) == null) {
@@ -137,6 +150,7 @@ public class FileStorageService implements FileStorageServiceInterface {
                 fileTagRepository.save(fileTagEntity);
             }
         }
+        logger.info("EXIT save tags");
     }
 
 
@@ -182,16 +196,21 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public void acceptFile(String fileId, String roomId) throws FileException {
+        logger.info("ENTER acceptFile, fileId : {} in room : {}", fileId, roomId);
         var f = fileDBRepository.findById(fileId);
-        if (f.isEmpty())
+        if (f.isEmpty()) {
+            logger.info("EXIT exiting, file iwth id : {} not found", fileId);
             throw new FileException("File not found!");
-
+        }
         var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
-        if (fileRoom.isAccepted())
+        if (fileRoom.isAccepted()) {
+            logger.info("EXIT exiting, file with id : {} already accepted in room : {}", fileId, roomId);
             throw new FileException("Conflict with current state! File already accepted!");
+        }
         fileRoomDBRepository.delete(fileRoom);
         fileRoom.Accept();
         fileRoomDBRepository.save(fileRoom);
+        logger.info("EXIT acceptFile success");
     }
 
     /**
@@ -202,6 +221,7 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public FileDB denyFile(String fileId, String roomId) {
+        logger.info("ENTER denyFile fileId : {}, in room : {}", fileId, roomId);
         var f = fileDBRepository.findById(fileId).get();
         var fileRoomIdDB = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
         fileRoomDBRepository.delete(fileRoomIdDB);
@@ -213,6 +233,7 @@ public class FileStorageService implements FileStorageServiceInterface {
 }
             fileDBRepository.delete(f);
         }
+        logger.info("EXIT denyFile");
         return null;
     }
 
@@ -232,8 +253,13 @@ public class FileStorageService implements FileStorageServiceInterface {
         } else throw new IOException("Could not process image file " + fileName);
     }
 
+    /**
+     * @param roomId id of room where the function search for all files
+     * @return a stream of FileDbwRAPPER entity, containing data about all files in given roomId
+     */
     @Override
     public Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId) {
+        logger.info("ENTER/EXIT getWrapperFilesForRoom");
         return fileRoomDBRepository.findById_RoomId(roomId).stream()
                 .map(x -> {
                     var fileDb = fileDBRepository.findById(x.getId().getFileId()).get();
@@ -241,16 +267,29 @@ public class FileStorageService implements FileStorageServiceInterface {
                 });
     }
 
+    /**
+     * function that increases number of views for a file in a room
+     * @param fileId id of file that function marks as viewed
+     * @param roomId id of room where file was viewed
+     */
     @Override
     public void fileViewed(String fileId, String roomId) {
+        logger.info("ENTER fileViewed for fileId : {} in room {}", fileId, roomId);
         var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0);
         fileRoomDBRepository.delete(fileRoom);
         fileRoom.View();
         fileRoomDBRepository.save(fileRoom);
+        logger.info("EXIT fileViewed");
     }
 
+    /**
+     * @param fileId id of a FileDB
+     * @param roomId id of a Room
+     * @return String representing id o user that posted file with fileId in room with roomId
+     */
     @Override
     public String getUserIdByFileAndRoom(String fileId, String roomId) {
+        logger.info("ENTER/EXIT getUserIdByFileAndRoom for fileId : {}, roomId : {}", fileId, roomId);
         return fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
     }
 
