@@ -2,49 +2,28 @@ package com.noteit.noteit.files.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
-import com.noteit.noteit.controller.AuthController;
 import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.entities.*;
-import com.noteit.noteit.files.message.ResponseFile;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
-import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.notifications.repository.NotificationsRepository;
-import com.noteit.noteit.notifications.service.NotificationsService;
 import com.noteit.noteit.payload.LoginRequest;
 import com.noteit.noteit.payload.SignUpRequest;
 import com.noteit.noteit.repositories.FileTagRepository;
 import com.noteit.noteit.repositories.RoomRepository;
 import com.noteit.noteit.repositories.TagRepository;
 import com.noteit.noteit.repositories.UserRepository;
-import liquibase.pro.packaged.F;
-import liquibase.pro.packaged.L;
-import liquibase.pro.packaged.S;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.event.annotation.AfterTestExecution;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
-
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -236,7 +215,7 @@ class FileControllerTest extends NoteitApplicationTests {
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId=rr").header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isBadRequest());
         mock.perform(put("/api/files/DenyFile/"+file2.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
 
-        var notif = notificationsRepository.findByUserId(this.userEntity.getId());
+        var notif = notificationsRepository.findByUserId(this.userEntity.getId()).get(0);
         notificationsRepository.delete(notif);
         fileTagRepository.delete(fileTag);
         fileRoomDBRepository.delete(fileRoom2);
