@@ -1,6 +1,7 @@
 package com.noteit.noteit.files.service;
 
 import com.noteit.noteit.files.dtos.FileDbDto;
+import com.noteit.noteit.files.dtos.FileDbWrapper;
 import com.noteit.noteit.files.dtos.FileRoomDto;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.model.FileDB;
@@ -15,14 +16,18 @@ import java.util.stream.Stream;
 public interface FileStorageServiceInterface {
     FileDB getById(String id);
     FileDB store(MultipartFile file, String userId, String roomId, String tags) throws IOException, FileException;
-    Stream<FileDB> getFilesForRoom(String roomId);
     List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber);
     List<FileRoomDto> getSearchedFilesFromName(String token, String filename);
     List<FileRoomDto> getSearchedFilesFromTag(String token, String tag);
 
     FileDbDto getDetails(String id);
     Optional<FileDB> getFile(String id);
-    FileDB acceptFile(String fileId);
+    void acceptFile(String fileId, String roomId) throws FileException;
     FileDB denyFile(String fileId ,String roomId);
     String detectHandwriting(MultipartFile file, String userId) throws IOException;
+
+    Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId);
+    void fileViewed(String fileId, String roomId);
+
+    String getUserIdByFileAndRoom(String fileId, String roomId);
 }

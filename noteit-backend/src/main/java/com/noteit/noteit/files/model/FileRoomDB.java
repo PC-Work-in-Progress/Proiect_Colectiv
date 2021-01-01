@@ -23,4 +23,16 @@ public class FileRoomDB {
     public void setId(FileRoomCompositePK id) {
         this.id = id;
     }
+
+    public void Accept() {
+    this.id.setApproved(1);
+    }
+
+    public boolean isAccepted() {
+        return this.id.getApproved()==1;
+    }
+
+    public void View() {
+        this.id.setViews(this.id.getViews()+1);
+    }
 }

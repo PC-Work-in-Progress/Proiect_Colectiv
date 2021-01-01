@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "file")
@@ -26,39 +27,31 @@ public class FileDB implements Serializable {
     @Column(name = "uploaded_file")
     private byte[] uploaded_file;
 
-    @Column(name = "approved")
-    private Integer approved;
 
     @Column(name = "date")
     private String date;
 
-    @Column(name = "user_id")
-    private String user_id;
 
     @Column(name = "size")
-    private Integer size;
+    private Long size;
 
     public FileDB() {
 
     }
-    public FileDB(String name, String type, byte[] uploaded_file, Integer approved, String date, String user_id, Integer size) {
+    public FileDB(String name, String type, byte[] uploaded_file, String date, Long size) {
         this.name = name;
         this.type = type;
         this.uploaded_file = uploaded_file;
-        this.approved = approved;
         this.date = date;
-        this.user_id = user_id;
         this.size = size;
     }
 
-    public FileDB(String name, String type, byte[] uploadedFile, String date, String userId) {
+    public FileDB(String name, String type, byte[] uploadedFile, String date) {
         this.name = name;
         this.type = type;
         this.uploaded_file = uploadedFile;
         this.date = date;
-        this.approved = 0;
-        this.user_id = userId;
-        this.size = uploadedFile.length;
+        this.size = (long)uploadedFile.length;
     }
 
     public String getId() {
@@ -93,13 +86,9 @@ public class FileDB implements Serializable {
         this.uploaded_file = uploaded_file;
     }
 
-    public Integer getApproved() {
-        return approved;
-    }
 
-    public void setApproved(Integer approved) {
-        this.approved = approved;
-    }
+
+
 
     public String getDate() {
         return date;
@@ -109,19 +98,23 @@ public class FileDB implements Serializable {
         this.date = date;
     }
 
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return "FileDB{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", uploaded_file=" + Arrays.toString(uploaded_file) +
+                ", date='" + date + '\'' +
+                ", size=" + size +
+                '}';
     }
 }
