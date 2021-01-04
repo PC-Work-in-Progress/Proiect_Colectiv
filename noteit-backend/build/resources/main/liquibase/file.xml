@@ -41,4 +41,13 @@
             <column name="name" type="varchar(250)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="drop_approved" author="cris">
+        <dropColumn tableName="file" schemaName="public" columnName="approved"/>
+    </changeSet>
+
+
+    <changeSet id="22122020-drop_user_id" author="cris">
+        <dropColumn tableName="file" schemaName="public" columnName="user_id"/>
+    </changeSet>
 </databaseChangeLog>

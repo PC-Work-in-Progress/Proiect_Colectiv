@@ -14,6 +14,11 @@ public class UserServiceImplementation implements UserServiceInterface {
     private UserRepository userRepository;
     private UserMapper userMapper;
 
+    /**
+     * Get a userDTO by a given token
+     * @param token - String
+     * @return userDTO
+     */
     @Override
     public UserDto getUserByToken(String token) {
         UserEntity userEntity = userRepository.findByToken(token);

@@ -224,4 +224,43 @@ class FileControllerTest extends NoteitApplicationTests {
         setOff();
 
     }
+
+    @Test
+    void getDetailsFile() throws Exception {
+        set_Up();
+
+        FileDB fileTest = fileDBRepository.save(new FileDB("niceTest", "", new byte[20], ""));
+        FileRoomDB fileRoomTest = new FileRoomDB();
+        fileRoomTest.setId(new FileRoomCompositePK(this.roomEntity.getId(), fileTest.getId(), this.userEntity.getId()));
+        fileRoomDBRepository.save(fileRoomTest);
+
+        TagEntity tag = new TagEntity();
+        tag.setName("niceTestTag");
+        tagRepository.save(tag);
+        FileTagEntity fileTag = new FileTagEntity();
+        fileTag.setId(new FileTagPK(fileTest.getId(), tag.getId()));
+        fileTagRepository.save(fileTag);
+
+        mock.perform(get("/api/files/details/"+ this.roomEntity.getId() + "/" + this.file.getId())).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/details/"+ this.roomEntity.getId() + "/" + this.file.getId()).header("authorization", "Bearer " + userEntity.getToken() + "test")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/details/"+ this.roomEntity.getId() + "test/" + this.file.getId()).header("authorization", "Bearer " + userEntity.getToken() + "test")).andExpect(status().isUnauthorized());
+        mock.perform(get("/api/files/details/"+ this.roomEntity.getId() + "/" + this.file.getId() + "/").header("authorization", "Bearer " + userEntity.getToken() + "test")).andExpect(status().isUnauthorized());
+        var result = mock.perform(get("/api/files/details/"+ this.roomEntity.getId() + "/" + fileTest.getId()).header("authorization", "Bearer " + userEntity.getToken())).andExpect(status().isOk()).andReturn();
+
+        String json = result.getResponse().getContentAsString();
+        Map<String,String> map = mapper.readValue(json, Map.class);
+
+        String name = map.get("name");
+        String username = map.get("username");
+
+        assert name.equals("niceTest");
+        assert username.equals("test");
+
+        fileRoomDBRepository.delete(fileRoomTest);
+        fileTagRepository.delete(fileTag);
+        fileDBRepository.delete(fileTest);
+        tagRepository.delete(tag);
+
+        setOff();
+    }
 }
