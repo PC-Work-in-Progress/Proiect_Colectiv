@@ -1,2 +1,8 @@
 com/noteit/noteit/NoteitApplicationTests.java
  com.noteit.noteit.NoteitApplicationTests
+com/noteit/noteit/notifications/controller/NotificationsControllerTest.java
+ com.noteit.noteit.notifications.controller.NotificationsControllerTest
+com/noteit/noteit/user/controller/UserControllerTest.java
+ com.noteit.noteit.user.controller.UserControllerTest
+com/noteit/noteit/files/controller/FileControllerTest.java
+ com.noteit.noteit.files.controller.FileControllerTest

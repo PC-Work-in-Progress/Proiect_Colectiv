@@ -232,17 +232,52 @@ public class FileController {
     }
 
 
-    @GetMapping("/details/{id}")
-    public ResponseEntity<?> getDetailsFile(@PathVariable String id) {
+    @GetMapping("/details/{roomId}/{fileId}")
+    public ResponseEntity<?> getDetailsFile(@PathVariable String roomId, @PathVariable String fileId, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
         try {
-            return ResponseEntity.ok().body(fileService.getDetails(id));
-        } catch (ServiceException e) {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! No user"));
+        }
+
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
+        }
+
+        try {
+            return ResponseEntity.ok().body(fileService.getDetails(fileId, roomId));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable String id) {
+    public ResponseEntity<?> downloadFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! No user"));
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
+        }
+
         Optional<FileDB> optionalFile = fileService.getFile(id);
 
         if (optionalFile.isEmpty())

@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <include  file="liquibase/rank.xml"/>
     <include  file="liquibase/user.xml"/>
     <include  file="liquibase/room.xml"/>
     <include  file="liquibase/file.xml"/>
@@ -12,4 +13,5 @@
     <include  file="liquibase/user_room.xml"/>
     <include  file="liquibase/file_tag.xml"/>
     <include  file="liquibase/file_room.xml"/>
+    <include  file="liquibase/notification.xml"/>
 </databaseChangeLog>
