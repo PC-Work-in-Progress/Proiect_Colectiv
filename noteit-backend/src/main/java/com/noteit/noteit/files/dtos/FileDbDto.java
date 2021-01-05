@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-/*
-DTO for File details containing the file's name,
-    its type, the date it was uploaded, the username of the owner, size
-    and all the tags related to it
+/**
+ * DTO for File details containing the file's name,
+ * its type, the date it was uploaded, the username of the owner, size
+ * and all the tags related to it
  */
 public class FileDbDto {
     private String name;

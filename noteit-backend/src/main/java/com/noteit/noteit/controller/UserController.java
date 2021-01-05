@@ -1,6 +1,7 @@
 package com.noteit.noteit.controller;
 
 import com.noteit.noteit.entities.UserEntity;
+import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.payload.ApiResponse;
 import com.noteit.noteit.payload.SignUpRequest;
 import com.noteit.noteit.payload.UpdateRequest;
@@ -37,14 +38,14 @@ public class UserController {
         try {
             String header = request.getHeader("Authorization");
 
-            if (header == null || !header.startsWith("Bearer ")) {
-                throw new ServiceException("No JWT token found in request headers");
+            String authToken = header.split(" ")[1];
+            if(authToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
             }
 
-            String authToken = header.split(" ")[1];
             return ResponseEntity.ok().body(userService.getUserByToken(authToken));
         } catch (ServiceException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 

@@ -26,6 +26,8 @@ com/noteit/noteit/security/CustomUserDetailsService.java
  com.noteit.noteit.security.CustomUserDetailsService
 com/noteit/noteit/services/UserServiceImplementation.java
  com.noteit.noteit.services.UserServiceImplementation
+com/noteit/noteit/notifications/service/NotificationsService.java
+ com.noteit.noteit.notifications.service.NotificationsService
 com/noteit/noteit/exception/ResourceNotFoundException.java
  com.noteit.noteit.exception.ResourceNotFoundException
 com/noteit/noteit/entities/UserEntity.java
@@ -50,8 +52,10 @@ com/noteit/noteit/files/model/FileDB.java
  com.noteit.noteit.files.model.FileDB
 com/noteit/noteit/payload/SignUpRequest.java
  com.noteit.noteit.payload.SignUpRequest
-com/noteit/noteit/hwrecognition/TextDetector.java
- com.noteit.noteit.hwrecognition.TextDetector
+com/noteit/noteit/files/dtos/FileDbWrapper.java
+ com.noteit.noteit.files.dtos.FileDbWrapper
+com/noteit/noteit/security/JwtAuthenticationFilter.java
+ com.noteit.noteit.security.JwtAuthenticationFilter
 com/noteit/noteit/files/message/ResponseMessage.java
  com.noteit.noteit.files.message.ResponseMessage
 com/noteit/noteit/files/model/FileRoomCompositePK.java
@@ -75,20 +79,26 @@ com/noteit/noteit/services/RoomServiceImplementation.java
  com.noteit.noteit.services.RoomServiceImplementation
 com/noteit/noteit/files/dtos/FileRoomDto.java
  com.noteit.noteit.files.dtos.FileRoomDto
-com/noteit/noteit/security/JwtTokenProvider.java
- com.noteit.noteit.security.JwtTokenProvider
+com/noteit/noteit/config/SecurityConfig.java
+ com.noteit.noteit.config.SecurityConfig
 com/noteit/noteit/entities/TestEntity.java
  com.noteit.noteit.entities.TestEntity
+com/noteit/noteit/notifications/repository/NotificationsRepository.java
+ com.noteit.noteit.notifications.repository.NotificationsRepository
 com/noteit/noteit/payload/UpdateRequest.java
  com.noteit.noteit.payload.UpdateRequest
 com/noteit/noteit/repositories/RoomRepository.java
  com.noteit.noteit.repositories.RoomRepository
+com/noteit/noteit/notifications/message/NotificationMessage.java
+ com.noteit.noteit.notifications.message.NotificationMessage
 com/noteit/noteit/entities/RoomEntity.java
  com.noteit.noteit.entities.RoomEntity
 com/noteit/noteit/entities/UserRoomEntity.java
  com.noteit.noteit.entities.UserRoomEntity
 com/noteit/noteit/services/UserRoomServiceInterface.java
  com.noteit.noteit.services.UserRoomServiceInterface
+com/noteit/noteit/notifications/service/NotificationsServiceInterface.java
+ com.noteit.noteit.notifications.service.NotificationsServiceInterface
 com/noteit/noteit/payload/FullUpdateRequest.java
  com.noteit.noteit.payload.FullUpdateRequest
 com/noteit/noteit/entities/UserRoomIdEntity.java
@@ -107,6 +117,8 @@ com/noteit/noteit/NoteitApplication.java
  com.noteit.noteit.NoteitApplication
 com/noteit/noteit/utils/AuthError.java
  com.noteit.noteit.utils.AuthError
+com/noteit/noteit/notifications/exceptions/NotificationAlreadyReadException.java
+ com.noteit.noteit.notifications.exceptions.NotificationAlreadyReadException
 com/noteit/noteit/dtos/UserDto.java
  com.noteit.noteit.dtos.UserDto
 com/noteit/noteit/files/repository/FileRoomDBRepository.java
@@ -122,15 +134,19 @@ com/noteit/noteit/payload/JwtAuthenticationResponse.java
  com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/helper/mapper/RoomMapper.java
  com.noteit.noteit.helper.mapper.RoomMapper
+com/noteit/noteit/notifications/controller/NotificationsController.java
+ com.noteit.noteit.notifications.controller.NotificationsController
 com/noteit/noteit/entities/TagEntity.java
  com.noteit.noteit.entities.TagEntity
+com/noteit/noteit/notifications/model/Notification.java
+ com.noteit.noteit.notifications.model.Notification
 com/noteit/noteit/payload/ApiResponse.java
  com.noteit.noteit.payload.ApiResponse
 com/noteit/noteit/entities/FileTagPK.java
  com.noteit.noteit.entities.FileTagPK
 com/noteit/noteit/entities/FileTagEntity.java
  com.noteit.noteit.entities.FileTagEntity
-com/noteit/noteit/config/SecurityConfig.java
- com.noteit.noteit.config.SecurityConfig
-com/noteit/noteit/security/JwtAuthenticationFilter.java
- com.noteit.noteit.security.JwtAuthenticationFilter
+com/noteit/noteit/hwrecognition/TextDetector.java
+ com.noteit.noteit.hwrecognition.TextDetector
+com/noteit/noteit/security/JwtTokenProvider.java
+ com.noteit.noteit.security.JwtTokenProvider
