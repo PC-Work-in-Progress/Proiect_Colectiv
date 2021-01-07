@@ -1,9 +1,11 @@
 package com.noteit.noteit.controller;
 
 import com.noteit.noteit.dtos.RoomDto;
+import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.services.RoomServiceInterface;
 import lombok.AllArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,4 +97,25 @@ public class RoomController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/joinRoom/{roomId}")
+    public ResponseEntity<?> joinRoom(HttpServletRequest request, @PathVariable String roomId)
+    {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            roomService.joinRoom(authToken, roomId);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("User joined room!"));
+        }
+        catch (ServiceException e)
+        {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

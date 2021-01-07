@@ -41,14 +41,18 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     public List<RoomDto> getRoomsByToken(String token) {
         List<RoomDto> roomDtos = new ArrayList<>();
         String ownerId = userRepository.findByToken(token).getId();
-        Optional<List<RoomEntity>> roomEntities = roomRepository.findByOwnerId(ownerId);
-        if (!roomEntities.isEmpty())
+
+        List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(ownerId);
+        for (UserRoomEntity userRoomEntity : userRoomEntities)
         {
-            for (RoomEntity roomEntity : roomEntities.get()) {
-                RoomDto roomDto = new RoomDto(roomEntity.getId(), roomEntity.getName());
+            Optional<RoomEntity> roomEntity = roomRepository.findById(userRoomEntity.getUserRoomId().getRoomId());
+            if (roomEntity.isPresent())
+            {
+                RoomDto roomDto = new RoomDto(roomEntity.get().getId(), roomEntity.get().getName());
                 roomDtos.add(roomDto);
             }
         }
+
         return roomDtos;
     }
 
@@ -123,5 +127,13 @@ public class RoomServiceImplementation implements RoomServiceInterface {
             }
         }
         return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "false" + '"' + "}]";
+    }
+
+    @Override
+    public void joinRoom(String token, String roomId)
+    {
+        String ownerId = userRepository.findByToken(token).getId();
+        UserRoomEntity userRoom = new UserRoomEntity(ownerId, roomId);
+        userRoomRepository.save(userRoom);
     }
 }
