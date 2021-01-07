@@ -5,7 +5,10 @@ import {TagProps} from "./useDiscover";
 
 const homeUrl = "http://localhost:8080"
 
-export const getRooms: (token: string, searchText: any) => Promise<RoomProps[]> = (token, searchText) => {
+export const getRooms: (token: string, searchText?: any) => Promise<RoomProps[]> = (token, searchText) => {
+    if (!searchText) {
+        searchText = "";
+    }
     const url = homeUrl + `/rooms/${searchText}`;
     return withLogs(axios.get(url, authConfig(token)), 'getRooms');
 }

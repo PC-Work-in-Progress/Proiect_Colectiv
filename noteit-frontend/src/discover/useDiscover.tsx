@@ -23,7 +23,6 @@ interface DiscoverState {
     fetchingRoomsError?: Error | null;
     fetchingTags: boolean;
     fetchingTagsError?: Error | null;
-    searchText: string;
     // notificationsPage: number;
     // nextPage?: NextPageFn;
     // previousPage?: NextPageFn;
@@ -35,8 +34,7 @@ const initialState: DiscoverState = {
     rooms: [],
     tags: [],
     fetchingRooms: false,
-    fetchingTags: false,
-    searchText: ""
+    fetchingTags: false
     // notificationsPage: 0,
     // hasMoreNotifications: false,
     // previousNotifications: false
@@ -53,7 +51,7 @@ const FETCH_ROOMS_SUCCEEDED = 'FETCH_ROOMS_SUCCEEDED';
 const FETCH_TAGS_STARTED = 'FETCH_TAGS_STARTED';
 const FETCH_TAGS_FAILED = 'FETCH_TAGS_FAILED';
 const FETCH_TAGS_SUCCEEDED = 'FETCH_TAGS_SUCCEEDED';
-const CHANGE_SEARCH = 'CHANGE_SEARCH';
+// const CHANGE_SEARCH = 'CHANGE_SEARCH';
 
 const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
     (state, {type, payload}) => {
@@ -99,8 +97,8 @@ const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
             //         previousNotifications: previous,
             //         hasMoreNotifications: true
             //     };
-            case CHANGE_SEARCH:
-                return {...state, searchText: payload.search}
+            // case CHANGE_SEARCH:
+            //     return {...state, searchText: payload.search}
             default:
                 return state;
         }
@@ -109,19 +107,20 @@ const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
 export const useDiscover = () => {
     const {token} = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, initialState);
-    const {searchText} = state;
     // const nextPage = useCallback<NextPageFn>(fetchNextPage, [token]);
     // const previousPage = useCallback<NextPageFn>(fetchPreviousPage, [token]);
-    const changeSearch = useCallback<ChangeSearchFn>(changeSearchCallback, [token]);
+    // const changeSearch = useCallback<ChangeSearchFn>(changeSearchCallback, [token]);
     const filterRooms = useCallback<FilterFn>(filterCallback, [token]);
-    useEffect(fetchRoomsEffect, [token, searchText]);
+    const searchRooms = useCallback<ChangeSearchFn>(searchRoomsCallback, [token]);
+    // useEffect(fetchRoomsEffect, [token, searchText]);
+    useEffect(fetchRoomsEffect, [token]);
     useEffect(fetchTagsEffect, [token]);
-    return {state, changeSearch, filterRooms};
+    return {state, filterRooms, searchRooms};
 
-    async function changeSearchCallback(value: string) {
-        log('changeSearch');
-        dispatch({type: CHANGE_SEARCH, payload: {search: value}});
-    }
+    // async function changeSearchCallback(value: string) {
+    //     log('changeSearch');
+    //     dispatch({type: CHANGE_SEARCH, payload: {search: value}});
+    // }
 
     function filterCallback(filterTags: string[]) {
         log('filterByTags');
@@ -145,7 +144,7 @@ export const useDiscover = () => {
                 if (filterTags.length > 0) {
                     result = await getRoomsByTags(token, filterTags);
                 } else {
-                    result = await getRooms(token, searchText);
+                    result = await getRooms(token);
                 }
                 log('fetchRoomsByTags succeeded');
                 if (!canceled) {
@@ -183,7 +182,34 @@ export const useDiscover = () => {
                 log(`fetchRooms started`);
                 dispatch({type: FETCH_ROOMS_STARTED});
                 // server get rooms
-                let result = await getRooms(token, searchText);
+                let result = await getRooms(token);
+                log('fetchRooms succeeded');
+                if (!canceled) {
+                    dispatch({type: FETCH_ROOMS_SUCCEEDED, payload: {rooms: result}});
+                }
+            } catch (error) {
+                log('fetchRooms failed');
+                dispatch({type: FETCH_ROOMS_FAILED, payload: {error}});
+            }
+        }
+    }
+
+    function searchRoomsCallback(text: string) {
+        let canceled = false;
+        searchRooms(text);
+        return () => {
+            canceled = true;
+        }
+
+        async function searchRooms(text: string) {
+            if (!token?.trim()) {
+                return;
+            }
+            try {
+                log(`searchRooms started`);
+                dispatch({type: FETCH_ROOMS_STARTED});
+                // server get rooms
+                let result = await getRooms(token, text);
                 log('fetchRooms succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_ROOMS_SUCCEEDED, payload: {rooms: result}});

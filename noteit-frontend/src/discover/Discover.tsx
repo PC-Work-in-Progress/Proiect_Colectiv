@@ -30,9 +30,10 @@ const initialState: TagCheck[] = []
 
 
 export const Discover: React.FC<RouteComponentProps> = ({history}) => {
-    const {state, changeSearch, filterRooms} = useDiscover();
+    const {state, filterRooms, searchRooms} = useDiscover();
     const [tagCheck, setTagCheck] = useState(initialState);
-    const {rooms, fetchingRoomsError, fetchingRooms, searchText, tags} = state;
+    const [searchText, setSearchText] = useState("");
+    const {rooms, fetchingRoomsError, fetchingRooms, tags} = state;
 
     useEffect(initializeTagState, [tags]);
 
@@ -71,7 +72,13 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                         <IonCol class="fullscreen" size="8">
                             <IonSearchbar placeholder="Room name" value={searchText}
                                           onIonChange={e => {
-                                              changeSearch(e.detail.value!);
+                                              setSearchText(e.detail.value!);
+                                              // changeSearch(e.detail.value!);
+                                          }}
+                                          onKeyPress={e => {
+                                              if (e && e.key === "Enter") {
+                                                  searchRooms(searchText);
+                                              }
                                           }}
                                           debounce={700}/>
                             <IonCard class="room-list-card">
