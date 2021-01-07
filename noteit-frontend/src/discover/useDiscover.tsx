@@ -211,7 +211,7 @@ export const useDiscover = () => {
                 dispatch({type: FETCH_TAGS_STARTED});
                 // server get rooms
                 // let result = await getTags(token);
-                let result: TagProps[] = [{id: "1", name: "tag1"}, {
+                let result: TagProps[] = [{id: "1", name: "dog"}, {
                     id: "2",
                     name: "tag2",
                 }, {id: "3", name: "cs"}];

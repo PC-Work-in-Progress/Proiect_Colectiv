@@ -35,8 +35,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
     } = state;
 
     return (
-        <IonContent class="fullscreen">
-            <div className="flex-page">
+        <IonContent class="fullscreen-home">
+            <div className="flex-page-home">
                 <Header/>
                 <IonPopover
                     isOpen={showAddRoom}
@@ -46,8 +46,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                 hide={hideCreateRoom}/>
                 </IonPopover>
                 <IonGrid class="grid-page ion-padding-bottom">
-                    <IonRow class="fullscreen">
-                        <IonCol class="fullscreen" size="3.5">
+                    <IonRow class="fullscreen-home">
+                        <IonCol class="fullscreen-home" sizeSm="3.5" sizeXs="12">
                             <div className="first-col">
                                 <IonCard class="user">
                                     <User fullName={user.fullName} email={user.email} userName={user.userName}/>
@@ -80,7 +80,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                 </div>
                             </div>
                         </IonCol>
-                        <IonCol class="fullscreen" size="8.5">
+                        <IonCol class="fullscreen-home" sizeSm="8.5" sizeXs="12">
                             <IonCard class="notification-list-card">
                                 <IonCardHeader>
                                     <div className="recent-files-title">
