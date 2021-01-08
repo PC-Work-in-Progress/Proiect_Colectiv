@@ -20,7 +20,8 @@ public interface FileStorageServiceInterface {
     List<FileRoomDto> getSearchedFilesFromName(String token, String filename);
     List<FileRoomDto> getSearchedFilesFromTag(String token, String tag);
 
-    FileDbDto getDetails(String id);
+    FileDbDto getDetails(String id, String idRoom) throws Exception;
+
     Optional<FileDB> getFile(String id);
     void acceptFile(String fileId, String roomId) throws FileException;
     FileDB denyFile(String fileId ,String roomId);

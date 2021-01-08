@@ -38,4 +38,13 @@
                         newDataType="varchar(250)"
                         schemaName="public"/>
     </changeSet>
+    
+    <changeSet id="20122020-add_score_and_rank" author="cris">
+        <addColumn tableName="user" schemaName="public">
+            <column name="score" type="integer"/>
+            <column name="rank_id" type="varchar(250)">
+                <constraints foreignKeyName="rank_id_fk" references="rank(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

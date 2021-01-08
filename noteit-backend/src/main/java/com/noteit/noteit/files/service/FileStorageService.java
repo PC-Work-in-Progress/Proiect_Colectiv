@@ -34,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -154,33 +153,38 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
 
-    /*
-        Get the relevant details of a file for an user and return the specific DTO
-        params: idFile - String
-        return dto - FileDbDto
-        throw exception when no file was found with the given id
+    /**
+     * Get the relevant details of a file for an user and return the specific DTO
+     * @param fileId - String id of file
+     * @param roomId - String id of room
+     * @return FileDbDto
+     * @throw ServiceException is there is no file with that ID
      */
     @Override
-    public FileDbDto getDetails(String id) {
-//        Optional<FileDB> fileDBOptional = fileDBRepository.findById(id);
-//        if(fileDBOptional.isEmpty())
-//            throw new ServiceException("No file for this id");
-//
-//        FileDB fileDB = fileDBOptional.get();
-//        List<FileTagEntity> entities = fileTagRepository.findById_FileId(fileDB.getId()).get();
-//        List<String> tags = new ArrayList<>();
-//        for(FileTagEntity ft: entities) {
-//            tags.add(tagRepository.findById(ft.getId().getTagId()).get().getName());
-//        }
-//        return fileDbMapper.toDto(fileDB, userRepository.findById(fileDB.getUser_id()).get().getUsername(), tags);
-        return null;
+    public FileDbDto getDetails(String fileId, String roomId) throws Exception {
+        Optional<FileDB> fileDBOptional = fileDBRepository.findById(fileId);
+        if(fileDBOptional.isEmpty())
+            throw new ServiceException("No file for this id");
+
+        FileDB fileDB = fileDBOptional.get();
+        var optional = fileTagRepository.findById_FileId(fileDB.getId());
+        if(optional.isEmpty()) {
+            throw new Exception("empty File Tag");
+        }
+        List<FileTagEntity> entities = optional.get();
+        List<String> tags = new ArrayList<>();
+        for(FileTagEntity ft: entities) {
+            tags.add(tagRepository.findById(ft.getId().getTagId()).get().getName());
+        }
+        String userId = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
+        return fileDbMapper.toDto(fileDB, userRepository.findById(userId).get().getUsername(), tags);
     }
 
 
-    /*
-        Get whole file with its content
-        params: id - String
-        return Optional<FileDB>
+    /**
+     * Get the whole file with its content
+     * @param id - String
+     * @return Optional<FileDB>
      */
     @Override
     public Optional<FileDB> getFile(String id) {
