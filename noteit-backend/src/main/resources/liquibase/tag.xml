@@ -14,4 +14,10 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="08012020-add_predefined" author="cris">
+        <addColumn tableName="tag" schemaName="public">
+            <column name="predefined" type="integer"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
