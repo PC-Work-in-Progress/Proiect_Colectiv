@@ -10,7 +10,7 @@ import {
     IonGrid,
     IonList,
     IonRow,
-    IonSearchbar, IonTabButton
+    IonSearchbar
 } from '@ionic/react';
 import {Header} from "../layout/Header";
 import {getLogger} from "../shared";
