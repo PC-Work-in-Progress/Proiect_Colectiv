@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagController {
     TagServiceImplementation tagService;
 
+
+    /**
+     *
+     * @return A list containing all predefined tags
+     */
     @GetMapping("/predefined")
     public ResponseEntity<?> getPredefinedTags(){
         try
