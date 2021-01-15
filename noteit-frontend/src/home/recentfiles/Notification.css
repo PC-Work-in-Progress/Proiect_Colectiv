@@ -16,6 +16,30 @@
     font-weight: 500;
 }
 
+
 .tag {
     /*margin-: 5px;*/
+}
+
+@media (max-width: 575px) {
+    .notification-date {
+        display: none;
+    }
+
+    .title {
+        font-size: medium;
+    }
+
+    .tag {
+        display: none;
+    }
+
+    .room {
+        font-size: smaller;
+        font-weight: 500;
+    }
+
+    .room-posted {
+        font-size: smaller;
+    }
 }

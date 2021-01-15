@@ -1,0 +1,13 @@
+.create-room-popover .popover-content {
+    width: 700px;
+    height: 500px;
+    
+}
+.create-room-popover .button-div {
+    text-align: center;
+
+}
+
+.textAreaScanNotes {
+    height: 300px;
+}

@@ -5,7 +5,7 @@ import {NotificationProps} from "./NotificationProps";
 
 export const Notification: React.FC<NotificationProps> = ({onView, userName, roomName, fileId, fileName, fileDate, tags}) => {
     return (
-        <IonItem key={fileId} onClick={() => onView()}>
+        <IonItem button={true} key={fileId} onClick={() => onView()}>
             <IonLabel>
                 <span className="title bold">{fileName}</span>
                 {tags.slice(0, 3).map(tag =>
@@ -13,8 +13,8 @@ export const Notification: React.FC<NotificationProps> = ({onView, userName, roo
                 )}
                 <div className="userName">{userName}</div>
             </IonLabel>
-            <IonLabel>posted in <span className="room">{roomName}</span></IonLabel>
-            <IonNote slot="end">{fileDate.substring(0, fileDate.length - 7)}</IonNote>
+            <IonLabel><span className="room-posted">posted in</span> <span className="room">{roomName}</span></IonLabel>
+            <IonNote class="notification-date" slot="end">{fileDate.substring(0, fileDate.length - 7)}</IonNote>
         </IonItem>
     );
 }
