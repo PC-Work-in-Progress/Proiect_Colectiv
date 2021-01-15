@@ -70,11 +70,23 @@ public class RoomController {
         }
     }
 
+
+    /**
+     *
+     * @param name Name of the searched room
+     * @return List of RoomEntity
+     */
     @GetMapping("/{name}")
     public ResponseEntity<?> getSearchedRoomsByName(@PathVariable String name){
         return ResponseEntity.ok().body(roomService.getByName(name));
     }
 
+
+    /**
+     *
+     * @param filterTags Tags selected for the rooms filter
+     * @return List of rooms which contain tags with the required tags
+     */
     @GetMapping("/filterRooms/{filterTags}")
     public ResponseEntity<?> getFilteredRoomsByFileTags(@PathVariable String filterTags){
         String[] tags=filterTags.split(",");
