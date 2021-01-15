@@ -17,3 +17,8 @@
     padding: 2% 0% 4%;
     background-color: #E9ECEF;
 }
+
+.modal {
+    margin: 20px;
+    text-align: center;
+}
