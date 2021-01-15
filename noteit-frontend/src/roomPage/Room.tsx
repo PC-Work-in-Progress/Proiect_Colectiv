@@ -11,7 +11,7 @@ interface RoomPageProps extends RouteComponentProps<{
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
+  const {state,setState, uploadFile,scanNotes, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
     fetchingFile, fetchingFileError, isAdmin, acceptedFiles
@@ -32,7 +32,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     
   };
 
-  const submitForm = async () => {
+  const submitForm = async (uploadType: string) => {
     if (!values.current.file) {
       return false;
     }
@@ -41,7 +41,12 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     formData.append("file", values.current.file, values.current.file.name);
     console.log(formData.get("file"));
     try {
-     uploadFile(formData, roomId, tags)
+      if(uploadType === "upload" ) {
+          uploadFile(formData, roomId, tags)
+      }
+      else {
+          scanNotes(formData)
+      }
     } catch (err) {
       console.log(err);
     }
@@ -104,8 +109,11 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                         <IonItem> <input type="file" onChange={(ev) => onFileChange(ev)}></input>
                                         </IonItem>
                                         <IonInput placeholder="tags" value={tags} onIonInput={(e: any) => {tags = e.target.value}}/> 
-                                        <IonButton color="primary" expand="full" onClick={() => submitForm()}>
+                                        <IonButton color="primary" expand="full" onClick={() => submitForm("upload")}>
                                           Upload
+                                        </IonButton>
+                                        <IonButton color="primary" expand="full" onClick={() => submitForm("scan")}>
+                                          Scan Notes
                                         </IonButton>
                                         {/*
                                 <IonCard>

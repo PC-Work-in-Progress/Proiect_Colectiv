@@ -6,10 +6,10 @@ com/noteit/noteit/services/UserRoomServiceImplementation.java
  com.noteit.noteit.services.UserRoomServiceImplementation
 com/noteit/noteit/files/mapper/FileDbMapper.java
  com.noteit.noteit.files.mapper.FileDbMapper
-com/noteit/noteit/repositories/FileTagRepository.java
- com.noteit.noteit.repositories.FileTagRepository
 com/noteit/noteit/controller/TestController.java
  com.noteit.noteit.controller.TestController
+com/noteit/noteit/repositories/FileTagRepository.java
+ com.noteit.noteit.repositories.FileTagRepository
 com/noteit/noteit/exception/AppException.java
  com.noteit.noteit.exception.AppException
 com/noteit/noteit/sqlite/dialect/identity/SQLiteDialectIdentityColumnSupport.java
@@ -18,10 +18,10 @@ com/noteit/noteit/services/RoomServiceInterface.java
  com.noteit.noteit.services.RoomServiceInterface
 com/noteit/noteit/files/message/ResponseFile.java
  com.noteit.noteit.files.message.ResponseFile
-com/noteit/noteit/security/UserPrincipal.java
- com.noteit.noteit.security.UserPrincipal
 com/noteit/noteit/controller/UserController.java
  com.noteit.noteit.controller.UserController
+com/noteit/noteit/security/UserPrincipal.java
+ com.noteit.noteit.security.UserPrincipal
 com/noteit/noteit/security/CustomUserDetailsService.java
  com.noteit.noteit.security.CustomUserDetailsService
 com/noteit/noteit/services/UserServiceImplementation.java
@@ -60,6 +60,8 @@ com/noteit/noteit/files/message/ResponseMessage.java
  com.noteit.noteit.files.message.ResponseMessage
 com/noteit/noteit/files/model/FileRoomCompositePK.java
  com.noteit.noteit.files.model.FileRoomCompositePK
+com/noteit/noteit/services/TestServiceInterface.java
+ com.noteit.noteit.services.TestServiceInterface
 com/noteit/noteit/repositories/UserRoomRepository.java
  com.noteit.noteit.repositories.UserRoomRepository
 com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
@@ -69,8 +71,6 @@ com/noteit/noteit/sqlite/dialect/SQLiteDialect.java
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$3
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$4
  com.noteit.noteit.sqlite.dialect.SQLiteDialect$SQLiteUniqueDelegate
-com/noteit/noteit/services/TestServiceInterface.java
- com.noteit.noteit.services.TestServiceInterface
 com/noteit/noteit/repositories/UserRepository.java
  com.noteit.noteit.repositories.UserRepository
 com/noteit/noteit/files/dtos/FileDbDto.java
@@ -95,12 +95,12 @@ com/noteit/noteit/entities/RoomEntity.java
  com.noteit.noteit.entities.RoomEntity
 com/noteit/noteit/entities/UserRoomEntity.java
  com.noteit.noteit.entities.UserRoomEntity
-com/noteit/noteit/payload/FullUpdateRequest.java
- com.noteit.noteit.payload.FullUpdateRequest
 com/noteit/noteit/services/UserRoomServiceInterface.java
  com.noteit.noteit.services.UserRoomServiceInterface
 com/noteit/noteit/notifications/service/NotificationsServiceInterface.java
  com.noteit.noteit.notifications.service.NotificationsServiceInterface
+com/noteit/noteit/payload/FullUpdateRequest.java
+ com.noteit.noteit.payload.FullUpdateRequest
 com/noteit/noteit/entities/UserRoomIdEntity.java
  com.noteit.noteit.entities.UserRoomIdEntity
 com/noteit/noteit/dtos/RoomDto.java
@@ -111,10 +111,10 @@ com/noteit/noteit/files/model/FileRoomDB.java
  com.noteit.noteit.files.model.FileRoomDB
 com/noteit/noteit/services/UserServiceInterface.java
  com.noteit.noteit.services.UserServiceInterface
-com/noteit/noteit/NoteitApplication.java
- com.noteit.noteit.NoteitApplication
 com/noteit/noteit/files/exception/FileException.java
  com.noteit.noteit.files.exception.FileException
+com/noteit/noteit/NoteitApplication.java
+ com.noteit.noteit.NoteitApplication
 com/noteit/noteit/utils/AuthError.java
  com.noteit.noteit.utils.AuthError
 com/noteit/noteit/notifications/exceptions/NotificationAlreadyReadException.java
@@ -125,28 +125,28 @@ com/noteit/noteit/files/repository/FileRoomDBRepository.java
  com.noteit.noteit.files.repository.FileRoomDBRepository
 com/noteit/noteit/helper/mapper/UserMapper.java
  com.noteit.noteit.helper.mapper.UserMapper
+com/noteit/noteit/controller/AuthController.java
+ com.noteit.noteit.controller.AuthController
+ com.noteit.noteit.controller.AuthController$1
 com/noteit/noteit/security/JwtTokenProvider.java
  com.noteit.noteit.security.JwtTokenProvider
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController
 com/noteit/noteit/payload/JwtAuthenticationResponse.java
  com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/helper/mapper/RoomMapper.java
  com.noteit.noteit.helper.mapper.RoomMapper
 com/noteit/noteit/notifications/controller/NotificationsController.java
  com.noteit.noteit.notifications.controller.NotificationsController
-com/noteit/noteit/payload/ApiResponse.java
- com.noteit.noteit.payload.ApiResponse
 com/noteit/noteit/entities/TagEntity.java
  com.noteit.noteit.entities.TagEntity
 com/noteit/noteit/notifications/model/Notification.java
  com.noteit.noteit.notifications.model.Notification
+com/noteit/noteit/payload/ApiResponse.java
+ com.noteit.noteit.payload.ApiResponse
 com/noteit/noteit/entities/FileTagPK.java
  com.noteit.noteit.entities.FileTagPK
 com/noteit/noteit/entities/FileTagEntity.java
  com.noteit.noteit.entities.FileTagEntity
 com/noteit/noteit/hwrecognition/TextDetector.java
  com.noteit.noteit.hwrecognition.TextDetector
-com/noteit/noteit/controller/AuthController.java
- com.noteit.noteit.controller.AuthController
- com.noteit.noteit.controller.AuthController$1
+com/noteit/noteit/files/controller/FileController.java
+ com.noteit.noteit.files.controller.FileController
