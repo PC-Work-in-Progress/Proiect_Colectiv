@@ -315,6 +315,23 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
     }
 
+    @Override
+    public void downloadFile(String id, String roomId) throws FileException {
+        logger.info("ENTER download, fileId : {} in room : {}", id, roomId);
+        var f = fileDBRepository.findById(id);
+        if (f.isEmpty()) {
+            logger.info("EXIT exiting, file iwth id : {} not found", id);
+            throw new FileException("File not found!");
+        }
+        var fileRoom = fileRoomDBRepository.findById_FileIdAndId_RoomId(id, roomId).get(0);
+
+        fileRoomDBRepository.delete(fileRoom);
+        fileRoom.Download();
+        fileRoomDBRepository.save(fileRoom);
+        logger.info("EXIT download success");
+
+    }
+
 
     public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
