@@ -1,16 +1,43 @@
-import {IonButton, IonButtons, IonHeader, IonLabel, IonTitle, IonToolbar} from '@ionic/react';
-import React, {useContext} from "react";
+import {IonAlert, IonButton, IonButtons, IonHeader, IonIcon, IonLabel, IonTitle, IonToolbar} from '@ionic/react';
+import React, {useContext, useState} from "react";
 import "./Header.css"
 import {AuthContext} from "../auth/AuthProvider";
 import { Redirect } from 'react-router-dom';
+import { notifications, notificationsOffCircleOutline} from 'ionicons/icons';
+import { GetNotifications } from './notificationApi';
 
 
 
 export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
+    const [modal, setShowModal] = useState(false);
+
     const handleLogout = () => {
         logout?.();
       }
+
+
+    const [notify, setNotify] = useState(false)
+    let notifications = [];
+
+    function GetNotificationsEffect() {
+        let canceled = false;
+        GetNotificationsAsync();
+        return () => {
+            canceled = true;
+        }
+
+        async function GetNotificationsAsync() {
+            await GetNotifications(token).then(result => {
+                for(var notification in result) {
+                    console.log(notification);
+                }
+            });
+
+        }
+    }
+    
+
     return (
         <>
             <IonHeader>
@@ -20,8 +47,21 @@ export const Header: React.FC = () => {
                             <IonTitle class="header-title ion-padding">NoteIt</IonTitle>
                         </IonButton>
                     </IonButtons>
+
+                                      
                     {token !== "" && (
                     <IonButtons slot="end" >
+                        <IonButton>
+                            <IonIcon icon={notificationsOffCircleOutline}></IonIcon>
+                        </IonButton>
+                        <IonAlert
+                                        isOpen={modal}
+                                        onDidDismiss={() => setShowModal(false)}
+                                        cssClass='modal'
+                                        message={'Make sure it\'s at least 16 characters OR 8 including a number, a lowercase\n' +
+                                        '                                            letter and a special character'}
+                                        buttons={['OK']}
+                                    />
                         <IonButton class="header-button" href="/discover">
                             <IonLabel class="ion-padding">Discover rooms</IonLabel>
                         </IonButton>
