@@ -63,16 +63,13 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                                     <div className="filter-button"><IonButton onClick={() => {
                                         filterByTags();
                                     }}>Filter</IonButton></div>
-                                    {/*<IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>*/}
-                                    {/*{fetchingRoomsError &&*/}
-                                    {/*<div className="create-room-error">{fetchingRoomsError.message}</div>}*/}
                                 </IonCardContent>
                             </IonCard>
                         </IonCol>
                         <IonCol class="fullscreen" size="8">
                             <IonSearchbar placeholder="Room name" value={searchText}
                                           onIonChange={e => {
-                                              setSearchText(e.detail.value!);
+                                              setSearchText(e.detail.value || '');
                                               // changeSearch(e.detail.value!);
                                           }}
                                           onKeyPress={e => {
@@ -80,29 +77,8 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                                                   searchRooms(searchText);
                                               }
                                           }}
-                                          debounce={700}/>
+                            />
                             <IonCard class="room-list-card">
-                                <IonCardHeader>
-                                    <div className="rooms-title">
-                                        {/*<IonButtons>*/}
-                                        {/*<IonButton disabled={!previousNotifications}*/}
-                                        {/*           onClick={async () => {*/}
-                                        {/*               log("searchNext");*/}
-                                        {/*               await previousPage?.();*/}
-                                        {/*           }}>*/}
-                                        {/*    <IonIcon icon={chevronBack}/>*/}
-                                        {/*</IonButton>*/}
-                                        {/*<span>{notificationsPage}</span>*/}
-                                        {/*<IonButton disabled={!hasMoreNotifications}*/}
-                                        {/*           onClick={async () => {*/}
-                                        {/*               log("searchPrevious");*/}
-                                        {/*               await nextPage?.();*/}
-                                        {/*           }}>*/}
-                                        {/*    <IonIcon icon={chevronForward}/>*/}
-                                        {/*</IonButton>*/}
-                                        {/*</IonButtons>*/}
-                                    </div>
-                                </IonCardHeader>
                                 <IonCardContent>
                                     <IonList class="room-list">
                                         {rooms.length > 0 && (
@@ -116,11 +92,8 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
                                                           }}/>)
                                         )}
                                     </IonList>
-                                    {/*<IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>*/}
                                 </IonCardContent>
                             </IonCard>
-                            {/*{fetchingRecentFilesError &&*/}
-                            {/*<div className="create-room-error">{fetchingRecentFilesError.message}</div>}*/}
                         </IonCol>
                     </IonRow>
                 </IonGrid>
@@ -145,13 +118,5 @@ export const Discover: React.FC<RouteComponentProps> = ({history}) => {
         })
         filterRooms(tagList);
     }
-
-    // function getRecentFilesNr() {
-    //     log("getRecentFilesNr");
-    //     if (notificationsPage * 15 + 15 >= recentFiles.length) {
-    //         return recentFiles.length;
-    //     }
-    //     return notificationsPage * 15 + 15;
-    // }
 }
 

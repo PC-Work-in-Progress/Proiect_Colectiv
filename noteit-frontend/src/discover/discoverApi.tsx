@@ -14,7 +14,7 @@ export const getRooms: (token: string, searchText?: any) => Promise<RoomProps[]>
 }
 
 export const getTags: (token: string) => Promise<TagProps[]> = (token) => {
-    const url = homeUrl;
+    const url = homeUrl + "/tags/predefined";
     return withLogs(axios.get(url, authConfig(token)), 'getTags');
 }
 

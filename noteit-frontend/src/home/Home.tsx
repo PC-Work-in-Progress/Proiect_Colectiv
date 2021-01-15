@@ -10,7 +10,7 @@ import {
     IonContent,
     IonGrid,
     IonIcon,
-    IonList, IonLoading,
+    IonList,
     IonPopover,
     IonRow
 } from '@ionic/react';

@@ -2,7 +2,7 @@ import {useCallback, useContext, useEffect, useReducer} from "react";
 import {getLogger} from "../shared";
 import {AuthContext} from "../auth/AuthProvider";
 import {RoomProps} from "../home/room";
-import {getRooms, getRoomsByTags} from "./discoverApi";
+import {getRooms, getRoomsByTags, getTags} from "./discoverApi";
 
 const log = getLogger("useHome");
 
@@ -23,11 +23,6 @@ interface DiscoverState {
     fetchingRoomsError?: Error | null;
     fetchingTags: boolean;
     fetchingTagsError?: Error | null;
-    // notificationsPage: number;
-    // nextPage?: NextPageFn;
-    // previousPage?: NextPageFn;
-    // hasMoreNotifications: boolean;
-    // previousNotifications: boolean;
 }
 
 const initialState: DiscoverState = {
@@ -35,9 +30,6 @@ const initialState: DiscoverState = {
     tags: [],
     fetchingRooms: false,
     fetchingTags: false
-    // notificationsPage: 0,
-    // hasMoreNotifications: false,
-    // previousNotifications: false
 };
 
 interface ActionProps {
@@ -51,7 +43,6 @@ const FETCH_ROOMS_SUCCEEDED = 'FETCH_ROOMS_SUCCEEDED';
 const FETCH_TAGS_STARTED = 'FETCH_TAGS_STARTED';
 const FETCH_TAGS_FAILED = 'FETCH_TAGS_FAILED';
 const FETCH_TAGS_SUCCEEDED = 'FETCH_TAGS_SUCCEEDED';
-// const CHANGE_SEARCH = 'CHANGE_SEARCH';
 
 const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
     (state, {type, payload}) => {
@@ -61,16 +52,7 @@ const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
             case FETCH_ROOMS_FAILED:
                 return {...state, fetchingRooms: false, fetchingRoomsError: payload.error}
             case FETCH_ROOMS_SUCCEEDED:
-                // let result = state.rooms;
                 let result = payload.rooms;
-                // payload.rooms.forEach((room: RoomProps) => {
-                //     const index = state.rooms.findIndex(r => r.id === room.id);
-                //     if (index === -1) {
-                //         result.push(room);
-                //     } else {
-                //         result[index] = room;
-                //     }
-                // })
                 return {...state, fetchingRooms: false, rooms: result}
             case FETCH_TAGS_STARTED:
                 return {...state, fetchingTags: true, fetchingTagsError: null}
@@ -78,27 +60,6 @@ const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
                 return {...state, fetchingTags: false, fetchingTagsError: payload.error}
             case FETCH_TAGS_SUCCEEDED:
                 return {...state, fetchingRooms: false, tags: payload.tags}
-            // case FETCH_NEXT_PAGE:
-            //     const nextPage = state.notificationsPage + 1;
-            //     return {
-            //         ...state,
-            //         notificationsPage: nextPage,
-            //         previousNotifications: true
-            //     };
-            // case FETCH_PREVIOUS_PAGE:
-            //     const currentPage = state.notificationsPage - 1;
-            //     let previous = true;
-            //     if (currentPage === 0) {
-            //         previous = false;
-            //     }
-            //     return {
-            //         ...state,
-            //         notificationsPage: currentPage,
-            //         previousNotifications: previous,
-            //         hasMoreNotifications: true
-            //     };
-            // case CHANGE_SEARCH:
-            //     return {...state, searchText: payload.search}
             default:
                 return state;
         }
@@ -107,27 +68,16 @@ const reducer: (state: DiscoverState, action: ActionProps) => DiscoverState =
 export const useDiscover = () => {
     const {token} = useContext(AuthContext);
     const [state, dispatch] = useReducer(reducer, initialState);
-    // const nextPage = useCallback<NextPageFn>(fetchNextPage, [token]);
-    // const previousPage = useCallback<NextPageFn>(fetchPreviousPage, [token]);
-    // const changeSearch = useCallback<ChangeSearchFn>(changeSearchCallback, [token]);
     const filterRooms = useCallback<FilterFn>(filterCallback, [token]);
     const searchRooms = useCallback<ChangeSearchFn>(searchRoomsCallback, [token]);
-    // useEffect(fetchRoomsEffect, [token, searchText]);
     useEffect(fetchRoomsEffect, [token]);
     useEffect(fetchTagsEffect, [token]);
     return {state, filterRooms, searchRooms};
 
-    // async function changeSearchCallback(value: string) {
-    //     log('changeSearch');
-    //     dispatch({type: CHANGE_SEARCH, payload: {search: value}});
-    // }
-
     function filterCallback(filterTags: string[]) {
         log('filterByTags');
         let canceled = false;
-        // if (filterTags.length > 0) {
         fetchRooms();
-        // }
         return () => {
             canceled = true;
         }
@@ -156,16 +106,6 @@ export const useDiscover = () => {
             }
         }
     }
-
-    // async function fetchNextPage() {
-    //     log('fetchNextPage');
-    //     dispatch({type: FETCH_NEXT_PAGE});
-    // }
-
-    // async function fetchPreviousPage() {
-    //     log('fetchPreviousPage');
-    //     dispatch({type: FETCH_PREVIOUS_PAGE});
-    // }
 
     function fetchRoomsEffect() {
         let canceled = false;
@@ -209,6 +149,7 @@ export const useDiscover = () => {
                 log(`searchRooms started`);
                 dispatch({type: FETCH_ROOMS_STARTED});
                 // server get rooms
+                console.log(text);
                 let result = await getRooms(token, text);
                 log('fetchRooms succeeded');
                 if (!canceled) {
@@ -236,11 +177,7 @@ export const useDiscover = () => {
                 log(`fetchTags started`);
                 dispatch({type: FETCH_TAGS_STARTED});
                 // server get rooms
-                // let result = await getTags(token);
-                let result: TagProps[] = [{id: "1", name: "dog"}, {
-                    id: "2",
-                    name: "tag2",
-                }, {id: "3", name: "cs"}];
+                let result = await getTags(token);
                 log('fetchTags succeeded');
                 if (!canceled) {
                     dispatch({type: FETCH_TAGS_SUCCEEDED, payload: {tags: result}});
