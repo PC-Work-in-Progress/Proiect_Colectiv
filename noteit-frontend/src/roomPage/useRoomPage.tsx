@@ -3,12 +3,14 @@ import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
 import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdmin } from "./roomApi";
-import {uploadFile as uploadFileApi, scanNotes as scanNotesApi} from "./roomApi"
+import {uploadFile as uploadFileApi} from "./roomApi"
+
+
 
 const log = getLogger("useRoomPage");
 
 export type UploadFileFn = (file: FormData, routeId: string, tags: string) => void;
-export type ScanNotesFn = (file: FormData) => void;
+export type ScanNotesFn = (file: FormData) => string;
 export type HideUploadFileFn = () => void;
 export type ReviewFileFn = (fileId: string, type: string) => void;
 
@@ -47,7 +49,7 @@ const initialState: RoomState = {
     fetchingFiles: false,
     fetchingFile: false,
     isAdmin: false,
-    tags: ""
+    tags: "",
 }
 
 interface ActionProps {
@@ -72,6 +74,7 @@ const REVIEW_FILE_SUCCEEDED = 'REVIEW_FILE_SUCCEEDED';
 const FETCH_ISADMIN_STARTED = 'FETCH_ISADMIN_STARTED';
 const FETCH_ISADMIN_FAILED = 'FETCH_ISADMIN_FAILED';
 const FETCH_ISADMIN_SUCCEDED ='FETCH_ISADMIN_SUCCEDED';
+
 
 const reducer: (state: RoomState, action: ActionProps) => RoomState =
     (state, {type, payload}) => {
@@ -171,7 +174,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const {token} = useContext(AuthContext);
             const [state, dispatch] = useReducer(reducer, initialState);
             const uploadFile = useCallback<UploadFileFn>(uploadFileCallback, [token]);
-            const scanNotes =  useCallback<ScanNotesFn>(scanNotesCallback, [token]);
+            
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
 
@@ -181,7 +184,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             useEffect(fetchFileEffect, [state.fileId,token]);
             useEffect(fetchIsAdminEffect, [token])
 
-            return {state,setState, uploadFile,scanNotes, hideUploadFile, showUploadFile, reviewFile}
+            return {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile}
 
             async function hideUploadFileCallback() {
                 log('hide UploadFile Popover');
@@ -227,20 +230,17 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 }
             }
 
-            async function scanNotesCallback(file: FormData) {
-                try {
-                    log('uploadFile started');
-                    dispatch({type: UPLOAD_FILE_STARTED});
-                    // File check and upload
-
-                    const response = await scanNotesApi(token, file);
-                    console.log(response)
-                    dispatch({type:UPLOAD_FILE_SUCCEEDED, payload:{file: response}})
+            function base64ToArrayBuffer(base64: string) {
+                const binary_string = window.atob(base64);
+                const len = binary_string.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binary_string.charCodeAt(i);
                 }
-                catch(error) {
-                    dispatch({type: UPLOAD_FILE_FAILED, payload: {error}})
-                }
+                return bytes.buffer;
             }
+
+            
 
             function fetchIsAdminEffect() {
                 let canceled = false;
