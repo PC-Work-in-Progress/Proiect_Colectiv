@@ -82,7 +82,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                     }
                 }
                 console.log(stringTags);
-                uploadFile(formData, roomId, tags);
+                uploadFile(formData, roomId, stringTags);
             } else {
                 setFormData(formData);
                 setShowScanNotes(true);
