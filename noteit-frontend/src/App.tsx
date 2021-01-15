@@ -28,6 +28,7 @@ import {AuthProvider} from './auth/AuthProvider';
 import {RoomPage} from './roomPage/Room';
 import {File} from './file';
 import {User} from "./user";
+import {Discover} from "./discover";
 
 const App: React.FC = () => (
     <IonApp>
@@ -40,6 +41,7 @@ const App: React.FC = () => (
                     <Route path="/room/:id/:fileId" component={File} exact={true}/>
                     <Route path='/room/:id' component={RoomPage} exact={true}/>
                     <Route path='/user' component={User} exact={true}/>
+                    <Route path='/discover' component={Discover} exact={true}/>
                     <Route exact path="/" render={() => <Redirect to="/login"/>}/>
                 </AuthProvider>
             </IonRouterOutlet>

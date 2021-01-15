@@ -1,39 +1,41 @@
-.fullscreen {
-    height: 100%;
-}
+@media (min-width: 576px) {
+    .fullscreen-home {
+        height: 100%;
+    }
 
+    .fullscreen-page {
+        height: 100%;
+    }
 
-.flex-page {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: #E9ECEF;
-}
+    .flex-page-home {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #E9ECEF;
+    }
 
-.grid-page {
-    width: 100%;
-    flex: 1;
-    /*height: 100%;*/
-    /*padding-top: 15px;*/
-}
+    .first-col {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
 
-.first-col {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    .rooms {
+        flex: 1;
+        height: 100%;
+    }
 }
 
 .user {
-    /*flex: 3;*/
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.rooms {
+.grid-page {
+    width: 100%;
     flex: 1;
-    height: 100%;
 }
 
 .button-div {
@@ -72,4 +74,32 @@
 .recent-files-title {
     display: flex;
     justify-content: space-between;
+}
+
+@media (max-width: 575px) {
+    .fullscreen-home {
+        overflow-y: scroll;
+    }
+
+    .flex-page-home {
+        display: flex;
+        flex-direction: column;
+        background-color: #E9ECEF;
+    }
+
+    .first-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        height: auto;
+    }
+
+    .rooms {
+        flex: 1;
+        height: auto;
+    }
+
+    .create-room-popover .popover-content {
+        width: 300px;
+    }
 }

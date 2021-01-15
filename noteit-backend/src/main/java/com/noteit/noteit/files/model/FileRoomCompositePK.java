@@ -2,9 +2,9 @@ package com.noteit.noteit.files.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Objects;
-
 @Embeddable
 public class FileRoomCompositePK implements Serializable {
 

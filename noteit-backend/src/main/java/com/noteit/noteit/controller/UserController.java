@@ -2,11 +2,14 @@ package com.noteit.noteit.controller;
 
 import com.noteit.noteit.entities.UserEntity;
 import com.noteit.noteit.files.message.ResponseMessage;
+import com.noteit.noteit.files.repository.FileRoomDBRepository;
+import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.payload.ApiResponse;
 import com.noteit.noteit.payload.SignUpRequest;
 import com.noteit.noteit.payload.UpdateRequest;
 import com.noteit.noteit.repositories.UserRepository;
 import com.noteit.noteit.services.UserServiceInterface;
+import com.noteit.noteit.utils.Ranks;
 import lombok.AllArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,12 @@ public class UserController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    FileRoomDBRepository fileRoomDBRepository;
+
+    @Autowired
+    private FileStorageService fileService;
 
     @GetMapping("/details")
     public ResponseEntity<?> getDetailsUser(HttpServletRequest request) {
@@ -100,4 +109,49 @@ public class UserController {
             return ResponseEntity.badRequest().body(exception.getLocalizedMessage());
         }
     }
+
+    @GetMapping("/rank")
+    public ResponseEntity<?> getUserRank(HttpServletRequest request) {
+        try {
+            String header = request.getHeader("Authorization");
+
+            if (header == null || !header.startsWith("Bearer ")) {
+                throw new ServiceException("No JWT token found in request headers");
+            }
+
+            String authToken = header.split(" ")[1];
+            System.out.println("TOKEN");
+            System.out.println(authToken);
+
+            UserEntity currentUser = userRepository.findByToken(authToken);
+            if (currentUser == null) {
+                return new ResponseEntity(new ApiResponse(false, "Invalid token"),
+                        HttpStatus.OK);
+            }
+            int total = fileService.getUserViewsAndDownloadsCount(currentUser.getId());
+            System.out.println("Total views + downloads: " + total);
+            Ranks associatedRank = associateRank(total);
+
+            return new ResponseEntity(new ApiResponse(true, associatedRank.toString()),
+                    HttpStatus.OK);
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(exception.getLocalizedMessage());
+        }
+    }
+
+    private Ranks associateRank(int total) {
+        if (total == 0) {
+            return Ranks.Just_Started;
+        } else if (total < 10) {
+            return Ranks.Popandau;
+        } else if (total < 50) {
+            return Ranks.Code_Monkey;
+        } else if  (total < 1000) {
+            return Ranks.Big_Kahuna_Boss;
+        } else {
+            return Ranks.God_Of_Code;
+        }
+
+    }
+
 }

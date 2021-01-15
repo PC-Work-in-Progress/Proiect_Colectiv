@@ -5,7 +5,7 @@ import "./File.css"
 import {RouteComponentProps} from "react-router";
 import {getLogger} from "../shared";
 import {AuthContext} from "../auth/AuthProvider";
-import {getFileContent} from "./fileApi";
+import {fileDownload, getFileContent} from "./fileApi";
 
 const log = getLogger("File");
 
@@ -75,7 +75,7 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 log(`fetchFileContent started`);
                 setFileState({...fileState, fetchingFile: true, fetchFileError: null});
                 // server get file data
-                let file = await getFileContent(token, match.params.fileId);
+                let file = await getFileContent(token, match.params.fileId, match.params.id);
                 let arrayBuffer = base64ToArrayBuffer(file.content);
                 let objectURL;
                 let imageURL;
@@ -164,9 +164,10 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 }
                 downloadLink(content, type, fileName);
                 log('download succeeded');
+                await fileDownload(token, match.params.fileId, match.params.id);
             } catch (error) {
                 log('download failed');
-                if (error.response.status === 417) {
+                if (error.response && error.response.status === 417) {
                     error = {message: "File not found"};
                 }
                 setFileState({...fileState, fetchFileError: error, fetchingFile: false})
