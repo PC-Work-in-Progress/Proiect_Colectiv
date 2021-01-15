@@ -35,4 +35,8 @@ public class FileRoomDB {
     public void View() {
         this.id.setViews(this.id.getViews()+1);
     }
+
+    public void Download() {
+        this.id.setDownloads(this.id.getDownloads()+1);
+    }
 }
