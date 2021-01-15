@@ -20,7 +20,7 @@ interface ScanNotesProps {
 
 
 export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, hide}) => {
-    const [text, setText] = useState("");
+    const [text, setText] = useState("Waiting for file to be analysed");
     const [state, setFileState] = useState<ScanNotesProps>();
     const {token} = useContext(AuthContext);
     useEffect(scanNotesEffect,[file]);
@@ -61,12 +61,13 @@ export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, h
         <IonContent class="popover-content">
 
             <div className="ion-padding-start ion-padding-bottom">
-             <IonItem>
-                <IonTextarea value={text} onIonChange={e => setText(e.detail.value!)}></IonTextarea>
+                <IonTextarea className="textAreaScanNotes" value={text} onIonChange={e => setText(e.detail.value!)} autoGrow = { true }></IonTextarea>
                 <div className="button-div">
-                <IonButton  onClick={() => sendFile(text)}></IonButton>
+                <IonButton  onClick={() => sendFile(text)}> Upload </IonButton>
                 </div>
-            </IonItem>
+                <div className="button-div">
+                <IonButton  onClick={() => hide()}> Cancel </IonButton>
+                </div>
             </div>
         </IonContent>
     );

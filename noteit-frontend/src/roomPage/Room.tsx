@@ -128,6 +128,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                           Scan Notes
                                         </IonButton>
                                         <IonPopover
+                                          cssClass='create-room-popover'
                                           isOpen={showScanNotes}
                                           backdropDismiss={false}>
                                           <ScanNotes uploadFile={uploadFile} file = {formData} roomId = {roomId} hide ={hide}/>
