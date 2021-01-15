@@ -31,4 +31,6 @@ public interface FileStorageServiceInterface {
     void fileViewed(String fileId, String roomId);
 
     String getUserIdByFileAndRoom(String fileId, String roomId);
+
+    Integer getUserViewsAndDownloadsCount(String userId);
 }

@@ -297,6 +297,18 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
     }
 
+    @Override
+    public Integer getUserViewsAndDownloadsCount(String userId) {
+        List<FileRoomDB> list = fileRoomDBRepository.findById_UserId(userId);
+        int viewsAndDownloadsCount = 0;
+        for (FileRoomDB elem :
+                list) {
+            viewsAndDownloadsCount += elem.getId().getViews();
+            viewsAndDownloadsCount += elem.getId().getDownloads();
+        }
+        return viewsAndDownloadsCount;
+    }
+
 
     public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
