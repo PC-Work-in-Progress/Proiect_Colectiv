@@ -343,7 +343,13 @@ public class FileStorageService implements FileStorageServiceInterface {
 
     }
 
-
+    /**
+     * function that obtains the most recent files from all the rooms a user belong to
+     * @param token token of user
+     * @param pageNumber a value that is used to determine the index of the last file added in the list of the most recent files
+     * @return a list of FileRoomDto
+     */
+    @Override
     public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
         int filesPerPage = 15;
@@ -386,6 +392,12 @@ public class FileStorageService implements FileStorageServiceInterface {
         return currentFileRoomDtoList;
     }
 
+    /**
+     * function that obtains the list of files that contains a given sequence in the filename
+     * @param token token of user
+     * @param filename filename of room
+     * @return a list of FileRoomDto
+     */
     @Override
     public List<FileRoomDto> getSearchedFilesFromName(String token, String filename) {
         UserEntity user = userRepository.findByToken(token);
@@ -420,6 +432,12 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileRoomDtoList;
     }
 
+    /**
+     * function that obtains the list of files that contains a given tag
+     * @param token token of user
+     * @param tag tag of room
+     * @return a list of FileRoomDto
+     */
     @Override
     public List<FileRoomDto> getSearchedFilesFromTag(String token, String tag) {
         UserEntity user = userRepository.findByToken(token);
