@@ -316,6 +316,17 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
     @Override
+    public Integer getUserViewsAndDownloadsCount(String userId) {
+        List<FileRoomDB> list = fileRoomDBRepository.findById_UserId(userId);
+        int viewsAndDownloadsCount = 0;
+        for (FileRoomDB elem :
+                list) {
+            viewsAndDownloadsCount += elem.getId().getViews();
+            viewsAndDownloadsCount += elem.getId().getDownloads();
+        }
+        return viewsAndDownloadsCount;
+      }
+
     public void downloadFile(String id, String roomId) throws FileException {
         logger.info("ENTER download, fileId : {} in room : {}", id, roomId);
         var f = fileDBRepository.findById(id);

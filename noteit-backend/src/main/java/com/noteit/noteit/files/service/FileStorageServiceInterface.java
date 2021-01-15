@@ -33,5 +33,6 @@ public interface FileStorageServiceInterface {
 
     String getUserIdByFileAndRoom(String fileId, String roomId);
 
+    Integer getUserViewsAndDownloadsCount(String userId);
     void downloadFile(String id, String roomId) throws FileException;
 }
