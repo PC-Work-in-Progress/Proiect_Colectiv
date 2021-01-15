@@ -47,7 +47,6 @@ export const SignUp: React.FC<RouteComponentProps> = ({history}) => {
         validateEmail(email || '');
         validateFullName(full_name || '');
         validatePassword(password || '');
-        // alert(errorEmail.length + errorFullName.length + errorPassword.length + errorUsername.length);
         if (errorEmail.length === 0 && errorFullName.length === 0 && errorPassword.length === 0 && errorUsername.length === 0) {
             signup?.(username, password, full_name, email);
         }
@@ -145,9 +144,6 @@ export const SignUp: React.FC<RouteComponentProps> = ({history}) => {
                                 <IonLoading isOpen={isSigning}/>
                                 {signupError && (
                                     <div>{'Failed to sign up'}</div>)}
-                                {/*{message1 && (*/}
-                                {/*    <div> {message1} </div>*/}
-                                {/*)}*/}
                                 <IonButton onClick={handleSignUp}>Sign Up</IonButton>
                                 <br></br>
                                 <br></br>
