@@ -75,7 +75,7 @@ export const uploadFile: (token: string, file: FormData, roomId: string, tags: s
 }   
 
 
-export const scanNotes: (token: string, file: FormData)  => Promise<FileResponse> = (token, file) => {
+export const scanNotes: (token: string, file: FormData)  => Promise<string> = (token, file) => {
     return withLogs(axios.post(`http://${baseUrl}/api/files/recognition`,file, scanConfig(token)), 'scanNotes');
 
 }

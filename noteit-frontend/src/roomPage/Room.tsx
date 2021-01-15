@@ -1,8 +1,9 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonList, IonLoading, IonPopover, IonRow } from "@ionic/react";
-import React, { useRef } from "react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonList, IonLoading, IonModal, IonPopover, IonRow } from "@ionic/react";
+import React, { useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Header } from "../layout/Header";
 import { MyFile } from "./file/File";
+import { ScanNotes } from "./ScanNotes";
 import { useRoom } from "./useRoomPage";
 
 
@@ -11,14 +12,19 @@ interface RoomPageProps extends RouteComponentProps<{
 }> {}
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-  const {state,setState, uploadFile,scanNotes, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
+  const {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
     fetchingFile, fetchingFileError, isAdmin, acceptedFiles
   } = state;
 
+  const [showScanNotes, setShowScanNotes] = useState(false)
   let { tags } = state;
   const roomId = match.params.id
+
+  const [formData, setFormData] = useState<FormData>();
+
+
   interface InternalValues {
     file: any;
   }
@@ -32,6 +38,10 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     
   };
 
+  const hide =  () => {
+    setShowScanNotes(false);
+  }
+
   const submitForm = async (uploadType: string) => {
     if (!values.current.file) {
       return false;
@@ -42,10 +52,12 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     console.log(formData.get("file"));
     try {
       if(uploadType === "upload" ) {
-          uploadFile(formData, roomId, tags)
+          uploadFile(formData, roomId, tags);
       }
       else {
-          scanNotes(formData)
+          setFormData(formData);
+          setShowScanNotes(true);
+          
       }
     } catch (err) {
       console.log(err);
@@ -115,6 +127,11 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                         <IonButton color="primary" expand="full" onClick={() => submitForm("scan")}>
                                           Scan Notes
                                         </IonButton>
+                                        <IonPopover
+                                          isOpen={showScanNotes}
+                                          backdropDismiss={false}>
+                                          <ScanNotes uploadFile={uploadFile} file = {formData} roomId = {roomId} hide ={hide}/>
+                                        </IonPopover>
                                         {/*
                                 <IonCard>
                                    
@@ -133,5 +150,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                     </IonRow>
                 </IonGrid>
     </IonContent>
+    
      )
 }
