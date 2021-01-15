@@ -26,7 +26,6 @@ export const User: React.FC<RouteComponentProps> = ({history}) => {
     const [accountSecurity, setAccountSecurity] = useState(false);
 
     const [password, setPassword] = useState('');
-    const [oldPassword, setOldPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
 
@@ -167,12 +166,6 @@ export const User: React.FC<RouteComponentProps> = ({history}) => {
                                     {accountSecurity &&
                                     <IonGrid>
                                         <IonList>
-                                            <IonItem>
-                                                <IonLabel>Old password</IonLabel>
-                                                <IonInput type="password"
-                                                          onIonChange={e => setOldPassword(e.detail.value || '')}/>
-                                            </IonItem>
-
                                             <IonItem>
                                                 <IonLabel>New password</IonLabel>
                                                 <IonInput type="password"
