@@ -128,8 +128,8 @@ com/noteit/noteit/helper/mapper/UserMapper.java
 com/noteit/noteit/controller/AuthController.java
  com.noteit.noteit.controller.AuthController
  com.noteit.noteit.controller.AuthController$1
-com/noteit/noteit/files/controller/FileController.java
- com.noteit.noteit.files.controller.FileController
+com/noteit/noteit/security/JwtTokenProvider.java
+ com.noteit.noteit.security.JwtTokenProvider
 com/noteit/noteit/payload/JwtAuthenticationResponse.java
  com.noteit.noteit.payload.JwtAuthenticationResponse
 com/noteit/noteit/helper/mapper/RoomMapper.java
@@ -148,5 +148,5 @@ com/noteit/noteit/entities/FileTagEntity.java
  com.noteit.noteit.entities.FileTagEntity
 com/noteit/noteit/hwrecognition/TextDetector.java
  com.noteit.noteit.hwrecognition.TextDetector
-com/noteit/noteit/security/JwtTokenProvider.java
- com.noteit.noteit.security.JwtTokenProvider
+com/noteit/noteit/files/controller/FileController.java
+ com.noteit.noteit.files.controller.FileController

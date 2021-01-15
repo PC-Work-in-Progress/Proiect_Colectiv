@@ -368,7 +368,7 @@ public class FileController {
     }
 
     @PostMapping("/recognition")
-    public ResponseEntity<byte[]> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String userId = headers.get("authorization");
         try {
             String resultPath = fileService.detectHandwriting(file, userId);
