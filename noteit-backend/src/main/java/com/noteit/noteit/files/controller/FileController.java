@@ -259,38 +259,6 @@ public class FileController {
         }
     }
 
-    @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable String id, @RequestHeader Map<String, String> headers) {
-        String fullToken = headers.get("authorization");
-        if (fullToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
-        }
-        var elems = fullToken.split(" ");
-        String token = elems[1];
-
-        String userId = null;
-        try {
-            userId = userService.getUserIdByToken(token);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! No user"));
-        }
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
-        }
-
-        Optional<FileDB> optionalFile = fileService.getFile(id);
-
-        if (optionalFile.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("No such file!"));
-
-        FileDB file = optionalFile.get();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(file.getType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\"" + file.getName() + "\"")
-
-                .body(new ByteArrayResource(file.getUploaded_file()));
-    }
 
     @PutMapping("/AcceptFile/{id}")
     public ResponseEntity<ResponseMessage> acceptFile(@PathVariable String id, @RequestParam String roomId, @RequestHeader Map<String, String> headers) {
