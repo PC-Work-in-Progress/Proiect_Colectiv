@@ -26,6 +26,10 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     private FileTagRepository fileTagRepository;
     private TagRepository tagRepository;
 
+    /**
+     * function that returns all the rooms
+     * @return a RoomDto
+     */
     @Override
     public List<RoomDto> getRooms() {
         List<RoomDto> roomDtos = new ArrayList<>();
@@ -37,6 +41,11 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         return roomDtos;
     }
 
+    /**
+     * function that obtains all the rooms a user belong to
+     * @param token token of user
+     * @return a list of RoomDto
+     */
     @Override
     public List<RoomDto> getRoomsByToken(String token) {
         List<RoomDto> roomDtos = new ArrayList<>();
@@ -56,6 +65,12 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         return roomDtos;
     }
 
+    /**
+     * function that creates a new room
+     * @param name name of futere room
+     * @param token token of user
+     * @return the created room
+     */
     @Override
     public RoomDto createRoom(String name, String token) {
         String ownerId = userRepository.findByToken(token).getId();
@@ -115,6 +130,12 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         return rooms;
     }
 
+    /**
+     * function that checks if an user is the owner of a room
+     * @param token token of user
+     * @param roomId id of room
+     * @return a JSON string with the answer
+     */
     @Override
     public String checkIfIsAdmin(String token, String roomId) {
         RoomEntity roomEntity = roomRepository.findById(roomId).get();
@@ -129,6 +150,11 @@ public class RoomServiceImplementation implements RoomServiceInterface {
         return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "false" + '"' + "}]";
     }
 
+    /**
+     * function that adds an user to a room
+     * @param token token of user
+     * @param roomId id of room
+     */
     @Override
     public void joinRoom(String token, String roomId)
     {
