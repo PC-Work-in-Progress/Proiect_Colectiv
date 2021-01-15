@@ -252,7 +252,9 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public String detectHandwriting(MultipartFile file, String userId) throws IOException {
         String TEMP_PATH = "src/main/java/com/noteit/noteit/hwrecognition/temp";
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Date date = new Date() ;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss") ;
+        String fileName = dateFormat.format(date) + ".jpeg";
         String path = TEMP_PATH + "/images/" + fileName;
         File localFile = new File(path);
         if (localFile.createNewFile()) {
