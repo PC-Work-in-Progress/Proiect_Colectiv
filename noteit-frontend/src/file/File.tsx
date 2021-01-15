@@ -167,7 +167,7 @@ export const File: React.FC<FilePageProps> = ({history, match}) => {
                 await fileDownload(token, match.params.fileId, match.params.id);
             } catch (error) {
                 log('download failed');
-                if (error.response.status === 417) {
+                if (error.response && error.response.status === 417) {
                     error = {message: "File not found"};
                 }
                 setFileState({...fileState, fetchFileError: error, fetchingFile: false})

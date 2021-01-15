@@ -14,8 +14,8 @@ export const getFileContent: (token: string, fileId: string, roomId: string) => 
 }
 
 export const fileDownload: (token: string, fileId: string, roomId: string) => Promise<string> = async (token, fileId, roomId) => {
-    const url = homeUrl + `/download/${fileId}?roomId=${roomId}`;
-    return withLogs(axios.get(url, fileConfig(token)), 'downloadFile');
+    const url = homeUrl + `/DownloadFile/${fileId}?roomId=${roomId}`;
+    return withLogs(axios.put(url, {}, fileConfig(token)), 'downloadFile');
 }
 
 export const fileConfig = (token?: string) => ({
