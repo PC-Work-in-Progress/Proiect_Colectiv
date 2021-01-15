@@ -342,7 +342,7 @@ public class FileStorageService implements FileStorageServiceInterface {
         logger.info("EXIT download success");
 
     }
-    
+
     /**
      * function that obtains the most recent files from all the rooms a user belong to
      * @param token token of user
