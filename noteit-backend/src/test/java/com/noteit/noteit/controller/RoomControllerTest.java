@@ -80,50 +80,6 @@ class RoomControllerTest extends NoteitApplicationTests {
         userRepository.delete(this.userEntity1);
     }
 
-//    @Test
-//    void getRooms() throws Exception {
-//        set_Up();
-//
-//        RoomEntity roomEntity1 = roomRepository.save(new RoomEntity("test_room01", this.userEntity.getId()));
-//        RoomEntity roomEntity2 = roomRepository.save(new RoomEntity("test_room02", this.userEntity.getId()));
-//        RoomEntity roomEntity3 = roomRepository.save(new RoomEntity("test_room03", this.userEntity.getId()));
-//
-//        mock.perform(post("/rooms/createRoom")).andExpect(status().isUnauthorized());
-//        mock.perform(post("/rooms/createRoom").header("authorization", "Bearer "+userEntity.getToken()+"f")).andExpect(status().isUnauthorized());
-//        mock.perform(post("/api/files/DenyFile/"+file2.getId()+"?roomId="+this.roomEntity.getId()).header("authorization", "Bearer "+userEntity.getToken())).andExpect(status().isOk());
-//        var result = mock.perform(post("/rooms/createRoom").header("authorization", "Bearer " + userEntity.getToken())).andExpect(status().isOk()).andReturn();
-//
-//        set_Off();
-//    }
-
-//    @Test
-//    void getRoomByToken() {
-//        set_Up();
-//
-//        set_Off();
-//    }
-//
-//    @Test
-//    void createRoom() {
-//        set_Up();
-//
-//        set_Off();
-//    }
-//
-//    @Test
-//    void checkIfIsAdmin() {
-//        set_Up();
-//
-//        set_Off();
-//    }
-
-//    @Test
-//    void joinRoom() {
-//        set_Up();
-//
-//        set_Off();
-//    }
-
     @Test
     void filterRoomsByTags() throws Exception{
         set_Up();
