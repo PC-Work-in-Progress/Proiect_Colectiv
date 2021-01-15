@@ -338,18 +338,20 @@ public class FileController {
     @PostMapping("/recognition")
     public ResponseEntity<?> getTextRecognition(@RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) {
         String userId = headers.get("authorization");
+
+        if(userId == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
+        }
         try {
             String resultPath = fileService.detectHandwriting(file, userId);
             File f = new File(resultPath);
-
-            // work only for 2GB file, because array index can only up to Integer.MAX
-            // change it into something that can support bigger files
 
             byte[] buffer = new byte[(int) f.length()];
             FileInputStream is = new FileInputStream(resultPath);
             is.read(buffer);
             is.close();
 
+            fileService.removeFromTemp(resultPath);
             return ResponseEntity.status(HttpStatus.OK).body(buffer);
 
         } catch (IOException e) {

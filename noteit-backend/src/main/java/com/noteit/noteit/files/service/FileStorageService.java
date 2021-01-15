@@ -242,6 +242,13 @@ public class FileStorageService implements FileStorageServiceInterface {
     }
 
 
+    /**
+     * Detects handwriting from given file
+     * @param file the file that contains handwritten text
+     * @param userId id of the user that sent the file
+     * @return string containing the recognized data from the file
+     * @throws IOException
+     */
     @Override
     public String detectHandwriting(MultipartFile file, String userId) throws IOException {
         String TEMP_PATH = "src/main/java/com/noteit/noteit/hwrecognition/temp";
@@ -249,12 +256,23 @@ public class FileStorageService implements FileStorageServiceInterface {
         String path = TEMP_PATH + "/images/" + fileName;
         File localFile = new File(path);
         if (localFile.createNewFile()) {
-//            file.transferTo(localFile);
             OutputStream os = Files.newOutputStream(Paths.get(path));
             os.write(file.getBytes());
             os.close();
             return TextDetector.detectDocumentText(path);
         } else throw new IOException("Could not process image file " + fileName);
+    }
+
+    /**
+     * Removes file from given path
+     * @param filePath path to the file that is deleted
+     * @throws IOException
+     */
+    @Override
+    public void removeFromTemp(String filePath) throws IOException {
+        String[] pathComps = filePath.strip().split("/");
+        String filename = pathComps[pathComps.length - 1];
+        TextDetector.deleteFromTemp("files/" + filename);
     }
 
     /**

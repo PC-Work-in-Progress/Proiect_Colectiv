@@ -26,6 +26,7 @@ public interface FileStorageServiceInterface {
     void acceptFile(String fileId, String roomId) throws FileException;
     FileDB denyFile(String fileId ,String roomId);
     String detectHandwriting(MultipartFile file, String userId) throws IOException;
+    void removeFromTemp(String filePath) throws IOException;
 
     Stream<FileDbWrapper> getWrappedFilesForRoom(String roomId);
     void fileViewed(String fileId, String roomId);
