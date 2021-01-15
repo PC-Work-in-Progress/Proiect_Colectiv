@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @CrossOrigin
 @RestController
@@ -110,6 +112,14 @@ public class AuthController {
         }
     }
 
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static boolean validate(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
+    }
+
     // Some validation, needs improvement
     public AuthError validateInputs(SignUpRequest signUpRequest) {
         if(signUpRequest.getFull_name().length() < 2)
@@ -121,7 +131,7 @@ public class AuthController {
         if(signUpRequest.getPassword().length() < 2)
             return AuthError.INVALID_PASSWORD;
 
-        if(!signUpRequest.getEmail().contains("@") || signUpRequest.getPassword().length() < 4)
+        if(!validate(signUpRequest.getEmail()))
             return AuthError.INVALID_EMAIL;
 
         return AuthError.OK;

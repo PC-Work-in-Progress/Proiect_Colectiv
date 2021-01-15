@@ -13,8 +13,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11">
-      <module name="noteit.main" target="11" />
-      <module name="noteit.test" target="11" />
       <module name="noteit_main" target="11" />
       <module name="noteit_test" target="11" />
     </bytecodeTargetLevel>
