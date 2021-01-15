@@ -25,6 +25,11 @@ public class FileRoomDto implements Comparable<FileRoomDto>{
         this.tags     = tags;
     }
 
+    public FileRoomDto ()
+    {
+
+    }
+
     public String getUserName() {
         return userName;
     }
