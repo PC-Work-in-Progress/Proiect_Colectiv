@@ -403,4 +403,42 @@ public class FileController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("DownloadFile/{id}")
+    public ResponseEntity<?> downloadedFile(@PathVariable String id, @RequestParam String roomId, @RequestHeader Map<String, String> headers) {
+        String fullToken = headers.get("authorization");
+        if (fullToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action!"));
+        }
+        var elems = fullToken.split(" ");
+        String token = elems[1];
+
+        String userId = null;
+        try {
+            userId = userService.getUserIdByToken(token);
+        } catch (Exception e) {
+
+        }
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseMessage("Unauthorized action! Invalid token"));
+        }
+
+        if (roomId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Room Id not specified!"));
+        }
+
+        RoomEntity r = roomService.getById(roomId);
+        if (r == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Invalid room id"));
+
+        try {
+            fileService.downloadFile(id, roomId);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File download successfully!"));
+        } catch (FileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Could not download this file! Something went wrong!"));
+        }
+
+    }
 }
