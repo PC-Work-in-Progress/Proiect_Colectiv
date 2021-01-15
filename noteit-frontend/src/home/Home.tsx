@@ -11,7 +11,6 @@ import {
     IonGrid,
     IonIcon,
     IonList,
-    IonLoading,
     IonPopover,
     IonRow
 } from '@ionic/react';
@@ -36,8 +35,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
     } = state;
 
     return (
-        <IonContent class="fullscreen">
-            <div className="flex-page">
+        <IonContent class="fullscreen-home">
+            <div className="flex-page-home">
                 <Header/>
                 <IonPopover
                     isOpen={showAddRoom}
@@ -47,13 +46,13 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                 hide={hideCreateRoom}/>
                 </IonPopover>
                 <IonGrid class="grid-page ion-padding-bottom">
-                    <IonRow class="fullscreen">
-                        <IonCol class="fullscreen" size="3.5">
+                    <IonRow class="fullscreen-home">
+                        <IonCol class="fullscreen-home" sizeSm="3.5" sizeXs="12">
                             <div className="first-col">
                                 <IonCard class="user">
                                     <User fullName={user.fullName} email={user.email} userName={user.userName}/>
                                     <IonCardContent>
-                                        <IonLoading isOpen={fetchingUser} message="Fetching user"/>
+                                        {/*<IonLoading isOpen={fetchingUser} message="Fetching user"/>*/}
                                         {fetchingUserError &&
                                         <div className="create-room-error">{fetchingUserError.message}</div>}
                                     </IonCardContent>
@@ -69,7 +68,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                                     history.push(`/room/${id}`)
                                                 }} name={name} id={id} key={id}/>)}
                                             </IonList>)}
-                                            <IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>
+                                            {/*<IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>*/}
                                             {fetchingRoomsError &&
                                             <div className="create-room-error">{fetchingRoomsError.message}</div>}
                                         </IonCardContent>
@@ -81,7 +80,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                 </div>
                             </div>
                         </IonCol>
-                        <IonCol class="fullscreen" size="8.5">
+                        <IonCol class="fullscreen-home" sizeSm="8.5" sizeXs="12">
                             <IonCard class="notification-list-card">
                                 <IonCardHeader>
                                     <div className="recent-files-title">
@@ -124,7 +123,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                                 .slice(notificationsPage * 15, getRecentFilesNr())
                                         )}
                                     </IonList>
-                                    <IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>
+                                    {/*<IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>*/}
                                 </IonCardContent>
                             </IonCard>
                             {fetchingRecentFilesError &&

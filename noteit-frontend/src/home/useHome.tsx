@@ -98,7 +98,7 @@ const reducer: (state: HomeState, action: ActionProps) => HomeState =
             case FETCH_ROOMS_FAILED:
                 return {...state, fetchingRooms: false, fetchingRoomsError: payload.error}
             case FETCH_ROOMS_SUCCEEDED:
-                let result = state.rooms;
+                let result = [...state.rooms];
                 payload.rooms.forEach((room: RoomProps) => {
                     const index = state.rooms.findIndex(r => r.id === room.id);
                     if (index === -1) {
