@@ -77,12 +77,14 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                 <IonGrid>
                   <IonRow >
                             <IonCol size="8.5">
-                              <IonCard>
+                                  {console.log(isAdmin)}
+                                  {isAdmin === true && (
+                                  <IonCard>
                                   <IonCardHeader>
                                       <IonCardTitle>In Review files</IonCardTitle>
                                   </IonCardHeader>
                                   <IonCardContent>
-                                    {files && isAdmin && (<IonList>
+                                    {files && (<IonList>
                                         {files.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved = {1} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
                                         )}</IonList>)}
                                     {files.length === 0 &&  <IonList>
@@ -93,7 +95,9 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                     {fetchingFilesError &&
                                        <div className="create-room-error">{fetchingFilesError.message}</div>}
                                     </IonCardContent>
-                              </IonCard>
+                                    </IonCard>
+                                  )}
+                              
                               <IonCard>
                                 <IonCardHeader>
                                       <IonCardTitle>Room files</IonCardTitle>

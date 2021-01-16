@@ -162,7 +162,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             case FETCH_ISADMIN_FAILED:
                 return {...state, isAdmin: false}
             case FETCH_ISADMIN_SUCCEDED:
-                return {...state, isAdmin: true}
+                return {...state, isAdmin: payload.result}
 
             default:
                 return state;
@@ -258,6 +258,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         log('fetchIsAdmin started')
                         dispatch({type: FETCH_ISADMIN_STARTED})
                         let result = await isAdmin(token, roomId)
+                        console.log(result);
                         if(!canceled) {
                             dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: result}})
                         }

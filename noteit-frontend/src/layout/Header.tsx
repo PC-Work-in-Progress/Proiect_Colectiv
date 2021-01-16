@@ -11,7 +11,7 @@ import { GetNotifications } from './notificationApi';
 export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
     const [modal, setShowModal] = useState(false);
-
+    let message;
     const handleLogout = () => {
         logout?.();
       }
@@ -30,7 +30,8 @@ export const Header: React.FC = () => {
         async function GetNotificationsAsync() {
             await GetNotifications(token).then(result => {
                 for(var notification in result) {
-                    console.log(notification);
+                    message = "";
+                    message += notification + '\n';
                 }
             });
 
@@ -52,16 +53,17 @@ export const Header: React.FC = () => {
                     {token !== "" && (
                     <IonButtons slot="end" >
                         <IonButton>
-                            <IonIcon icon={notificationsOffCircleOutline}></IonIcon>
+                            <IonIcon icon={notificationsOffCircleOutline} onClick={e => setShowModal(true)}></IonIcon>
                         </IonButton>
+                        {modal && (
                         <IonAlert
                                         isOpen={modal}
                                         onDidDismiss={() => setShowModal(false)}
                                         cssClass='modal'
-                                        message={'Make sure it\'s at least 16 characters OR 8 including a number, a lowercase\n' +
-                                        '                                            letter and a special character'}
+                                        message={message}
                                         buttons={['OK']}
-                                    />
+                                    />  
+                        )}
                         <IonButton class="header-button" href="/discover">
                             <IonLabel class="ion-padding">Discover rooms</IonLabel>
                         </IonButton>
