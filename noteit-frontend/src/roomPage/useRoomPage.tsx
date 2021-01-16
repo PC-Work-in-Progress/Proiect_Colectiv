@@ -4,6 +4,8 @@ import { getLogger } from "../shared";
 import { FileProps } from "./file";
 import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdminApi } from "./roomApi";
 import {uploadFile as uploadFileApi} from "./roomApi"
+import {getTags} from "../discover/discoverApi";
+import {TagProps} from "../discover/useDiscover";
 
 
 
@@ -30,6 +32,7 @@ interface RoomState {
     isAdmin: string;
     fetchingAdmin: boolean;
     tags: string,
+    predefined: TagProps[];
 }
 
 const initialState: RoomState = {
@@ -54,6 +57,7 @@ const initialState: RoomState = {
     isAdmin: "false",
     fetchingAdmin: false,
     tags: "",
+    predefined: [],
 }
 
 interface ActionProps {
@@ -78,7 +82,9 @@ const REVIEW_FILE_SUCCEEDED = 'REVIEW_FILE_SUCCEEDED';
 const FETCH_ISADMIN_STARTED = 'FETCH_ISADMIN_STARTED';
 const FETCH_ISADMIN_FAILED = 'FETCH_ISADMIN_FAILED';
 const FETCH_ISADMIN_SUCCEDED ='FETCH_ISADMIN_SUCCEDED';
-
+const FETCH_TAGS_STARTED = 'FETCH_TAGS_STARTED';
+const FETCH_TAGS_FAILED = 'FETCH_TAGS_FAILED';
+const FETCH_TAGS_SUCCEEDED = 'FETCH_TAGS_SUCCEEDED';
 
 const reducer: (state: RoomState, action: ActionProps) => RoomState =
     (state, {type, payload}) => {
@@ -169,6 +175,13 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 console.log(payload.admin)
                 return {...state, isAdmin: payload.admin, fetchingAdmin: false}
 
+            case FETCH_TAGS_STARTED:
+                return {...state, fetchingTags: true, fetchingTagsError: null}
+            case FETCH_TAGS_FAILED:
+                return {...state, fetchingTags: false, fetchingTagsError: payload.error}
+            case FETCH_TAGS_SUCCEEDED:
+                return {...state, fetchingRooms: false, predefined: payload.predefined}
+
             default:
                 return state;
         }
@@ -188,6 +201,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             useEffect(fetchFilesEffect, [token]);
             useEffect(fetchFileEffect, [state.fileId,token]);
             useEffect(fetchIsAdminEffect, [token])
+            useEffect(fetchTagsEffect, [token])
 
             return {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile}
 
@@ -324,6 +338,33 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     }
                 }
 
+            }
+
+            function fetchTagsEffect() {
+                let canceled = false;
+                fetchTags();
+                return () => {
+                    canceled = true;
+                }
+
+                async function fetchTags() {
+                    if (!token?.trim()) {
+                        return;
+                    }
+                    try {
+                        log(`fetchTags started`);
+                        dispatch({type: FETCH_TAGS_STARTED});
+                        // server get rooms
+                        let result = await getTags(token);
+                        log('fetchTags succeeded');
+                        if (!canceled) {
+                            dispatch({type: FETCH_TAGS_SUCCEEDED, payload: {predefined: result}});
+                        }
+                    } catch (error) {
+                        log('fetchTags failed');
+                        dispatch({type: FETCH_TAGS_FAILED, payload: {error}});
+                    }
+                }
             }
 
 
