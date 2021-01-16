@@ -40,7 +40,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                 <Header/>
                 <IonPopover
                     isOpen={showAddRoom}
-                    cssClass='create-room-popover'
+                    cssClass='room-popover'
                     backdropDismiss={false}>
                     <CreateRoom creating={creating} createRoom={createRoom} createRoomError={creatingError}
                                 hide={hideCreateRoom}/>
@@ -53,8 +53,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                     <User fullName={user.fullName} email={user.email} userName={user.userName}/>
                                     <IonCardContent>
                                         {/*<IonLoading isOpen={fetchingUser} message="Fetching user"/>*/}
-                                        {fetchingUserError &&
-                                        <div className="create-room-error">{fetchingUserError.message}</div>}
+                                        {/*{fetchingUserError &&*/}
+                                        {/*<div className="create-room-error">{fetchingUserError.message}</div>}*/}
                                     </IonCardContent>
                                 </IonCard>
                                 <div className="rooms">
@@ -69,8 +69,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                                 }} name={name} id={id} key={id}/>)}
                                             </IonList>)}
                                             {/*<IonLoading isOpen={fetchingRooms} message="Fetching rooms"/>*/}
-                                            {fetchingRoomsError &&
-                                            <div className="create-room-error">{fetchingRoomsError.message}</div>}
+                                            {/*{fetchingRoomsError &&*/}
+                                            {/*// <div className="create-room-error">{fetchingRoomsError.message}</div>}*/}
                                         </IonCardContent>
                                     </IonCard>
                                     <div className="button-div">
@@ -126,8 +126,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                                     {/*<IonLoading isOpen={fetchingRecentFiles} message="Fetching recent files"/>*/}
                                 </IonCardContent>
                             </IonCard>
-                            {fetchingRecentFilesError &&
-                            <div className="create-room-error">{fetchingRecentFilesError.message}</div>}
+                            {/*{fetchingRecentFilesError &&*/}
+                            {/*<div className="create-room-error">{fetchingRecentFilesError.message}</div>}*/}
                         </IonCol>
                     </IonRow>
                 </IonGrid>

@@ -2,10 +2,8 @@ import {IonAlert, IonButton, IonButtons, IonHeader, IonIcon, IonLabel, IonTitle,
 import React, {useContext, useEffect, useState} from "react";
 import "./Header.css"
 import {AuthContext} from "../auth/AuthProvider";
-import { Redirect } from 'react-router-dom';
-import { notifications, notificationsOffCircleOutline} from 'ionicons/icons';
-import { GetNotifications, NotificationMessageProps, ReadNotification } from './notificationApi';
-
+import {notifications, notificationsOffCircleOutline} from 'ionicons/icons';
+import {GetNotifications, NotificationMessageProps, ReadNotification} from './notificationApi';
 
 
 export const Header: React.FC = () => {
@@ -78,10 +76,11 @@ export const Header: React.FC = () => {
     return (
         <>
             <IonHeader>
-                <IonToolbar color="primary" class="header">
+                <IonToolbar color="light" class="header">
                     <IonButtons slot="start">
                         <IonButton class="header-name-button" href="/home">
-                            <IonTitle class="header-title ion-padding">NoteIt</IonTitle>
+                            <img className="logo" src="assets/logo.png" alt="ceva"/>
+                            <IonTitle color="dark" class="header-title ion-padding">NoteIt</IonTitle>
                         </IonButton>
                     </IonButtons>
 
