@@ -3,27 +3,23 @@ package com.noteit.noteit.notifications.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
-import com.noteit.noteit.dtos.RoomDto;
-import com.noteit.noteit.entities.*;
+import com.noteit.noteit.rooms.dtos.RoomDto;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
 import com.noteit.noteit.files.repository.FileDBRepository;
 import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.notifications.repository.NotificationsRepository;
-import com.noteit.noteit.payload.LoginRequest;
-import com.noteit.noteit.payload.SignUpRequest;
-import com.noteit.noteit.repositories.FileTagRepository;
-import com.noteit.noteit.repositories.RoomRepository;
-import com.noteit.noteit.repositories.TagRepository;
-import com.noteit.noteit.repositories.UserRepository;
+import com.noteit.noteit.authentication.message.LoginRequest;
+import com.noteit.noteit.authentication.message.SignUpRequest;
+import com.noteit.noteit.rooms.repository.RoomRepository;
+import com.noteit.noteit.users.repository.UserRepository;
+import com.noteit.noteit.rooms.model.RoomEntity;
+import com.noteit.noteit.users.model.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

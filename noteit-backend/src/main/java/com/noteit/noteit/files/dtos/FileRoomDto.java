@@ -3,7 +3,6 @@ package com.noteit.noteit.files.dtos;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import com.noteit.noteit.entities.TagEntity;
 import java.util.List;
 
 public class FileRoomDto implements Comparable<FileRoomDto>{
