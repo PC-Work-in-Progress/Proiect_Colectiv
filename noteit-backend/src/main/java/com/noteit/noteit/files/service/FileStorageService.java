@@ -317,6 +317,11 @@ public class FileStorageService implements FileStorageServiceInterface {
         return fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
     }
 
+    /**
+     * Function that gets number of views and downloads for certain user and their files
+     * @param userId
+     * @return Integer representing the sum of views+downloads for every file uploaded by certain user
+     */
     @Override
     public Integer getUserViewsAndDownloadsCount(String userId) {
         List<FileRoomDB> list = fileRoomDBRepository.findById_UserId(userId);
