@@ -31,7 +31,9 @@ public class TextDetector {
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        ByteString imgBytes = ByteString.readFrom(fileInputStream);
+        fileInputStream.close();
 
         Image img = Image.newBuilder().setContent(imgBytes).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();

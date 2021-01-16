@@ -1,9 +1,11 @@
 package com.noteit.noteit.files.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
 import com.noteit.noteit.dtos.RoomDto;
 import com.noteit.noteit.entities.*;
+import com.noteit.noteit.files.dtos.FileRoomDto;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.model.FileRoomCompositePK;
 import com.noteit.noteit.files.model.FileRoomDB;
@@ -12,16 +14,14 @@ import com.noteit.noteit.files.repository.FileRoomDBRepository;
 import com.noteit.noteit.notifications.repository.NotificationsRepository;
 import com.noteit.noteit.payload.LoginRequest;
 import com.noteit.noteit.payload.SignUpRequest;
-import com.noteit.noteit.repositories.FileTagRepository;
-import com.noteit.noteit.repositories.RoomRepository;
-import com.noteit.noteit.repositories.TagRepository;
-import com.noteit.noteit.repositories.UserRepository;
+import com.noteit.noteit.repositories.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -40,12 +40,18 @@ class FileControllerTest extends NoteitApplicationTests {
     @Autowired private TagRepository tagRepository;
     @Autowired private FileTagRepository fileTagRepository;
     @Autowired private NotificationsRepository notificationsRepository;
+    @Autowired private UserRoomRepository userRoomRepository;
 
 
     private FileDB file;
+    private FileDB fileApproved;
     private UserEntity userEntity;
     private RoomEntity roomEntity;
+    private UserRoomEntity userRoomEntity;
+    private TagEntity tagEntity;
+    private FileTagEntity fileTagEntity;
     private FileRoomDB fileRoomDB = new FileRoomDB();
+    private FileRoomDB fileRoomDBApproved = new FileRoomDB();
     private ObjectMapper mapper = new ObjectMapper();
 
     public void set_Up(){
@@ -75,9 +81,17 @@ class FileControllerTest extends NoteitApplicationTests {
             mock.perform(post("/api/auth/signin").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(loginRequest)));
             this.userEntity = userRepository.findByUsername("test");
             this.file =fileDBRepository.save(new FileDB("file_test", "",new byte[11], ""));
+            this.fileApproved = fileDBRepository.save(new FileDB("file_test_approved", "",new byte[11], ""));
+            tagRepository.save(new TagEntity("tagTest", 1));
+            this.tagEntity = tagRepository.findByName("tagTest");
+            this.fileTagEntity = fileTagRepository.save(new FileTagEntity(new FileTagPK(fileApproved.getId(), tagEntity.getId())));
             this.roomEntity = roomRepository.save(new RoomEntity("test_room", this.userEntity.getId()));
+            this.userRoomEntity = userRoomRepository.save(new UserRoomEntity(userEntity.getId(), roomEntity.getId()));
             this.fileRoomDB.setId(new FileRoomCompositePK(this.roomEntity.getId(),this.file.getId(), this.userEntity.getId()));
             this.fileRoomDB = fileRoomDBRepository.save(this.fileRoomDB);
+            this.fileRoomDBApproved.setId(new FileRoomCompositePK(this.roomEntity.getId(),this.fileApproved.getId(), this.userEntity.getId()));
+            this.fileRoomDBApproved.Accept();
+            this.fileRoomDBApproved = fileRoomDBRepository.save(this.fileRoomDBApproved);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,8 +101,13 @@ class FileControllerTest extends NoteitApplicationTests {
 
 
     void setOff(){
+        fileTagRepository.delete(fileTagEntity);
+        tagRepository.delete(tagEntity);
+        userRoomRepository.delete(this.userRoomEntity);
         fileRoomDBRepository.delete(fileRoomDBRepository.findById_FileIdAndId_RoomId(this.file.getId(), this.roomEntity.getId()).get(0));
+        fileRoomDBRepository.delete(fileRoomDBRepository.findById_FileIdAndId_RoomId(this.fileApproved.getId(), this.roomEntity.getId()).get(0));
         fileDBRepository.delete(this.file);
+        fileDBRepository.delete(this.fileApproved);
         roomRepository.delete(this.roomEntity);
         userRepository.delete(this.userEntity);
     }
@@ -260,6 +279,86 @@ class FileControllerTest extends NoteitApplicationTests {
         fileTagRepository.delete(fileTag);
         fileDBRepository.delete(fileTest);
         tagRepository.delete(tag);
+
+        setOff();
+    }
+
+    @Test
+    void getRecentFilesFromToken() throws Exception {
+        set_Up();
+
+        var result = mock.perform(
+                get("/api/files/recentFiles/0")
+                        .header("authorization", "Bearer " + userEntity.getToken()))
+                .andExpect(status()
+                        .isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        assert !json.equals("[]");
+
+        List<FileRoomDto> fileRoomDtoList = mapper.readValue(json, new TypeReference<List<FileRoomDto>>(){});
+
+        assert fileRoomDtoList.size() == 1;
+
+        FileRoomDto fileRoomDto = fileRoomDtoList.get(0);
+        assert fileRoomDto.getUserName().equals("test test") && fileRoomDto.getRoomId().equals(roomEntity.getId())
+                && fileRoomDto.getFileId().equals(fileApproved.getId());
+
+        setOff();
+    }
+
+    @Test
+    void getSearchedFilesByName() throws Exception {
+        set_Up();
+
+        var result = mock.perform(
+                get("/api/files/filename/" + fileApproved.getName())
+                        .header("authorization", "Bearer " + userEntity.getToken()))
+                .andExpect(status()
+                        .isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        assert !json.equals("[]");
+
+        List<FileRoomDto> fileRoomDtoList = mapper.readValue(json, new TypeReference<List<FileRoomDto>>(){});
+
+        assert fileRoomDtoList.size() == 1;
+
+        FileRoomDto fileRoomDto = fileRoomDtoList.get(0);
+        assert fileRoomDto.getUserName().equals("test test") && fileRoomDto.getRoomId().equals(roomEntity.getId())
+                && fileRoomDto.getFileId().equals(fileApproved.getId()) && fileRoomDto.getFileName().equals(fileApproved.getName());
+
+        setOff();
+    }
+
+    @Test
+    void getSearchedFilesByTag() throws Exception {
+        set_Up();
+
+        String tagName = tagRepository.findById(fileTagEntity.getId().getTagId()).get().getName();
+
+        var result = mock.perform(
+                get("/api/files/tag/" + tagName)
+                        .header("authorization", "Bearer " + userEntity.getToken()))
+                .andExpect(status()
+                        .isOk())
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        assert !json.equals("[]");
+
+        List<FileRoomDto> fileRoomDtoList = mapper.readValue(json, new TypeReference<List<FileRoomDto>>(){});
+
+        assert fileRoomDtoList.size() == 1;
+
+        FileRoomDto fileRoomDto = fileRoomDtoList.get(0);
+        assert fileRoomDto.getUserName().equals("test test") && fileRoomDto.getRoomId().equals(roomEntity.getId())
+                && fileRoomDto.getFileId().equals(fileApproved.getId()) && fileRoomDto.getTags().contains(tagName);
 
         setOff();
     }

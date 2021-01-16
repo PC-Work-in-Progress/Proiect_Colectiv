@@ -18,9 +18,9 @@ public class FileTagEntity implements Serializable {
     public FileTagEntity() {
     }
 
-//    public FileTagEntity(FileTagPK id) {
-//        this.id = id;
-//    }
+    public FileTagEntity(FileTagPK id) {
+        this.id = id;
+    }
 
     public FileTagPK getId() {
         return id;

@@ -252,7 +252,9 @@ public class FileStorageService implements FileStorageServiceInterface {
     @Override
     public String detectHandwriting(MultipartFile file, String userId) throws IOException {
         String TEMP_PATH = "src/main/java/com/noteit/noteit/hwrecognition/temp";
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Date date = new Date() ;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss") ;
+        String fileName = dateFormat.format(date) + ".jpeg";
         String path = TEMP_PATH + "/images/" + fileName;
         File localFile = new File(path);
         if (localFile.createNewFile()) {
@@ -364,19 +366,23 @@ public class FileStorageService implements FileStorageServiceInterface {
             if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
                 for (FileRoomDB fileRoomDB : fileRoomDBList) {
-                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent()) {
-                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent()) {
-                            List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
-                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent()) {
-                                    tagNames.add(tagEntity.get().getName());
+                    if (fileRoomDB.isAccepted())
+                    {
+                        Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+
+                        if (fileDB.isPresent()) {
+                            Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                            if (fileTagEntities.isPresent()) {
+                                List<String> tagNames = new ArrayList<>();
+                                for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
+                                    Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                    if (tagEntity.isPresent()) {
+                                        tagNames.add(tagEntity.get().getName());
+                                    }
                                 }
+                                UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                                fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }
-                            UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
-                            fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -410,19 +416,21 @@ public class FileStorageService implements FileStorageServiceInterface {
             if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
                 for (FileRoomDB fileRoomDB : fileRoomDBList) {
-                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent() && fileDB.get().getName().contains(filename)) {
-                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent()) {
-                            List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
-                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent()) {
-                                    tagNames.add(tagEntity.get().getName());
+                    if (fileRoomDB.isAccepted()) {
+                        Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+                        if (fileDB.isPresent() && fileDB.get().getName().contains(filename)) {
+                            Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                            if (fileTagEntities.isPresent()) {
+                                List<String> tagNames = new ArrayList<>();
+                                for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
+                                    Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                    if (tagEntity.isPresent()) {
+                                        tagNames.add(tagEntity.get().getName());
+                                    }
                                 }
+                                UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                                fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }
-                            UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
-                            fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                         }
                     }
                 }
@@ -450,24 +458,26 @@ public class FileStorageService implements FileStorageServiceInterface {
             if (room.isPresent()) {
                 List<FileRoomDB> fileRoomDBList = fileRoomDBRepository.findById_RoomId(room.get().getId());
                 for (FileRoomDB fileRoomDB : fileRoomDBList) {
-                    Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
-                    if (fileDB.isPresent()) {
-                        Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
-                        if (fileTagEntities.isPresent()) {
-                            boolean foundTag = false;
-                            List<String> tagNames = new ArrayList<>();
-                            for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
-                                Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
-                                if (tagEntity.isPresent()) {
-                                    tagNames.add(tagEntity.get().getName());
+                    if (fileRoomDB.isAccepted()) {
+                        Optional<FileDB> fileDB = fileDBRepository.findById(fileRoomDB.getId().getFileId());
+                        if (fileDB.isPresent()) {
+                            Optional<List<FileTagEntity>> fileTagEntities = fileTagRepository.findById_FileId(fileDB.get().getId());
+                            if (fileTagEntities.isPresent()) {
+                                boolean foundTag = false;
+                                List<String> tagNames = new ArrayList<>();
+                                for (FileTagEntity fileTagEntity : fileTagEntities.get()) {
+                                    Optional<TagEntity> tagEntity = tagRepository.findById(fileTagEntity.getId().getTagId());
+                                    if (tagEntity.isPresent()) {
+                                        tagNames.add(tagEntity.get().getName());
+                                    }
+                                    if (tagEntity.isPresent() && tagEntity.get().getName().contains(tag)) {
+                                        foundTag = true;
+                                    }
                                 }
-                                if (tagEntity.isPresent() && tagEntity.get().getName().contains(tag)) {
-                                    foundTag = true;
+                                if (foundTag == true) {
+                                    UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
+                                    fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                                 }
-                            }
-                            if (foundTag == true) {
-                                UserEntity userOwner = userRepository.findById(room.get().getOwnerId()).get();
-                                fileRoomDtoList.add(new FileRoomDto(userOwner.getFull_name(), room.get().getName(), room.get().getId(), fileDB.get().getId(), fileDB.get().getName(), fileDB.get().getDate(), tagNames));
                             }
                         }
                     }

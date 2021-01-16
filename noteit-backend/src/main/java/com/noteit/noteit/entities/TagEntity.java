@@ -20,6 +20,22 @@ public class TagEntity implements Serializable {
     @Column(name="predefined")
     private Integer predefined;
 
+    public TagEntity()
+    {
+
+    }
+
+    public TagEntity(String id, String name, Integer predefined) {
+        this.id = id;
+        this.name = name;
+        this.predefined = predefined;
+    }
+
+    public TagEntity(String name, Integer predefined) {
+        this.name = name;
+        this.predefined = predefined;
+    }
+
     public String getId() {
         return id;
     }
