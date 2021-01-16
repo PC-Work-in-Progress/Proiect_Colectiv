@@ -79,3 +79,8 @@ export const scanNotes: (token: string, file: FormData)  => Promise<string> = (t
     return withLogs(axios.post(`http://${baseUrl}/api/files/recognition`,file, scanConfig(token)), 'scanNotes');
 
 }
+
+
+export const joinRoom: (token: string, roomId: string) => Promise<any> = (token, roomId) => {
+    return withLogs(axios.post(`http://${baseUrl}/rooms/${roomId}`,{}, getFilesConfig(token)), 'joinRoom');
+}
