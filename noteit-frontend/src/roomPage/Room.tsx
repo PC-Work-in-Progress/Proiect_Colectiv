@@ -24,7 +24,8 @@ import {
     IonChip,
     IonSelect,
     IonSelectOption,
-    IonSearchbar
+    IonSearchbar,
+    IonLabel
 } from "@ionic/react";
 import {ScanNotes} from "./ScanNotes";
 
@@ -183,7 +184,8 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                     <IonButton color="secondary" onClick={() => showUploadFile()}>
                                         UploadFile</IonButton>
                                       */}
-                        { isMember !== true && (<IonButton onClick = {() => { joinRoom(roomId);}}>
+                        { console.log(!isMember) }
+                        { !isMember && (<IonButton onClick = {() => { joinRoom(roomId);}}>
                          Join Room
                         </IonButton> )}
                         <IonItem> <input type="file" onChange={(ev) => onFileChange(ev)}></input>
@@ -232,17 +234,29 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                             if (allTags.length > 0) {
                                 submitForm("upload");
                             }
+                            else {
+                              alert("Please add tags before uploading");
+                            }
                         }}>
                             Upload
                         </IonButton>
-                        <IonButton color="primary" expand="full" onClick={() => submitForm("scan")}>
+                        {uploadError && (
+                           <IonLabel>File upload failed. Please try again later.</IonLabel>
+                        
+                        )}
+                        <IonButton color="primary" expand="full" onClick={() => { 
+                          if (allTags.length > 0) {submitForm("scan");}
+                          else {
+                              alert("Please add tags before scanning");
+                          }
+                          }}>
                             Scan Notes
                         </IonButton>
                         <IonPopover
                             cssClass='create-room-popover'
                             isOpen={showScanNotes}
                             backdropDismiss={false}>
-                            <ScanNotes uploadFile={uploadFile} file={formData} roomId={roomId} hide={hide}/>
+                            <ScanNotes uploadFile={uploadFile} file={formData} roomId={roomId} hide={hide} tags={allTags}/>
                         </IonPopover>
                         {/*
                                 <IonCard>

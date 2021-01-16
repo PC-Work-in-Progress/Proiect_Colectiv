@@ -21,6 +21,8 @@ export const Header: React.FC = () => {
 
     const [notificationList, setNotificationList] = useState<NotificationMessageProps[]>();
 
+    
+
     var n = async function(token: string, nid:number) {
         if(notificationList) {
             if(notificationList[nid]) {
@@ -39,6 +41,7 @@ export const Header: React.FC = () => {
                 }
             }
         }
+        console.log(message);
         if(message != "Notifications: \n" && message != "")
             setNotify(false);
     }

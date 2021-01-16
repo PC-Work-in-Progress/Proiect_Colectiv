@@ -16,6 +16,12 @@ interface UserProps2 {
     username: string;
 }
 
+interface UserRank {
+    success: boolean;
+    message: string;
+}
+
+
 export const getUser: (token: string) => Promise<UserProps2> = (token) => {
     const url = homeUrl + "/user/details";
     return withLogs(axios.get(url, authConfig(token)), 'getUser');
@@ -39,3 +45,9 @@ export const addRoom: (token: string, room: Room) => Promise<RoomProps[]> = (tok
     const url = homeUrl + `/rooms/createRoom`;
     return withLogs(axios.post(url, room, authConfig(token)), 'postRoom');
 }
+
+export const getRank: (token: string) => Promise<UserRank> = (token) => {
+    const url = homeUrl + "/user/rank";
+    return withLogs(axios.get(url, authConfig(token)), 'getRank');
+}
+

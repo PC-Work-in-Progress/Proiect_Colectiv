@@ -13,13 +13,14 @@ interface ScanNotesProps {
     file: FormData | undefined;
     text?: string;
     roomId: string;
-    hide: HideRoomFn
+    hide: HideRoomFn;
+    tags: string[];
 }
 
 
 
 
-export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, hide}) => {
+export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, hide, tags}) => {
     const [text, setText] = useState("Waiting for file to be analysed");
     const [state, setFileState] = useState<ScanNotesProps>();
     const [filename, setFilename] = useState("Scanned Notes");
@@ -27,18 +28,23 @@ export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, h
     useEffect(scanNotesEffect,[file]);
 
     function sendFile(text: string) {
-        var data = new Blob([text], {type: 'text/plain'});
 
-        // If we are replacing a previously generated file we need to
-        // manually revoke the object URL to avoid memory leaks.
         var formData = new FormData();
         var blob = new Blob([text], { type: "text/xml"});
 
+        let stringTags = '';
+        for (let i = 0; i < tags.length; i++) {
+            stringTags += tags[i];
+            if (i !== tags.length - 1) {
+                stringTags += ',';
+            }
+        }
        
 
         formData.append("file", blob, filename);
 
-        uploadFile(formData, roomId, "tag");
+        uploadFile(formData, roomId, stringTags);
+        hide();
     };
      
 

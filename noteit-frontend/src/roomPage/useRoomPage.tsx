@@ -93,6 +93,8 @@ const IS_MEMBER_STARTED = 'IS_MEMBER_STARTED';
 const IS_MEMBER_SUCCEEDED = 'IS_MEMBER_SUCCEEDED';
 const IS_MEMBER_FAILED = 'IS_MEMBER_FAILED';
 
+const JOIN_ROOM = 'JOIN_ROOM';
+
 const reducer: (state: RoomState, action: ActionProps) => RoomState =
     (state, {type, payload}) => {
         switch (type) {
@@ -197,6 +199,9 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             case IS_MEMBER_FAILED:
                  return {...state, isMember: false}
 
+            case JOIN_ROOM:
+                return {...state, isMember: true}
+                
             default:
                 return state;
         }
@@ -216,7 +221,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const reviewFile = useCallback<ReviewFileFn>(reviewFileCallback, [token]);
 
             useEffect(fetchFilesEffect, [token]);
-            useEffect(fetchFileEffect, [state.fileId,token]);
+            //useEffect(fetchFileEffect, [state.fileId,token]);
             useEffect(fetchIsAdminEffect, [token])
             useEffect(fetchTagsEffect, [token])
 
@@ -238,6 +243,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             async function joinRoomCallback(roomId: string) {
                 log('join Room started');
                 await joinRoomApi(token, roomId);
+                dispatch({type: JOIN_ROOM});
                 
             }
 
@@ -288,14 +294,12 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                         log('isMember started');
                         dispatch({type: IS_MEMBER_STARTED});
                         const result = await getRooms(token);
-                        console.log("IsMember");
+                        //console.log("IsMember");
                         let isMember = false;
-                        console.log(result)
                         for(let i = 0; i < result.length; i = i + 1) {
                             if(result[i].id === roomId) 
                                 isMember = true;
                         }
-                        console.log(isMember);
                         if(!canceled) {
                             dispatch({type: IS_MEMBER_SUCCEEDED, payload: {isMember: isMember}});
                         }

@@ -4,7 +4,7 @@ import {RoomProps} from "./room";
 import {UserProps} from "./user";
 import {NotificationProps} from "./recentfiles";
 import {AuthContext} from "../auth/AuthProvider";
-import {addRoom, getRecentFiles, getRooms, getUser} from "./homeApi";
+import {addRoom, getRank, getRecentFiles, getRooms, getUser} from "./homeApi";
 
 const log = getLogger("useHome");
 
@@ -30,6 +30,7 @@ interface HomeState {
     previousPage?: NextPageFn;
     hasMoreNotifications: boolean;
     previousNotifications: boolean;
+    rank: string;
 }
 
 const initialState: HomeState = {
@@ -47,7 +48,8 @@ const initialState: HomeState = {
     fetchingUser: false,
     notificationsPage: 0,
     hasMoreNotifications: false,
-    previousNotifications: false
+    previousNotifications: false,
+    rank: ""
 };
 
 interface ActionProps {
@@ -71,6 +73,10 @@ const FETCH_USER_FAILED = 'FETCH_USER_FAILED';
 const FETCH_USER_SUCCEEDED = 'FETCH_USER_SUCCEEDED';
 const FETCH_NEXT_PAGE = 'FETCH_NEXT_PAGE';
 const FETCH_PREVIOUS_PAGE = 'FETCH_PREVIOUS_PAGE';
+
+const FETCH_RANK_STARTED = 'FETCH_RANK_STARTED';
+const FETCH_RANK_FAILED = 'FETCH_RANK_FAILED';
+const FETCH_RANK_SUCCEEDED = 'FETCH_RANK_SUCCEEDED';
 
 const reducer: (state: HomeState, action: ActionProps) => HomeState =
     (state, {type, payload}) => {
@@ -152,6 +158,14 @@ const reducer: (state: HomeState, action: ActionProps) => HomeState =
                     previousNotifications: previous,
                     hasMoreNotifications: true
                 };
+            
+            case FETCH_RANK_STARTED:
+                return {...state, fetchingUserError: null}
+            case FETCH_RANK_FAILED:
+                return {...state, fetchingUserError: payload.error}
+            case FETCH_RANK_SUCCEEDED:
+                return {...state, rank: payload.rank}
+            
             default:
                 return state;
         }
@@ -168,6 +182,9 @@ export const useHome = () => {
     useEffect(fetchRoomsEffect, [token]);
     useEffect(fetchRecentFilesEffect, [token, state.notificationsPage]);
     useEffect(fetchUserEffect, [token]);
+
+    useEffect(fetchRankEffect, [token]);
+
     return {state, createRoom, hideCreateRoom, showCreateRoom, nextPage, previousPage};
 
     async function fetchNextPage() {
@@ -296,6 +313,35 @@ export const useHome = () => {
             } catch (error) {
                 log('fetchUser failed');
                 dispatch({type: FETCH_USER_FAILED, payload: {error}});
+            }
+        }
+    }
+
+
+    function fetchRankEffect() {
+        let canceled = false;
+        fetchRank();
+        return () => {
+            canceled = true;
+        }
+
+        async function fetchRank() {
+            if (!token?.trim()) {
+                return;
+            }
+            try {
+                log(`fetchRank started`);
+                dispatch({type: FETCH_RANK_STARTED});
+                // server get user data
+                let result = await getRank(token);
+                // let result: UserProps = {fullName: "Full Name", email: "email", userName: "Username"};
+                log('fetchRank succeeded');
+                if (!canceled) {
+                    dispatch({type: FETCH_RANK_SUCCEEDED, payload: { rank : result.message}});
+                }
+            } catch (error) {
+                log('fetchRank failed');
+                dispatch({type: FETCH_RANK_FAILED, payload: {error}});
             }
         }
     }

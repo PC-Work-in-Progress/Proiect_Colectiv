@@ -31,7 +31,8 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
     const {state, createRoom, hideCreateRoom, showCreateRoom, nextPage, previousPage} = useHome();
     const {
         rooms, user, recentFiles, showAddRoom, creatingError, creating, fetchingRoomsError, fetchingRooms,
-        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications, notificationsPage, previousNotifications
+        fetchingRecentFilesError, fetchingRecentFiles, fetchingUser, fetchingUserError, hasMoreNotifications, notificationsPage, previousNotifications,
+        rank
     } = state;
 
     return (
@@ -50,7 +51,7 @@ export const Home: React.FC<RouteComponentProps> = ({history}) => {
                         <IonCol class="fullscreen-home" sizeSm="3.5" sizeXs="12">
                             <div className="first-col">
                                 <IonCard class="user">
-                                    <User fullName={user.fullName} email={user.email} userName={user.userName}/>
+                                    <User fullName={user.fullName} email={user.email} userName={user.userName} rank= {rank}/>
                                     <IonCardContent>
                                         {/*<IonLoading isOpen={fetchingUser} message="Fetching user"/>*/}
                                         {/*{fetchingUserError &&*/}

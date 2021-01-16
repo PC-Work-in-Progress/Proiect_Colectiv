@@ -1,10 +1,14 @@
 import React from "react";
-import {IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon} from '@ionic/react';
+import {IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonIcon} from '@ionic/react';
 import "./User.css"
 import {personCircle} from "ionicons/icons";
 import {UserProps} from "./UserProps";
 
-export const User: React.FC<UserProps> = ({fullName, userName, email}) => {
+interface WithRank extends UserProps {
+    rank: string;
+}
+
+export const User: React.FC<WithRank> = ({fullName, userName, email, rank}) => {
     return (
         <>
             <IonCardHeader>
@@ -14,6 +18,7 @@ export const User: React.FC<UserProps> = ({fullName, userName, email}) => {
                         <IonCardTitle class="user-name">{userName}</IonCardTitle>
                         <IonCardSubtitle class="user-full-name">{fullName}</IonCardSubtitle>
                         <div className="user-email">{email}</div>
+                        <IonChip>{ rank} </IonChip>
                     </div>
                 </div>
             </IonCardHeader>
