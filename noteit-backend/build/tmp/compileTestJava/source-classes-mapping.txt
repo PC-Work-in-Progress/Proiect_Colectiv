@@ -1,8 +1,20 @@
-com/noteit/noteit/files/controller/FileControllerTest.java
- com.noteit.noteit.files.controller.FileControllerTest
-com/noteit/noteit/notifications/controller/NotificationsControllerTest.java
- com.noteit.noteit.notifications.controller.NotificationsControllerTest
 com/noteit/noteit/NoteitApplicationTests.java
  com.noteit.noteit.NoteitApplicationTests
+com/noteit/noteit/files/controller/FileControllerTest.java
+ com.noteit.noteit.files.controller.FileControllerTest
+ com.noteit.noteit.files.controller.FileControllerTest$1
+ com.noteit.noteit.files.controller.FileControllerTest$2
+ com.noteit.noteit.files.controller.FileControllerTest$3
+com/noteit/noteit/tags/controller/TagsControllerTest.java
+ com.noteit.noteit.tags.controller.TagsControllerTest
+com/noteit/noteit/controller/RoomControllerTest.java
+ com.noteit.noteit.controller.RoomControllerTest
+ com.noteit.noteit.controller.RoomControllerTest$1
+ com.noteit.noteit.controller.RoomControllerTest$2
+ com.noteit.noteit.controller.RoomControllerTest$3
+com/noteit/noteit/notifications/controller/NotificationsControllerTest.java
+ com.noteit.noteit.notifications.controller.NotificationsControllerTest
 com/noteit/noteit/user/controller/UserControllerTest.java
  com.noteit.noteit.user.controller.UserControllerTest
+com/noteit/noteit/auth/controller/AuthControllerTest.java
+ com.noteit.noteit.auth.controller.AuthControllerTest
