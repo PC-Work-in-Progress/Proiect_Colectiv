@@ -2,12 +2,11 @@ package com.noteit.noteit.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.noteit.noteit.NoteitApplicationTests;
-import com.noteit.noteit.entities.UserEntity;
-import com.noteit.noteit.payload.LoginRequest;
-import com.noteit.noteit.payload.SignUpRequest;
-import com.noteit.noteit.payload.UpdateRequest;
-import com.noteit.noteit.repositories.UserRepository;
-import org.hibernate.sql.Update;
+import com.noteit.noteit.users.model.UserEntity;
+import com.noteit.noteit.authentication.message.LoginRequest;
+import com.noteit.noteit.authentication.message.SignUpRequest;
+import com.noteit.noteit.users.message.UpdateRequest;
+import com.noteit.noteit.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
