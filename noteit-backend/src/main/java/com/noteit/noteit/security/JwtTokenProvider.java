@@ -1,5 +1,6 @@
 package com.noteit.noteit.security;
 
+import com.noteit.noteit.authentication.model.UserPrincipal;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

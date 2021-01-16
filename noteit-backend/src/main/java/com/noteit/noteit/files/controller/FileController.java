@@ -1,6 +1,6 @@
 package com.noteit.noteit.files.controller;
 
-import com.noteit.noteit.entities.RoomEntity;
+import com.noteit.noteit.rooms.model.RoomEntity;
 import com.noteit.noteit.files.exception.FileException;
 import com.noteit.noteit.files.message.ResponseContentFile;
 import com.noteit.noteit.files.message.ResponseFile;
@@ -8,14 +8,12 @@ import com.noteit.noteit.files.message.ResponseMessage;
 import com.noteit.noteit.files.model.FileDB;
 import com.noteit.noteit.files.service.FileStorageService;
 import com.noteit.noteit.notifications.service.NotificationsService;
-import com.noteit.noteit.services.RoomServiceImplementation;
+import com.noteit.noteit.rooms.services.RoomServiceImplementation;
 import org.hibernate.service.spi.ServiceException;
-import com.noteit.noteit.services.UserServiceImplementation;
+import com.noteit.noteit.users.services.UserServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller

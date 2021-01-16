@@ -1,6 +1,6 @@
 package com.noteit.noteit.config;
 
-import com.noteit.noteit.security.CustomUserDetailsService;
+import com.noteit.noteit.authentication.service.CustomUserDetailsService;
 import com.noteit.noteit.security.JwtAuthenticationEntryPoint;
 import com.noteit.noteit.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
