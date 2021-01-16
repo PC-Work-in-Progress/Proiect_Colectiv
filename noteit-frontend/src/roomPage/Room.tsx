@@ -1,9 +1,9 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {Header} from "../layout/Header";
 import {MyFile} from "./file/File";
 import {useRoom} from "./useRoomPage";
-import {add, addCircle, checkmarkCircle, enter} from "ionicons/icons";
+import {add, addCircle, checkmarkCircle, enter, search, searchCircle} from "ionicons/icons";
 import {
     IonButton,
     IonCard,
@@ -21,7 +21,9 @@ import {
     IonPopover,
     IonRow,
     IonIcon,
-    IonChip
+    IonChip,
+    IonSelect,
+    IonSelectOption
 } from "@ionic/react";
 import {ScanNotes} from "./ScanNotes";
 
@@ -35,11 +37,11 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     const {state, setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
     const {
         files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
-        fetchingFile, fetchingFileError, isAdmin, acceptedFiles
+        fetchingFile, fetchingFileError, isAdmin, acceptedFiles, predefined
     } = state;
 
-
-    let {tags} = state;
+    console.log('render');
+    // let {tags} = state;
     const roomId = match.params.id
     const [tag, setTag] = useState('');
     const [addNewTag, setAddNewTag] = useState(false);
@@ -47,6 +49,11 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     const [showScanNotes, setShowScanNotes] = useState(false)
     const [formData, setFormData] = useState<FormData>();
 
+    const predefinedTags = [];
+    for (var t of predefined) {
+        predefinedTags.push(t.name);
+    }
+    const [predefinedTag, setPredefinedTag] = useState<string>('');
 
     interface InternalValues {
         file: any;
@@ -177,25 +184,42 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
 
                         <IonIcon icon={addCircle} onClick={e => setAddNewTag(true)}/>
                         <IonIcon icon={checkmarkCircle} onClick={e => {
-                            setAddNewTag(false);
-                            if (tag !== '') {
-                                let myTags = allTags;
-                                myTags.push(tag);
+                            let myTags = allTags;
+                            if (!addNewTag) {
+                                myTags.push(predefinedTag!);
                                 setAllTags(myTags);
+                            } else {
+                                setAddNewTag(false);
+                                if (tag !== '') {
+                                    myTags.push(tag);
+                                    setAllTags(myTags);
+                                }
+                                setTag('');
                             }
                         }}/>
-                        {addNewTag && <IonInput placeholder="tags" value={tags} onIonInput={(e: any) => {
-                            tags = e.target.value;
+                        {addNewTag && <IonInput placeholder="tags" value={tag} onIonInput={(e: any) => {
+                            // tags = e.target.value;
                             setTag(e.target.value);
                         }}/>}
+                        <IonSelect value={predefinedTag} onIonChange={e => {
+                            setPredefinedTag(e.detail.value);
+                        }}>
+                            {predefinedTags && predefinedTags.map(elem => {
+                                if(allTags.indexOf(elem) === -1) {
+                                    return <IonSelectOption value={elem}>{elem}</IonSelectOption>
+                                }
+                            })}
+                        </IonSelect>
                         <IonList>
                             {/* eslint-disable-next-line array-callback-return */}
                             {allTags && allTags.map(tag => {
                                 if (tag !== '') {
+
                                     return <IonChip key={roomId + " " + tag} class="tag">{tag}</IonChip>
                                 }
                             })}
                         </IonList>
+
 
                         <IonButton color="primary" expand="full" onClick={() => {
                             if (allTags.length > 0) {
