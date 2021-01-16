@@ -2,6 +2,7 @@ import { authConfig, withLogs } from "../shared";
 import { FileProps } from "./file/FileProps";
 import axios from "axios";
 import { ResponseMessage } from "./ResponeMessage";
+import { fileConfig } from "../file/fileApi";
 
 export const baseUrl = 'localhost:8080'
 
@@ -27,12 +28,12 @@ export const getApprovedFiles: (token: string, roomId: string) => Promise<FilePr
 }
 
 export const getInReviewFiles: (token: string, roomId: string) => Promise<FileProps[]> = (token, roomId) => {
-    console.log(token);
+    //console.log(token);
     return withLogs(axios.get(`http://${baseUrl}/api/files/InReviewFiles?roomId=${roomId}`, getFilesConfig(token)), 'getFiles');
 }
 
 export const acceptFile: (token: string, fileId: string, roomId: string) => Promise<ResponseMessage> = (token, fileId, roomId) => {
-    console.log(token);
+    //console.log(token);
     return withLogs(axios.put(`http://${baseUrl}/api/files/AcceptFile/${fileId}?roomId=${roomId}`,{}, reviewFileConfig(token)), 'acceptFile');
 }
 
@@ -70,7 +71,7 @@ interface FileResponse {
 }
 
 export const uploadFile: (token: string, file: FormData, roomId: string, tags: string) => Promise<FileProps> = (token, file, roomId, tags) => {
-    console.log(token);
+    //console.log(token);
     return withLogs(axios.post(`http://${baseUrl}/api/files/UploadFile?roomId=${roomId}&tags=${tags}`,file, uploadConfig(token)), 'uploadFile');
 }   
 
@@ -81,6 +82,6 @@ export const scanNotes: (token: string, file: FormData)  => Promise<string> = (t
 }
 
 
-export const joinRoom: (token: string, roomId: string) => Promise<any> = (token, roomId) => {
-    return withLogs(axios.post(`http://${baseUrl}/rooms/${roomId}`,{}, getFilesConfig(token)), 'joinRoom');
+export const joinRoomApi: (token: string, roomId: string) => Promise<any> = (token, roomId) => {
+    return withLogs(axios.post(`http://${baseUrl}/rooms/joinRoom/${roomId}`,{}, fileConfig(token)), 'joinRoom');
 }

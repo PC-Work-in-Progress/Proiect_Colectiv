@@ -39,7 +39,8 @@ export const Header: React.FC = () => {
                 }
             }
         }
-        setNotify(false);
+        if(message != "Notifications: \n" && message != "")
+            setNotify(false);
     }
 
     function GetNotificationsEffect() {

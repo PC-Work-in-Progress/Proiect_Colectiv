@@ -34,10 +34,10 @@ interface RoomPageProps extends RouteComponentProps<{
 }
 
 export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
-    const {state, setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
+    const {state, setState, uploadFile, reviewFile, joinRoom} = useRoom(match.params.id);
     const {
         files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
-        fetchingFile, fetchingFileError, isAdmin, acceptedFiles, fetchingAdmin, predefined
+        fetchingFile, fetchingFileError, isAdmin, acceptedFiles, fetchingAdmin, predefined, isMember
     } = state;
 
     console.log('render');
@@ -48,6 +48,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     const [allTags, setAllTags] = useState<string[]>([]);
     const [showScanNotes, setShowScanNotes] = useState(false)
     const [formData, setFormData] = useState<FormData>();
+
 
     const predefinedTags = [];
     for (var t of predefined) {
@@ -60,14 +61,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
         file: any;
     }
 
-    useEffect(ChangeShowAdminPageEffect, [isAdmin]);
-    const [showAdminPage, setShowAdminPage] = useState(false);
-
-
-    function ChangeShowAdminPageEffect() {
-        console.log("Reload")
-
-    }
 
     const values = useRef<InternalValues>({
         file: false,
@@ -88,7 +81,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
         console.log(values.current.file)
         let formData = new FormData();
         formData.append("file", values.current.file, values.current.file.name);
-        console.log(formData.get("file"));
+        //console.log(formData.get("file"));
         try {
             if (uploadType === "upload") {
                 let stringTags = '';
@@ -98,7 +91,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                         stringTags += ',';
                     }
                 }
-                console.log(stringTags);
+                //console.log(stringTags);
                 uploadFile(formData, roomId, stringTags);
             } else {
                 setFormData(formData);
@@ -123,7 +116,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
             <IonGrid>
                 <IonRow>
                     <IonCol size="8.5">
-                        {console.log(isAdmin)}
                         {isAdmin === "true" && (
                             <IonCard>
                                 <IonCardHeader>
@@ -165,7 +157,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                                 date={date} username={username} URL={URL} size={size}
                                                 approved={0} onView={() => {
                                             history.push(`/room/${roomId}/${fileId}`)
-                                        }} onReview={reviewFile} isAdmin={true} tags={""}></MyFile>
+                                        }} onReview={reviewFile} isAdmin={false} tags={""}></MyFile>
                                     )}</IonList>)}
                                 {acceptedFiles.length === 0 && <IonList>
                                     <MyFile key={"cheie"} fileId={"id"}
@@ -187,6 +179,9 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                     <IonButton color="secondary" onClick={() => showUploadFile()}>
                                         UploadFile</IonButton>
                                       */}
+                        { isMember !== true && (<IonButton onClick = {() => { joinRoom(roomId);}}>
+                         Join Room
+                        </IonButton> )}
                         <IonItem> <input type="file" onChange={(ev) => onFileChange(ev)}></input>
                         </IonItem>
 

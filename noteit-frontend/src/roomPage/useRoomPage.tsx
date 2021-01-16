@@ -2,10 +2,10 @@ import { useCallback, useContext, useEffect, useReducer, useState } from "react"
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
-import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdminApi } from "./roomApi";
-import {uploadFile as uploadFileApi} from "./roomApi"
+import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdminApi, joinRoomApi, uploadFile as uploadFileApi } from "./roomApi";
 import {getTags} from "../discover/discoverApi";
 import {TagProps} from "../discover/useDiscover";
+import { getRooms } from "../home/homeApi";
 
 
 
@@ -14,6 +14,7 @@ const log = getLogger("useRoomPage");
 export type UploadFileFn = (file: FormData, routeId: string, tags: string) => void;
 export type ScanNotesFn = (file: FormData) => string;
 export type HideUploadFileFn = () => void;
+export type JoinRoomFn = (roomId: string) => void;
 
 export type ReviewFileFn = (fileId: string, type: string) => void;
 
@@ -33,6 +34,7 @@ interface RoomState {
     fetchingAdmin: boolean;
     tags: string,
     predefined: TagProps[];
+    isMember: boolean;
 }
 
 const initialState: RoomState = {
@@ -58,6 +60,7 @@ const initialState: RoomState = {
     fetchingAdmin: false,
     tags: "",
     predefined: [],
+    isMember: false,
 }
 
 interface ActionProps {
@@ -85,6 +88,10 @@ const FETCH_ISADMIN_SUCCEDED ='FETCH_ISADMIN_SUCCEDED';
 const FETCH_TAGS_STARTED = 'FETCH_TAGS_STARTED';
 const FETCH_TAGS_FAILED = 'FETCH_TAGS_FAILED';
 const FETCH_TAGS_SUCCEEDED = 'FETCH_TAGS_SUCCEEDED';
+
+const IS_MEMBER_STARTED = 'IS_MEMBER_STARTED';
+const IS_MEMBER_SUCCEEDED = 'IS_MEMBER_SUCCEEDED';
+const IS_MEMBER_FAILED = 'IS_MEMBER_FAILED';
 
 const reducer: (state: RoomState, action: ActionProps) => RoomState =
     (state, {type, payload}) => {
@@ -172,7 +179,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             case FETCH_ISADMIN_FAILED:
                 return {...state, isAdmin: false, fetchingAdmin: false}
             case FETCH_ISADMIN_SUCCEDED:
-                console.log(payload.admin)
+                //console.log(payload.admin)
                 return {...state, isAdmin: payload.admin, fetchingAdmin: false}
 
             case FETCH_TAGS_STARTED:
@@ -181,6 +188,14 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 return {...state, fetchingTags: false, fetchingTagsError: payload.error}
             case FETCH_TAGS_SUCCEEDED:
                 return {...state, fetchingRooms: false, predefined: payload.predefined}
+
+
+            case IS_MEMBER_STARTED:
+                 return {...state}
+            case IS_MEMBER_SUCCEEDED:
+                return {...state, isMember: payload.isMember}
+            case IS_MEMBER_FAILED:
+                 return {...state, isMember: false}
 
             default:
                 return state;
@@ -196,6 +211,8 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             const hideUploadFile = useCallback<HideUploadFileFn>(hideUploadFileCallback, []);
             const showUploadFile = useCallback<HideUploadFileFn>(showUploadFileCallback, []);
 
+            const joinRoom = useCallback<JoinRoomFn>(joinRoomCallback, [token]);
+
             const reviewFile = useCallback<ReviewFileFn>(reviewFileCallback, [token]);
 
             useEffect(fetchFilesEffect, [token]);
@@ -203,7 +220,9 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             useEffect(fetchIsAdminEffect, [token])
             useEffect(fetchTagsEffect, [token])
 
-            return {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile}
+            useEffect(isMemberEffect, [token])
+
+            return {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile, joinRoom}
 
             async function hideUploadFileCallback() {
                 log('hide UploadFile Popover');
@@ -213,6 +232,13 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
             async function showUploadFileCallback() {
                 log('show UploadFile Popover')
                 dispatch({type: SHOW_ADD_FILE})
+            }
+
+            
+            async function joinRoomCallback(roomId: string) {
+                log('join Room started');
+                await joinRoomApi(token, roomId);
+                
             }
 
             async function reviewFileCallback(fileId: string, type: string) 
@@ -249,7 +275,37 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 }
             }
 
-            
+            function isMemberEffect() {
+                let canceled = false;
+                isMember();
+                return () => {
+                    canceled = true;
+                }
+
+                async function isMember() {
+                    dispatch({type: IS_MEMBER_STARTED})
+                    try {
+                        log('isMember started');
+                        dispatch({type: IS_MEMBER_STARTED});
+                        const result = await getRooms(token);
+                        console.log("IsMember");
+                        let isMember = false;
+                        console.log(result)
+                        for(let i = 0; i < result.length; i = i + 1) {
+                            if(result[i].id === roomId) 
+                                isMember = true;
+                        }
+                        console.log(isMember);
+                        if(!canceled) {
+                            dispatch({type: IS_MEMBER_SUCCEEDED, payload: {isMember: isMember}});
+                        }
+                    }
+                    catch (error) {
+                        dispatch({type: IS_MEMBER_FAILED, payload: {error}})
+                    }
+                    
+                }
+            }
 
             function fetchIsAdminEffect() {
                 let canceled = false;
