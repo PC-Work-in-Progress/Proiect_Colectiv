@@ -362,6 +362,8 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public List<FileRoomDto> getRecentFilesFromToken(String token, int pageNumber) {
+        logger.info("ENTER getRecentFilesFromToken with user token: {} and pageNumber: {}", token, pageNumber);
+
         List<FileRoomDto> currentFileRoomDtoList = new ArrayList<>();
         int filesPerPage = 15;
         int startFileIndex = pageNumber * filesPerPage;
@@ -404,6 +406,8 @@ public class FileStorageService implements FileStorageServiceInterface {
             currentFileRoomDtoList.add(fileRoomDtoList.get(currentFileIndex));
         }
 
+
+        logger.info("EXIT getRecentFilesFromToken with succes, the list of files is: {}", currentFileRoomDtoList);
         return currentFileRoomDtoList;
     }
 
@@ -415,6 +419,8 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public List<FileRoomDto> getSearchedFilesFromName(String token, String filename) {
+        logger.info("ENTER getSearchedFilesFromName with user token: {} and filename: {}", token, filename);
+
         UserEntity user = userRepository.findByToken(token);
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
@@ -446,6 +452,7 @@ public class FileStorageService implements FileStorageServiceInterface {
             }
         }
 
+        logger.info("EXIT getSearchedFilesFromName with succes, the list of files is: {}", fileRoomDtoList);
         return fileRoomDtoList;
     }
 
@@ -457,6 +464,8 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public List<FileRoomDto> getSearchedFilesFromTag(String token, String tag) {
+        logger.info("ENTER getSearchedFilesFromTag with user token: {} and file tag: {}", token, tag);
+
         UserEntity user = userRepository.findByToken(token);
         List<UserRoomEntity> userRoomEntities = userRoomRepository.findUserRoomEntityByUserRoomId_UserId(user.getId());
 
@@ -494,6 +503,8 @@ public class FileStorageService implements FileStorageServiceInterface {
             }
         }
 
+
+        logger.info("EXIT getSearchedFilesFromTag with succes, the list of files is: {}", fileRoomDtoList);
         return fileRoomDtoList;
     }
 }

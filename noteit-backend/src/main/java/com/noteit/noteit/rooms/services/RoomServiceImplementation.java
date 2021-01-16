@@ -15,6 +15,8 @@ import com.noteit.noteit.rooms.model.RoomEntity;
 import com.noteit.noteit.tags.model.TagEntity;
 import com.noteit.noteit.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,18 +33,23 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     private FileTagRepository fileTagRepository;
     private TagRepository tagRepository;
 
+    private static final Logger logger = LogManager.getLogger();
+
     /**
      * function that returns all the rooms
      * @return a RoomDto
      */
     @Override
     public List<RoomDto> getRooms() {
+        logger.info("ENTER getRooms");
+
         List<RoomDto> roomDtos = new ArrayList<>();
         for (RoomEntity roomEntity : roomRepository.findAll()) {
             RoomDto roomDto = new RoomDto(roomEntity.getId(), roomEntity.getName());
             roomDtos.add(roomDto);
         }
 
+        logger.info("EXIT getRooms with success, the rooms are: {}", roomDtos);
         return roomDtos;
     }
 
@@ -53,6 +60,8 @@ public class RoomServiceImplementation implements RoomServiceInterface {
      */
     @Override
     public List<RoomDto> getRoomsByToken(String token) {
+        logger.info("ENTER getRoomsByToken with user token: {}", token);
+
         List<RoomDto> roomDtos = new ArrayList<>();
         String ownerId = userRepository.findByToken(token).getId();
 
@@ -67,6 +76,7 @@ public class RoomServiceImplementation implements RoomServiceInterface {
             }
         }
 
+        logger.info("EXIT getRoomsByToken with success, the rooms are: {}", roomDtos);
         return roomDtos;
     }
 
@@ -78,12 +88,17 @@ public class RoomServiceImplementation implements RoomServiceInterface {
      */
     @Override
     public RoomDto createRoom(String name, String token) {
+        logger.info("ENTER getRoomsByToken with user token: {} and room name: {}", token, name);
+
         String ownerId = userRepository.findByToken(token).getId();
         RoomEntity roomEntity = new RoomEntity(name, ownerId);
         roomRepository.save(roomEntity);
         UserRoomEntity userRoom = new UserRoomEntity(ownerId, roomEntity.getId());
         userRoomRepository.save(userRoom);
-        return new RoomDto(roomEntity.getId(), name);
+        RoomDto roomDto = new RoomDto(roomEntity.getId(), name);
+
+        logger.info("EXIT createRoom with success, the created room is: {}", roomDto);
+        return roomDto;
     }
 
     @Override
@@ -143,16 +158,24 @@ public class RoomServiceImplementation implements RoomServiceInterface {
      */
     @Override
     public String checkIfIsAdmin(String token, String roomId) {
+        logger.info("ENTER checkIfIsAdmin with user token: {} and room id: {}", token, roomId);
+
         RoomEntity roomEntity = roomRepository.findById(roomId).get();
         UserEntity userEntity = userRepository.findByToken(token);
+        String answer = "";
         if (roomEntity != null && userEntity != null)
         {
             if (roomEntity.getOwnerId().equals(userEntity.getId()))
             {
-                return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "true" + '"' + "}]";
+                answer = "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "true" + '"' + "}]";
+                logger.info("EXIT checkIfIsAdmin with success, the RETURN message is: {}", answer);
+                return answer;
             }
         }
-        return "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "false" + '"' + "}]";
+
+        answer = "[{" + '"' + "isAdmin" + '"' + ':' + '"' + "false" + '"' + "}]";
+        logger.info("EXIT checkIfIsAdmin with success, the RETURN message is: {}", answer);
+        return answer;
     }
 
     /**
@@ -163,8 +186,12 @@ public class RoomServiceImplementation implements RoomServiceInterface {
     @Override
     public void joinRoom(String token, String roomId)
     {
+        logger.info("ENTER joinRoom with user token: {} and room id: {}", token, roomId);
+
         String ownerId = userRepository.findByToken(token).getId();
         UserRoomEntity userRoom = new UserRoomEntity(ownerId, roomId);
         userRoomRepository.save(userRoom);
+
+        logger.info("EXIT joinRoom with success");
     }
 }
