@@ -24,6 +24,16 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
 
   const [formData, setFormData] = useState<FormData>();
 
+  useEffect(ChangeShowAdminPageEffect, [isAdmin]);
+  const [showAdminPage, setShowAdminPage] = useState(false);
+
+  
+
+  function ChangeShowAdminPageEffect() {
+    console.log("Reload")
+      
+  }
+
   interface InternalValues {
     file: any;
   }
@@ -63,7 +73,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     }
   };
 
-
+  console.log('render')
   return (
     <IonContent>
                 <Header/>
@@ -77,26 +87,26 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                   <IonRow >
                             <IonCol size="8.5">
                                   { console.log(isAdmin) }
-                                  {isAdmin  && (
-                                  <IonCard>
-                                  <IonCardHeader>
-                                      <IonCardTitle>In Review files</IonCardTitle>
-                                  </IonCardHeader>
-                                  <IonCardContent>
-                                    {files && (<IonList>
-                                        {files.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved = {1} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
-                                        )}</IonList>)}
-                                    {files.length === 0 &&  <IonList>
-                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in review"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={1} onView={() => {}}> </MyFile>
-                                    </IonList>
-                                    }
-                                    <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
-                                    {fetchingFilesError &&
-                                       <div className="create-room-error">{fetchingFilesError.message}</div>}
-                                    </IonCardContent>
-                                    </IonCard>
+                                  {isAdmin === "true"  && (
+                                      <IonCard>
+                                      <IonCardHeader>
+                                          <IonCardTitle>In Review files</IonCardTitle>
+                                      </IonCardHeader>
+                                      <IonCardContent>
+                                        {files && (<IonList>
+                                            {files.map(({fileId,name,type,username,date,URL,size, approved, tags}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved = {1} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} tags = {tags} isAdmin = {true}></MyFile>
+                                            )}</IonList>)}
+                                        {files.length === 0 &&  <IonList>
+                                              <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in review"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={1} onView={() => {}} tags = {""}> </MyFile>
+                                        </IonList>
+                                        }
+                                        <IonLoading isOpen={fetchingFiles} message="Fetching files"/>
+                                        {fetchingFilesError &&
+                                          <div className="create-room-error">{fetchingFilesError.message}</div>}
+                                        </IonCardContent>
+                                        </IonCard>
                                   )}
-                                  <IonLoading isOpen={fetchingAdmin} message="Verifying if is admin"/>
+                                  <IonLoading isOpen={fetchingAdmin} message="Verifying user's role"/>
                               
                               <IonCard>
                                 <IonCardHeader>
@@ -104,10 +114,10 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                 </IonCardHeader>
                                 <IonCardContent>
                                   {acceptedFiles && (<IonList>
-                                        {acceptedFiles.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved={0} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {isAdmin}></MyFile>
+                                        {acceptedFiles.map(({fileId,name,type,username,date,URL,size, approved}) => <MyFile key={name} fileId = {fileId} name= {name} type={type} date={date} username={username} URL={URL} size={size} approved={0} onView={() => {history.push(`/room/${roomId}/${fileId}`)}} onReview={reviewFile} isAdmin = {true} tags = {""}></MyFile>
                                         )}</IonList>)}
                                     {acceptedFiles.length === 0 &&  <IonList>
-                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in room"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={0} onView={() => {}}> </MyFile>
+                                          <MyFile key = {"cheie"} fileId = {"id"} name = {"Momentan nu sunt fisiere in room"} type={"txt"} date={(new Date).toString()} username={"test"} URL={"url"} size={'0'} approved={0} onView={() => {}} tags = {""}> </MyFile>
                                     </IonList>
                                     }
                                     <IonLoading isOpen={fetchingFiles} message="Fetching files"/>

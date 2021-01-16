@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useReducer, useState } from "react"
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
-import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdmin } from "./roomApi";
+import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdminApi } from "./roomApi";
 import {uploadFile as uploadFileApi} from "./roomApi"
 
 
@@ -12,6 +12,7 @@ const log = getLogger("useRoomPage");
 export type UploadFileFn = (file: FormData, routeId: string, tags: string) => void;
 export type ScanNotesFn = (file: FormData) => string;
 export type HideUploadFileFn = () => void;
+
 export type ReviewFileFn = (fileId: string, type: string) => void;
 
 interface RoomState {
@@ -26,7 +27,7 @@ interface RoomState {
     fetchingFiles: boolean;
     fetchingFile: boolean; 
     fetchingFileError?: Error | null;
-    isAdmin: boolean;
+    isAdmin: string;
     fetchingAdmin: boolean;
     tags: string,
 }
@@ -43,13 +44,14 @@ const initialState: RoomState = {
         date: "",
         size: "",
         URL: "",
-        approved: 0
+        approved: 0,
+        tags: "",
     },
     showAddFile: false,
     uploading: false,
     fetchingFiles: false,
     fetchingFile: false,
-    isAdmin: false,
+    isAdmin: "false",
     fetchingAdmin: false,
     tags: "",
 }
@@ -165,10 +167,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 return {...state, isAdmin: false, fetchingAdmin: false}
             case FETCH_ISADMIN_SUCCEDED:
                 console.log(payload.admin)
-                let isAdmin = payload.admin;
-                if(isAdmin === false)
-                    isAdmin = undefined;
-                return {...state, isAdmin: isAdmin, fetchingAdmin: false}
+                return {...state, isAdmin: payload.admin, fetchingAdmin: false}
 
             default:
                 return state;
@@ -253,7 +252,7 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     try {
                         log('fetchIsAdmin started')
                         dispatch({type: FETCH_ISADMIN_STARTED})
-                        await isAdmin(token, roomId).then(res => {
+                        await isAdminApi(token, roomId).then(res => {
                             let value = res[0].isAdmin;
                             if(!canceled) {
                                 dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: value}})

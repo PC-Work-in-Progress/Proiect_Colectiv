@@ -3,7 +3,7 @@ import { checkmark, closeSharp } from "ionicons/icons";
 import React from "react";
 import { FileProps } from "./FileProps";
 
-export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,URL,size, onView, onReview, isAdmin, approved}) => {
+export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,URL,size, onView, onReview, isAdmin, approved, tags}) => {
 
     return (
         <>

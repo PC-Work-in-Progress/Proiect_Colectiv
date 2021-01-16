@@ -4,27 +4,48 @@ import "./Header.css"
 import {AuthContext} from "../auth/AuthProvider";
 import { Redirect } from 'react-router-dom';
 import { notifications, notificationsOffCircleOutline} from 'ionicons/icons';
-import { GetNotifications } from './notificationApi';
+import { GetNotifications, NotificationMessageProps, ReadNotification } from './notificationApi';
 
 
 
 export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
     const [modal, setShowModal] = useState(false);
-    let message = "Notificari:";
+    const [message, setMessage] = useState("");
     const handleLogout = () => {
         logout?.();
       }
 
 
-    const [notify, setNotify] = useState(false)
-    let notifications = [];
+    const [notify, setNotify] = useState(false);
 
     useEffect(GetNotificationsEffect, [modal, token])
 
+    const [notificationList, setNotificationList] = useState<NotificationMessageProps[]>();
+
+    var n = async function(token: string, nid:number) {
+        if(notificationList) {
+            if(notificationList[nid]) {
+                await ReadNotification(token, notificationList[nid].id);
+            }
+        }
+    }
+
+    function readNotificationList() {
+        let i;
+
+        if(notificationList) {
+            for(i = 0; i < notificationList.length; ++i ) {
+                if (notificationList[i].viewed === 0) {
+                   n(token, i);
+                }
+            }
+        }
+        setNotify(false);
+    }
+
     function GetNotificationsEffect() {
         let canceled = false;
-        console.log(token);
         GetNotificationsAsync();
         return () => {
             canceled = true;
@@ -32,14 +53,23 @@ export const Header: React.FC = () => {
 
         async function GetNotificationsAsync() {
 
-            
-
-            await GetNotifications(token).then(result => {
-                for(var notification in result) {
-                    message = "";
-                    message += notification + '\n';
+            if(notify === false) {
+                if(token !== "") {
+                const result = await GetNotifications(token)
+                
+                let i;
+                let newMessage = "Notifications: \n";
+                for(i = 0; i < result.length; ++i ) {
+                    if ( result[i].viewed === 0 ) {
+                        setNotify(true)
+                        newMessage += result[i].message + '\n';
+                    }
+                
+                setMessage(newMessage);
+                setNotificationList(result);
                 }
-            });
+            }
+        }
 
         }
     }
@@ -58,13 +88,18 @@ export const Header: React.FC = () => {
                                       
                     {token !== "" && (
                     <IonButtons slot="end" >
-                        <IonButton>
-                            <IonIcon icon={notificationsOffCircleOutline} onClick={e => setShowModal(true)}></IonIcon>
+                        <IonButton onClick = {() => setShowModal(true) }>
+                            {notify === true && (
+                            <IonIcon icon={notifications}></IonIcon>
+                            )}
+                            {notify === false && (
+                            <IonIcon icon={notificationsOffCircleOutline}></IonIcon>
+                            )}
                         </IonButton>
                         {modal && (
                         <IonAlert
                                         isOpen={modal}
-                                        onDidDismiss={() => setShowModal(false)}
+                                        onDidDismiss={() => { setShowModal(false); readNotificationList();}}
                                         cssClass='modal'
                                         message={message}
                                         buttons={['OK']}
