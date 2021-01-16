@@ -61,8 +61,8 @@ export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, h
     return (
         <IonContent class="popover-content">
 
-            <div className="ion-padding-start ion-padding-bottom">
-                <IonTextarea className="textAreaScanNotes" value={text} onIonChange={e => setText(e.detail.value!)} autoGrow = { false }></IonTextarea>
+            <IonTextarea className="textAreaScanNotes" value={text} onIonChange={e => setText(e.detail.value!)} autoGrow = { true }></IonTextarea>
+            <div className="ion-padding-start ion-padding-bottom">    
                 <IonLabel>Filename:</IonLabel>
                 <IonInput   value={filename}
                         onIonChange={e => setFilename(e.detail.value!)}/>
