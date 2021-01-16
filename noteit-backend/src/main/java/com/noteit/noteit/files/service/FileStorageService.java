@@ -166,6 +166,7 @@ public class FileStorageService implements FileStorageServiceInterface {
      */
     @Override
     public FileDbDto getDetails(String fileId, String roomId) throws Exception {
+        logger.info("get details of file {} started", fileId);
         Optional<FileDB> fileDBOptional = fileDBRepository.findById(fileId);
         if(fileDBOptional.isEmpty())
             throw new ServiceException("No file for this id");
@@ -173,6 +174,7 @@ public class FileStorageService implements FileStorageServiceInterface {
         FileDB fileDB = fileDBOptional.get();
         var optional = fileTagRepository.findById_FileId(fileDB.getId());
         if(optional.isEmpty()) {
+            logger.info("empty File tag");
             throw new Exception("empty File Tag");
         }
         List<FileTagEntity> entities = optional.get();
@@ -181,6 +183,7 @@ public class FileStorageService implements FileStorageServiceInterface {
             tags.add(tagRepository.findById(ft.getId().getTagId()).get().getName());
         }
         String userId = fileRoomDBRepository.findById_FileIdAndId_RoomId(fileId, roomId).get(0).getId().getUserId();
+        logger.info("get details of file {} done", fileId);
         return fileDbMapper.toDto(fileDB, userRepository.findById(userId).get().getUsername(), tags);
     }
 
