@@ -1,11 +1,6 @@
 package com.noteit.noteit.files.dtos;
 
 
-import com.noteit.noteit.dtos.UserDto;
-import com.noteit.noteit.repositories.UserRepository;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 
 /**

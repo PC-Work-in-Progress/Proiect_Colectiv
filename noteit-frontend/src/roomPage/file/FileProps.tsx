@@ -10,4 +10,5 @@ export interface FileProps {
     onReview?: (fileId: string, type: string) => void;
     isAdmin?: boolean;
     approved: number;
+    tags: string;
 }

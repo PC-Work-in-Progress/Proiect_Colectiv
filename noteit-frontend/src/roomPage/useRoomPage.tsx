@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useReducer, useState } from "react"
 import { AuthContext } from "../auth/AuthProvider";
 import { getLogger } from "../shared";
 import { FileProps } from "./file";
-import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdmin } from "./roomApi";
+import { getFile, getApprovedFiles, getInReviewFiles, acceptFile, denyFile, isAdminApi } from "./roomApi";
 import {uploadFile as uploadFileApi} from "./roomApi"
 import {getTags} from "../discover/discoverApi";
 import {TagProps} from "../discover/useDiscover";
@@ -14,6 +14,7 @@ const log = getLogger("useRoomPage");
 export type UploadFileFn = (file: FormData, routeId: string, tags: string) => void;
 export type ScanNotesFn = (file: FormData) => string;
 export type HideUploadFileFn = () => void;
+
 export type ReviewFileFn = (fileId: string, type: string) => void;
 
 interface RoomState {
@@ -28,7 +29,8 @@ interface RoomState {
     fetchingFiles: boolean;
     fetchingFile: boolean; 
     fetchingFileError?: Error | null;
-    isAdmin: boolean;
+    isAdmin: string;
+    fetchingAdmin: boolean;
     tags: string,
     predefined: TagProps[];
 }
@@ -45,13 +47,15 @@ const initialState: RoomState = {
         date: "",
         size: "",
         URL: "",
-        approved: 0
+        approved: 0,
+        tags: "",
     },
     showAddFile: false,
     uploading: false,
     fetchingFiles: false,
     fetchingFile: false,
-    isAdmin: false,
+    isAdmin: "false",
+    fetchingAdmin: false,
     tags: "",
     predefined: [],
 }
@@ -164,11 +168,12 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
 
 
             case FETCH_ISADMIN_STARTED:
-                return state;
+                return {...state, fetchingAdmin: true};
             case FETCH_ISADMIN_FAILED:
-                return {...state, isAdmin: false}
+                return {...state, isAdmin: false, fetchingAdmin: false}
             case FETCH_ISADMIN_SUCCEDED:
-                return {...state, isAdmin: true}
+                console.log(payload.admin)
+                return {...state, isAdmin: payload.admin, fetchingAdmin: false}
 
             case FETCH_TAGS_STARTED:
                 return {...state, fetchingTags: true, fetchingTagsError: null}
@@ -244,16 +249,6 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 }
             }
 
-            function base64ToArrayBuffer(base64: string) {
-                const binary_string = window.atob(base64);
-                const len = binary_string.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binary_string.charCodeAt(i);
-                }
-                return bytes.buffer;
-            }
-
             
 
             function fetchIsAdminEffect() {
@@ -271,10 +266,13 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     try {
                         log('fetchIsAdmin started')
                         dispatch({type: FETCH_ISADMIN_STARTED})
-                        let result = await isAdmin(token, roomId)
-                        if(!canceled) {
-                            dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: result}})
-                        }
+                        await isAdminApi(token, roomId).then(res => {
+                            let value = res[0].isAdmin;
+                            if(!canceled) {
+                                dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: value}})
+                            }
+                        })
+                        
                     }
                     catch (error) {
                         dispatch({type: FETCH_ISADMIN_FAILED, payload: {error}})

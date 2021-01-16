@@ -40,7 +40,7 @@ export const denyFile: (token: string,roomId: string, fileId: string) => Promise
     return withLogs(axios.put(`http://${baseUrl}/api/files/DenyFile/${fileId}?roomId=${roomId}`,{}, reviewFileConfig(token)), 'denyFile');
 }
 
-export const isAdmin: (token: string, roomId: string) => Promise<any> = (token, roomId) => {
+export const isAdminApi: (token: string, roomId: string) => Promise<any> = (token, roomId) => {
     return withLogs(axios.get(`http://${baseUrl}/rooms/isAdmin/${roomId}`, getFilesConfig(token)), 'isAdmin');
 }
 
