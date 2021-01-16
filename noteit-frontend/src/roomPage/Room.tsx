@@ -23,7 +23,8 @@ import {
     IonIcon,
     IonChip,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSearchbar
 } from "@ionic/react";
 import {ScanNotes} from "./ScanNotes";
 
@@ -48,6 +49,8 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
     const [allTags, setAllTags] = useState<string[]>([]);
     const [showScanNotes, setShowScanNotes] = useState(false)
     const [formData, setFormData] = useState<FormData>();
+
+    const [searchText, setSearchText] = useState("");
 
 
     const predefinedTags = [];
@@ -151,8 +154,9 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                 <IonCardTitle>Room files</IonCardTitle>
                             </IonCardHeader>
                             <IonCardContent>
+                                <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)}></IonSearchbar>
                                 {acceptedFiles && (<IonList>
-                                    {acceptedFiles.map(({fileId, name, type, username, date, URL, size, approved}) =>
+                                    {acceptedFiles.filter(f => f.name.includes(searchText)).map(({fileId, name, type, username, date, URL, size, approved}) =>
                                         <MyFile key={name} fileId={fileId} name={name} type={type}
                                                 date={date} username={username} URL={URL} size={size}
                                                 approved={0} onView={() => {
