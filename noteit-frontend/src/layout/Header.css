@@ -10,15 +10,21 @@
 }
 
 .header-button {
-    --color-hover: #BFC0C0 !important;
+    --color-hover: #808289 !important;
     --background-hover: none !important;
     --ripple-color: transparent !important;
 }
 
 .header-title {
     text-transform: none;
+    margin-top: 3px;
 }
 
 .background {
     background-color: #E9ECEF;
+}
+
+.logo {
+    width: 40px;
+    margin-left: 30px;
 }
