@@ -1,5 +1,5 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonList, IonLoading, IonModal, IonPopover, IonRow } from "@ionic/react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Header } from "../layout/Header";
 import { MyFile } from "./file/File";
@@ -15,7 +15,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
   const {state,setState, uploadFile, hideUploadFile, showUploadFile, reviewFile} = useRoom(match.params.id);
   const {
     files, file, showAddFile, uploadError, uploading, fetchingFilesError, fetchingFiles,
-    fetchingFile, fetchingFileError, isAdmin, acceptedFiles
+    fetchingFile, fetchingFileError, isAdmin,fetchingAdmin, acceptedFiles
   } = state;
 
   const [showScanNotes, setShowScanNotes] = useState(false)
@@ -23,7 +23,6 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
   const roomId = match.params.id
 
   const [formData, setFormData] = useState<FormData>();
-
 
   interface InternalValues {
     file: any;
@@ -77,8 +76,8 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                 <IonGrid>
                   <IonRow >
                             <IonCol size="8.5">
-                                  {console.log(isAdmin)}
-                                  {isAdmin === true && (
+                                  { console.log(isAdmin) }
+                                  {isAdmin  && (
                                   <IonCard>
                                   <IonCardHeader>
                                       <IonCardTitle>In Review files</IonCardTitle>
@@ -97,6 +96,7 @@ export const RoomPage: React.FC<RoomPageProps> = ({history, match}) => {
                                     </IonCardContent>
                                     </IonCard>
                                   )}
+                                  <IonLoading isOpen={fetchingAdmin} message="Verifying if is admin"/>
                               
                               <IonCard>
                                 <IonCardHeader>

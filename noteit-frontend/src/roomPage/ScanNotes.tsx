@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonItem, IonTextarea } from "@ionic/react";
+import { IonButton, IonContent, IonInput, IonItem, IonLabel, IonTextarea } from "@ionic/react";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { ScanNotesFn, UploadFileFn } from "./useRoomPage";
@@ -22,6 +22,7 @@ interface ScanNotesProps {
 export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, hide}) => {
     const [text, setText] = useState("Waiting for file to be analysed");
     const [state, setFileState] = useState<ScanNotesProps>();
+    const [filename, setFilename] = useState("Scanned Notes");
     const {token} = useContext(AuthContext);
     useEffect(scanNotesEffect,[file]);
 
@@ -35,7 +36,7 @@ export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, h
 
        
 
-        formData.append("file", blob, "MyNotes");
+        formData.append("file", blob, filename);
 
         uploadFile(formData, roomId, "tag");
     };
@@ -61,8 +62,12 @@ export const ScanNotes: React.FC<ScanNotesProps> = ({uploadFile, file, roomId, h
         <IonContent class="popover-content">
 
             <div className="ion-padding-start ion-padding-bottom">
-                <IonTextarea className="textAreaScanNotes" value={text} onIonChange={e => setText(e.detail.value!)} autoGrow = { true }></IonTextarea>
+                <IonTextarea className="textAreaScanNotes" value={text} onIonChange={e => setText(e.detail.value!)} autoGrow = { false }></IonTextarea>
+                <IonLabel>Filename:</IonLabel>
+                <IonInput   value={filename}
+                        onIonChange={e => setFilename(e.detail.value!)}/>
                 <div className="button-div">
+                
                 <IonButton  onClick={() => sendFile(text)}> Upload </IonButton>
                 </div>
                 <div className="button-div">

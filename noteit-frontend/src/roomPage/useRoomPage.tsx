@@ -27,6 +27,7 @@ interface RoomState {
     fetchingFile: boolean; 
     fetchingFileError?: Error | null;
     isAdmin: boolean;
+    fetchingAdmin: boolean;
     tags: string,
 }
 
@@ -49,6 +50,7 @@ const initialState: RoomState = {
     fetchingFiles: false,
     fetchingFile: false,
     isAdmin: false,
+    fetchingAdmin: false,
     tags: "",
 }
 
@@ -158,11 +160,15 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
 
 
             case FETCH_ISADMIN_STARTED:
-                return state;
+                return {...state, fetchingAdmin: true};
             case FETCH_ISADMIN_FAILED:
-                return {...state, isAdmin: false}
+                return {...state, isAdmin: false, fetchingAdmin: false}
             case FETCH_ISADMIN_SUCCEDED:
-                return {...state, isAdmin: payload.result}
+                console.log(payload.admin)
+                let isAdmin = payload.admin;
+                if(isAdmin === false)
+                    isAdmin = undefined;
+                return {...state, isAdmin: isAdmin, fetchingAdmin: false}
 
             default:
                 return state;
@@ -230,16 +236,6 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                 }
             }
 
-            function base64ToArrayBuffer(base64: string) {
-                const binary_string = window.atob(base64);
-                const len = binary_string.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binary_string.charCodeAt(i);
-                }
-                return bytes.buffer;
-            }
-
             
 
             function fetchIsAdminEffect() {
@@ -257,11 +253,13 @@ const reducer: (state: RoomState, action: ActionProps) => RoomState =
                     try {
                         log('fetchIsAdmin started')
                         dispatch({type: FETCH_ISADMIN_STARTED})
-                        let result = await isAdmin(token, roomId)
-                        console.log(result);
-                        if(!canceled) {
-                            dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: result}})
-                        }
+                        await isAdmin(token, roomId).then(res => {
+                            let value = res[0].isAdmin;
+                            if(!canceled) {
+                                dispatch({type: FETCH_ISADMIN_SUCCEDED, payload: {admin: value}})
+                            }
+                        })
+                        
                     }
                     catch (error) {
                         dispatch({type: FETCH_ISADMIN_FAILED, payload: {error}})

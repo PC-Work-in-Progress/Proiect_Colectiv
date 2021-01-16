@@ -1,5 +1,5 @@
 import {IonAlert, IonButton, IonButtons, IonHeader, IonIcon, IonLabel, IonTitle, IonToolbar} from '@ionic/react';
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./Header.css"
 import {AuthContext} from "../auth/AuthProvider";
 import { Redirect } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { GetNotifications } from './notificationApi';
 export const Header: React.FC = () => {
     const {token, logout} = useContext(AuthContext);
     const [modal, setShowModal] = useState(false);
-    let message;
+    let message = "Notificari:";
     const handleLogout = () => {
         logout?.();
       }
@@ -20,14 +20,20 @@ export const Header: React.FC = () => {
     const [notify, setNotify] = useState(false)
     let notifications = [];
 
+    useEffect(GetNotificationsEffect, [modal, token])
+
     function GetNotificationsEffect() {
         let canceled = false;
+        console.log(token);
         GetNotificationsAsync();
         return () => {
             canceled = true;
         }
 
         async function GetNotificationsAsync() {
+
+            
+
             await GetNotifications(token).then(result => {
                 for(var notification in result) {
                     message = "";

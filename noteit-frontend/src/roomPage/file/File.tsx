@@ -9,7 +9,7 @@ export const MyFile: React.FC<FileProps> = ({    fileId,name,type,username,date,
         <>
             <IonItem>
                 <IonLabel class="bold" onClick={() => onView?.()}>{name} </IonLabel>
-                { isAdmin === true && approved === 1 && (<IonList>
+                { isAdmin && approved === 1 && (<IonList>
                 <IonButton fill="clear" slot="end" onClick={() => { onReview?.(fileId,"accept")}}>
                      <IonIcon color="dark" icon={checkmark} />
                 </IonButton>
