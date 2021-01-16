@@ -42,15 +42,15 @@
     text-align: center;
 }
 
-.create-room-popover .popover-content {
+.room-popover .popover-content {
     width: 400px;
 }
 
-.create-room-popover .popover-room-name {
+.room-popover .popover-room-name {
     margin-bottom: 10px;
 }
 
-.create-room-popover .create-room-error {
+.room-popover .create-room-error {
     text-align: center;
     color: red;
 }
@@ -99,7 +99,7 @@
         height: auto;
     }
 
-    .create-room-popover .popover-content {
+    .room-popover .popover-content {
         width: 300px;
     }
 }
